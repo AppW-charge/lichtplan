@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>W-Charge Lichtplan 2026</title>
+<title>Verlichtingsplanner / Zoeker v5</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Figtree:wght@300;400;500;600&display=swap');
@@ -20,13 +20,13 @@
 body{font-family:'Figtree',sans-serif;background:var(--panel);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;font-size:13px;}
 
 /* HEADER */
-header{background:var(--blue);border-bottom:3px solid #fd7e14;height:48px;display:flex;align-items:center;gap:5px;padding:0 10px;flex-shrink:0;z-index:200;overflow-x:auto;}
+header{background:var(--blue);border-bottom:2px solid var(--green);height:48px;display:flex;align-items:center;gap:5px;padding:0 10px;flex-shrink:0;z-index:200;overflow-x:auto;}
 .logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:var(--text);white-space:nowrap;flex-shrink:0;}
 .logo b{color:var(--green);}
 .hsep{width:1px;height:26px;background:var(--border2);margin:0 4px;flex-shrink:0;}
 .hbtn{background:var(--blue2);border:1px solid var(--border2);color:var(--text);padding:5px 10px;border-radius:var(--r);cursor:pointer;font:500 11px 'Figtree',sans-serif;display:flex;align-items:center;gap:4px;transition:.15s;white-space:nowrap;flex-shrink:0;}
 .hbtn:hover{background:var(--blue3);border-color:var(--green);}
-.hbtn.act{background:#fd7e14;color:#000;border-color:#fd7e14;}
+.hbtn.act{background:var(--green);color:var(--panel);border-color:var(--green);}
 .hbtn:disabled{opacity:.4;cursor:not-allowed;}
 
 /* SEARCH */
@@ -177,7 +177,7 @@ footer{height:23px;background:var(--blue);border-top:1px solid var(--border);dis
 </head>
 <body>
 <header>
-  <div class="logo"><b>Verlichtingsplanner</b> / Zoeker <span style="background:#fd7e14;color:#000;font-size:9px;padding:1px 5px;border-radius:3px;font-family:Figtree,sans-serif;font-weight:700">v6.1</span></div>
+  <div class="logo"><b>Verlichtingsplanner</b> / Zoeker</div>
   <div class="hsep"></div>
   <button class="hbtn act" id="bs" onclick="setMode('s')">▸ Select</button>
   <button class="hbtn" id="bk" onclick="startCable()">⟶ Kabel</button>
