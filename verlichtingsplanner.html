@@ -14,18 +14,20 @@
   --border:#1e3048;--border2:#253a58;
   --text:#dce8f5;--text2:#8ab0cc;--dim:#5a7a99;
   --accent:#d4ff00;--accent2:#a8cc00;
-  --canvas-bg:#09121c;
-  --drop-bg:#09121c;--drop-border:#253a58;--drop-text:#dce8f5;--drop-sub:#5a7a99;
+  --canvas-bg:#1a1a2e;
+  --drop-bg:#0f1a28;--drop-border:#253a58;--drop-text:#dce8f5;--drop-sub:#5a7a99;
   --red:#ff4455;--amber:#ffaa22;--cyan:#22ddff;
+  --sym-stroke:#d4ff00;
 }
 [data-theme="light"]{
-  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#e0e8f0;--bg4:#d0dce8;
-  --border:#c0ccd8;--border2:#a8b8c8;
+  --bg:#f0f4f8;--bg2:#ffffff;--bg3:#e8edf4;--bg4:#d8e4f0;
+  --border:#c8d4e0;--border2:#b0c0d0;
   --text:#1a2a3a;--text2:#3a5060;--dim:#7090a8;
-  --accent:#0055cc;--accent2:#0044aa;
-  --canvas-bg:#e8edf2;
-  --drop-bg:#ffffff;--drop-border:#a8b8c8;--drop-text:#1a2a3a;--drop-sub:#7090a8;
+  --accent:#0066cc;--accent2:#0055aa;
+  --canvas-bg:#f8f8f8;
+  --drop-bg:#ffffff;--drop-border:#b0c0d0;--drop-text:#1a2a3a;--drop-sub:#7090a8;
   --red:#cc2233;--amber:#cc7700;--cyan:#0077aa;
+  --sym-stroke:#0066cc;
 }
 
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -67,21 +69,30 @@ header{background:var(--bg3);border-bottom:2px solid var(--accent);height:48px;d
 .body{display:flex;flex:1;overflow:hidden;}
 
 /* ── ASIDE (resizable) ── */
-aside{width:210px;min-width:140px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:row;flex-shrink:0;position:relative;}
+aside{width:210px;min-width:140px;background:var(--bg2);display:flex;flex-direction:row;flex-shrink:0;position:relative;border-right:none;}
 .aside-inner{flex:1;display:flex;flex-direction:column;overflow-y:auto;min-width:0;}
-.resize-handle{width:6px;background:var(--border);cursor:col-resize;flex-shrink:0;position:relative;transition:background .15s;}
-.resize-handle:hover{background:var(--accent);}
+.resize-handle{
+  width:5px;flex-shrink:0;background:var(--border2);
+  cursor:col-resize;position:relative;
+  border-right:1px solid var(--border);
+  transition:background .15s,width .1s;
+}
+.resize-handle:hover{background:var(--accent);width:7px;}
+.resize-handle::after{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:3px;height:30px;background:rgba(255,255,255,.3);border-radius:3px;
+}
 .sec{border-bottom:1px solid var(--border);padding:9px;}
 .stitle{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:7px;display:flex;align-items:center;justify-content:space-between;}
 .stitle-btn{font-size:10px;color:var(--dim);cursor:pointer;font-family:'Figtree',sans-serif;font-weight:400;letter-spacing:0;text-transform:none;padding:1px 5px;border:1px solid var(--border2);border-radius:3px;transition:.15s;}
 .stitle-btn:hover{border-color:var(--accent);color:var(--accent);}
-.pal{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-.pitem{background:var(--bg3);border:1px solid var(--border2);border-radius:4px;padding:6px 3px;cursor:pointer;text-align:center;transition:.15s;user-select:none;}
-.pitem:hover{border-color:var(--accent);background:var(--bg4);}
-.pitem.act{border-color:var(--accent);background:var(--bg4);box-shadow:0 0 0 1px var(--accent);}
-.psym{width:36px;height:36px;margin:0 auto 3px;display:flex;align-items:center;justify-content:center;}
-.psym svg{width:34px;height:34px;overflow:visible;}
-.plbl{font-size:8px;color:var(--dim);line-height:1.3;}
+.pal{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.pitem{background:var(--bg3);border:1.5px solid var(--border2);border-radius:6px;padding:8px 4px 5px;cursor:pointer;text-align:center;transition:.15s;user-select:none;}
+.pitem:hover{border-color:var(--accent);background:var(--bg4);transform:scale(1.03);}
+.pitem.act{border-color:var(--accent);background:var(--bg4);box-shadow:0 0 0 2px var(--accent);}
+.psym{width:38px;height:38px;margin:0 auto 4px;display:flex;align-items:center;justify-content:center;}
+.psym svg{width:36px;height:36px;overflow:visible;}
+.plbl{font-size:8.5px;color:var(--text2);line-height:1.3;font-weight:500;}
 
 /* niveau */
 .niv-list{display:flex;flex-direction:column;gap:3px;}
@@ -493,8 +504,8 @@ function buildPalette(){
   const TI=allTypeInfo();
   document.getElementById('palette').innerHTML=getPaletteOrder().map(t=>{
     const info=TI[t];
-    return`<div class="pitem" id="pi-${t}" onclick="pickPlace('${t}')" title="${info?.lbl||t}">
-      <div class="psym">${symSVGForPalette(t,34)}</div>
+    return`<div class="pitem" id="pi-${t}" onclick="pickPlace('${t}')" title="${info?.lbl||t}" style="color:var(--accent)">
+      <div class="psym">${symSVGForPalette(t,36)}</div>
       <div class="plbl">${info?.lbl||t}</div>
     </div>`;
   }).join('');
@@ -943,35 +954,35 @@ function mkel(tag,attrs={}){const e=document.createElementNS('http://www.w3.org/
 // ── SYMBOLS — all centered at 0,0 ─────────────────────────────────────────────
 // symParts returns SVG inner content centered at 0,0
 function symParts(type,col){
-  const c=col||'#d4ff00';
+  const c=col||'currentColor';
   switch(type){
-    case 'kast': return`<rect x="-12" y="-11" width="24" height="22" rx="2" fill="#1a2e4c" stroke="${c}" stroke-width="2"/><line x1="-12" y1="-5" x2="12" y2="-5" stroke="${c}" stroke-width="1.5"/><rect x="-9" y="-2" width="7" height="4" rx="1" fill="${c}" opacity=".7"/><rect x="-9" y="4" width="7" height="4" rx="1" fill="${c}" opacity=".7"/><rect x="1" y="-2" width="8" height="10" rx="1" fill="none" stroke="${c}" stroke-width="1.2" opacity=".6"/>`;
-    case 'doos': return`<circle r="11" fill="#0f1a28" stroke="${c}" stroke-width="2"/><line x1="-6" y1="-6" x2="6" y2="6" stroke="${c}" stroke-width="2"/><line x1="6" y1="-6" x2="-6" y2="6" stroke="${c}" stroke-width="2"/>`;
-    case 'lamp': return`<circle r="11" fill="#1a1500" stroke="${c}" stroke-width="2.5"/><circle r="4.5" fill="${c}"/>${[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;return`<line x1="${(12*Math.cos(a)).toFixed(1)}" y1="${(12*Math.sin(a)).toFixed(1)}" x2="${(16*Math.cos(a)).toFixed(1)}" y2="${(16*Math.sin(a)).toFixed(1)}" stroke="${c}" stroke-width="1.5" opacity=".6"/>`;}).join('')}`;
-    case 'tl1': return`<rect x="-13" y="-4" width="26" height="8" rx="4" fill="#1a2030" stroke="${c}" stroke-width="1.8"/><rect x="-11" y="-2.5" width="22" height="5" rx="2.5" fill="${c}" opacity=".3"/><line x1="-6" y1="-4" x2="-6" y2="-8" stroke="${c}" stroke-width="1.5"/><line x1="6" y1="-4" x2="6" y2="-8" stroke="${c}" stroke-width="1.5"/><line x1="-8" y1="4" x2="-8" y2="8" stroke="${c}" stroke-width="1.5"/><line x1="8" y1="4" x2="8" y2="8" stroke="${c}" stroke-width="1.5"/>`;
-    case 'tl2': return`<rect x="-13" y="-8" width="26" height="7" rx="3.5" fill="#1a2030" stroke="${c}" stroke-width="1.5"/><rect x="-11" y="-6.5" width="22" height="4" rx="2" fill="${c}" opacity=".3"/><rect x="-13" y="1" width="26" height="7" rx="3.5" fill="#1a2030" stroke="${c}" stroke-width="1.5"/><rect x="-11" y="2.5" width="22" height="4" rx="2" fill="${c}" opacity=".3"/><line x1="-8" y1="-8" x2="-8" y2="-11" stroke="${c}" stroke-width="1.5"/><line x1="8" y1="-8" x2="8" y2="-11" stroke="${c}" stroke-width="1.5"/><line x1="-8" y1="8" x2="-8" y2="11" stroke="${c}" stroke-width="1.5"/><line x1="8" y1="8" x2="8" y2="11" stroke="${c}" stroke-width="1.5"/>`;
-    case 'extl': return`<rect x="-14" y="-6" width="28" height="12" rx="2" fill="#1a1005" stroke="${c}" stroke-width="2" stroke-dasharray="3 2"/><rect x="-12" y="-4" width="24" height="8" rx="4" fill="#1a2030" stroke="#dce8f5" stroke-width="1.5"/><text x="0" y="3" text-anchor="middle" font-size="5" fill="#dce8f5" font-family="sans-serif" font-weight="700">TL</text><text x="0" y="-9" text-anchor="middle" font-size="5.5" fill="${c}" font-family="sans-serif" font-weight="700">Ex</text><line x1="-9" y1="6" x2="-9" y2="10" stroke="${c}" stroke-width="1.5"/><line x1="9" y1="6" x2="9" y2="10" stroke="${c}" stroke-width="1.5"/>`;
-    case 'exled': return`<circle r="11" fill="#1a0a00" stroke="${c}" stroke-width="2" stroke-dasharray="3 2"/><circle r="6" fill="#1a2030" stroke="#ffaa22" stroke-width="1.5"/><circle r="2.5" fill="#ffaa22"/><text x="0" y="-13" text-anchor="middle" font-size="4.5" fill="${c}" font-family="sans-serif" font-weight="700">Ex</text>${[...Array(6)].map((_,i)=>{const a=i*Math.PI/3;return`<line x1="${(7*Math.cos(a)).toFixed(1)}" y1="${(7*Math.sin(a)).toFixed(1)}" x2="${(10*Math.cos(a)).toFixed(1)}" y2="${(10*Math.sin(a)).toFixed(1)}" stroke="#ffaa22" stroke-width="1.5" opacity=".7"/>`;}).join('')}`;
-    case 'strip': return`<rect x="-13" y="-4" width="26" height="8" rx="4" fill="#1a2010" stroke="${c}" stroke-width="1.5" stroke-dasharray="5 3"/><circle cx="-8" cy="0" r="2" fill="${c}"/><circle cx="-2" cy="0" r="2" fill="${c}"/><circle cx="4" cy="0" r="2" fill="${c}"/><circle cx="10" cy="0" r="2" fill="${c}"/>`;
-    case 'nood': return`<rect x="-13" y="-7" width="26" height="14" rx="3" fill="#2a0808" stroke="${c}" stroke-width="2"/><text x="0" y="4" text-anchor="middle" font-size="10" fill="${c}" font-weight="700" font-family="sans-serif">E</text><line x1="-8" y1="-7" x2="-11" y2="-12" stroke="${c}" stroke-width="1.5"/><line x1="8" y1="-7" x2="11" y2="-12" stroke="${c}" stroke-width="1.5"/>`;
-    case 'buiten': return`<circle r="12" fill="none" stroke="${c}" stroke-width="1.2" stroke-dasharray="3 2" opacity=".5"/><circle r="8" fill="#101a10" stroke="${c}" stroke-width="2"/><circle r="2.5" fill="${c}"/>`;
-    case 'schakelaar': return`<circle r="10" fill="#1a2030" stroke="${c}" stroke-width="2"/><line x1="0" y1="-10" x2="0" y2="0" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/><line x1="0" y1="0" x2="7" y2="7" stroke="${c}" stroke-width="2" stroke-linecap="round"/>`;
+    case 'kast': return`<rect x="-12" y="-11" width="24" height="22" rx="2" fill="none" stroke="${c}" stroke-width="2.2"/><line x1="-12" y1="-5" x2="12" y2="-5" stroke="${c}" stroke-width="1.5"/><rect x="-9" y="-2" width="7" height="4" rx="1" fill="${c}" opacity=".6"/><rect x="-9" y="4" width="7" height="4" rx="1" fill="${c}" opacity=".6"/><rect x="1" y="-2" width="8" height="10" rx="1" fill="none" stroke="${c}" stroke-width="1.2"/>`;
+    case 'doos': return`<circle r="11" fill="none" stroke="${c}" stroke-width="2.5"/><line x1="-6" y1="-6" x2="6" y2="6" stroke="${c}" stroke-width="2.2"/><line x1="6" y1="-6" x2="-6" y2="6" stroke="${c}" stroke-width="2.2"/>`;
+    case 'lamp': return`<circle r="11" fill="none" stroke="${c}" stroke-width="2.5"/><circle r="4.5" fill="${c}"/>${[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;return`<line x1="${(12*Math.cos(a)).toFixed(1)}" y1="${(12*Math.sin(a)).toFixed(1)}" x2="${(15*Math.cos(a)).toFixed(1)}" y2="${(15*Math.sin(a)).toFixed(1)}" stroke="${c}" stroke-width="1.8"/>`;}).join('')}`;
+    case 'tl1': return`<rect x="-13" y="-5" width="26" height="10" rx="5" fill="none" stroke="${c}" stroke-width="2.2"/><rect x="-10" y="-3" width="20" height="6" rx="3" fill="${c}" opacity=".2"/><line x1="-6" y1="-5" x2="-6" y2="-10" stroke="${c}" stroke-width="2"/><line x1="6" y1="-5" x2="6" y2="-10" stroke="${c}" stroke-width="2"/><line x1="-8" y1="5" x2="-8" y2="10" stroke="${c}" stroke-width="2"/><line x1="8" y1="5" x2="8" y2="10" stroke="${c}" stroke-width="2"/>`;
+    case 'tl2': return`<rect x="-13" y="-10" width="26" height="8" rx="4" fill="none" stroke="${c}" stroke-width="2"/><rect x="-11" y="-8" width="22" height="4" rx="2" fill="${c}" opacity=".2"/><rect x="-13" y="2" width="26" height="8" rx="4" fill="none" stroke="${c}" stroke-width="2"/><rect x="-11" y="4" width="22" height="4" rx="2" fill="${c}" opacity=".2"/><line x1="-8" y1="-10" x2="-8" y2="-13" stroke="${c}" stroke-width="2"/><line x1="8" y1="-10" x2="8" y2="-13" stroke="${c}" stroke-width="2"/><line x1="-8" y1="10" x2="-8" y2="13" stroke="${c}" stroke-width="2"/><line x1="8" y1="10" x2="8" y2="13" stroke="${c}" stroke-width="2"/>`;
+    case 'extl': return`<rect x="-14" y="-8" width="28" height="16" rx="3" fill="none" stroke="${c}" stroke-width="2.5" stroke-dasharray="4 2"/><rect x="-11" y="-6" width="22" height="12" rx="6" fill="none" stroke="${c}" stroke-width="1.8" opacity=".7"/><text x="0" y="4" text-anchor="middle" font-size="7" fill="${c}" font-family="sans-serif" font-weight="900">TL</text><text x="0" y="-11" text-anchor="middle" font-size="6" fill="${c}" font-family="sans-serif" font-weight="900">Ex</text>`;
+    case 'exled': return`<circle r="13" fill="none" stroke="${c}" stroke-width="2.5" stroke-dasharray="4 2"/><circle r="7" fill="none" stroke="${c}" stroke-width="2.2"/><circle r="3.5" fill="${c}"/><text x="0" y="-16" text-anchor="middle" font-size="5.5" fill="${c}" font-family="sans-serif" font-weight="900">Ex</text>`;
+    case 'strip': return`<rect x="-13" y="-5" width="26" height="10" rx="5" fill="none" stroke="${c}" stroke-width="2" stroke-dasharray="5 3"/><circle cx="-8" cy="0" r="2.8" fill="${c}"/><circle cx="-2" cy="0" r="2.8" fill="${c}"/><circle cx="4" cy="0" r="2.8" fill="${c}"/><circle cx="10" cy="0" r="2.8" fill="${c}"/>`;
+    case 'nood': return`<rect x="-13" y="-8" width="26" height="16" rx="3" fill="none" stroke="${c}" stroke-width="2.5"/><text x="0" y="5" text-anchor="middle" font-size="12" fill="${c}" font-weight="900" font-family="sans-serif">E</text><line x1="-8" y1="-8" x2="-12" y2="-14" stroke="${c}" stroke-width="2"/><line x1="8" y1="-8" x2="12" y2="-14" stroke="${c}" stroke-width="2"/>`;
+    case 'buiten': return`<circle r="13" fill="none" stroke="${c}" stroke-width="1.5" stroke-dasharray="3 2"/><circle r="8" fill="none" stroke="${c}" stroke-width="2.5"/><circle r="3.5" fill="${c}"/>`;
+    case 'schakelaar': return`<circle r="11" fill="none" stroke="${c}" stroke-width="2.5"/><line x1="0" y1="-11" x2="0" y2="0" stroke="${c}" stroke-width="3" stroke-linecap="round"/><line x1="0" y1="0" x2="8" y2="8" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/>`;
     default:{
-      // SYM_DB lookup — render centered (viewbox 0 0 30 30 → offset -15,-15)
       const sym=getSymById(type);
-      if(sym){const g=`<g transform="translate(-12,-12) scale(0.8)">${sym.svg.replace(/currentColor/g,c)}</g>`;return g;}
-      return`<circle r="10" fill="none" stroke="${c}" stroke-width="2"/><text x="0" y="4" text-anchor="middle" font-size="8" fill="${c}" font-family="sans-serif">${type.slice(0,3).toUpperCase()}</text>`;
+      if(sym)return`<g transform="translate(-12,-12) scale(0.8)">${sym.svg.replace(/currentColor/g,c)}</g>`;
+      return`<circle r="11" fill="none" stroke="${c}" stroke-width="2"/><text x="0" y="4" text-anchor="middle" font-size="8" fill="${c}" font-family="sans-serif">${type.slice(0,3).toUpperCase()}</text>`;
     }
   }
 }
 function symSVGForPalette(type,sz){
-  // Use a neutral dark color for palette icons so they show on both themes
-  const col='#aabbcc';
+  // Use currentColor so CSS can control the stroke color
+  // The pitem has color set via CSS var
+  const col='currentColor';
   if(customTypes[type]){
     const icon=customTypes[type].icon||'?';
-    return`<svg viewBox="-16 -16 32 32" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg"><circle r="13" fill="none" stroke="${col}" stroke-width="2"/><text x="0" y="5" text-anchor="middle" font-size="13" font-family="sans-serif">${icon}</text></svg>`;
+    return`<svg viewBox="-16 -16 32 32" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg" style="color:inherit"><circle r="13" fill="none" stroke="currentColor" stroke-width="2"/><text x="0" y="5" text-anchor="middle" font-size="13" font-family="sans-serif">${icon}</text></svg>`;
   }
-  return`<svg viewBox="-16 -16 32 32" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg">${symParts(type,col)}</svg>`;
+  return`<svg viewBox="-16 -16 32 32" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg" style="color:inherit">${symParts(type,col)}</svg>`;
 }
 function drawSym(g,type,col){
   const tmp=mkel('g');tmp.innerHTML=symParts(type,col);g.appendChild(tmp);
