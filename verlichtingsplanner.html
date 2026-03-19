@@ -9,63 +9,76 @@
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Figtree:wght@300;400;500;600&display=swap');
 :root{
   --blue:#1a2e4c;--blue2:#1f3a5f;--blue3:#243d6a;
-  --green:#d4ff00;--green2:#a8cc00;
-  --panel:#0f1a28;--panel2:#131f30;
+  --green:#d4ff00;--panel:#0f1a28;--panel2:#131f30;
   --border:#1e3048;--border2:#253a58;
   --text:#dce8f5;--dim:#5a7a99;
-  --red:#ff4455;--amber:#ffaa22;--cyan:#22ddff;--purple:#aa55ff;
+  --red:#ff4455;--amber:#ffaa22;--cyan:#22ddff;
   --r:5px;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Figtree',sans-serif;background:var(--panel);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden;font-size:13px;}
 
-/* HEADER */
-header{background:var(--blue);border-bottom:2px solid var(--green);height:48px;display:flex;align-items:center;gap:5px;padding:0 10px;flex-shrink:0;z-index:200;}
-.logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:16px;color:var(--text);letter-spacing:.5px;white-space:nowrap;}
+/* ── HEADER ── */
+header{background:var(--blue);border-bottom:2px solid var(--green);height:48px;display:flex;align-items:center;gap:4px;padding:0 8px;flex-shrink:0;z-index:200;overflow-x:auto;}
+.logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;color:var(--text);white-space:nowrap;flex-shrink:0;}
 .logo b{color:var(--green);}
 .hsep{width:1px;height:24px;background:var(--border2);margin:0 3px;flex-shrink:0;}
-.hbtn{background:var(--blue2);border:1px solid var(--border2);color:var(--text);padding:4px 9px;border-radius:var(--r);cursor:pointer;font:500 11px 'Figtree',sans-serif;display:flex;align-items:center;gap:4px;transition:.15s;white-space:nowrap;flex-shrink:0;}
+.hbtn{background:var(--blue2);border:1px solid var(--border2);color:var(--text);padding:4px 8px;border-radius:var(--r);cursor:pointer;font:500 11px 'Figtree',sans-serif;display:flex;align-items:center;gap:3px;transition:.15s;white-space:nowrap;flex-shrink:0;}
 .hbtn:hover{background:var(--blue3);border-color:var(--green);}
 .hbtn.act{background:var(--green);color:var(--panel);border-color:var(--green);}
+.hbtn:disabled{opacity:.4;cursor:not-allowed;}
+.hbtn:disabled:hover{background:var(--blue2);border-color:var(--border2);}
 
-/* SEARCH BAR */
-.search-wrap{flex:1;min-width:0;max-width:320px;position:relative;}
-.search-wrap input{width:100%;background:var(--panel2);border:1px solid var(--border2);color:var(--text);padding:5px 10px 5px 30px;border-radius:var(--r);font:400 12px 'Figtree',sans-serif;outline:none;transition:.15s;}
+/* search */
+.search-wrap{flex:1;min-width:120px;max-width:280px;position:relative;}
+.search-wrap input{width:100%;background:var(--panel2);border:1px solid var(--border2);color:var(--text);padding:4px 24px 4px 26px;border-radius:var(--r);font:400 11px 'Figtree',sans-serif;outline:none;}
 .search-wrap input:focus{border-color:var(--green);}
 .search-wrap input::placeholder{color:var(--dim);}
-.search-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:13px;pointer-events:none;}
-.search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--dim);cursor:pointer;font-size:14px;display:none;}
+.search-icon{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:12px;pointer-events:none;}
+.search-clear{position:absolute;right:7px;top:50%;transform:translateY(-50%);color:var(--dim);cursor:pointer;font-size:12px;display:none;}
 .search-clear.show{display:block;}
-#searchResults{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--blue2);border:1px solid var(--green);border-radius:var(--r);z-index:500;max-height:280px;overflow-y:auto;display:none;}
+#searchResults{position:absolute;top:calc(100% + 3px);left:0;right:0;background:var(--blue2);border:1px solid var(--green);border-radius:var(--r);z-index:500;max-height:260px;overflow-y:auto;display:none;}
 #searchResults.show{display:block;}
-.sr-item{padding:7px 10px;cursor:pointer;border-bottom:1px solid var(--border);font-size:11px;display:flex;align-items:center;gap:8px;transition:.1s;}
+.sr-item{padding:6px 9px;cursor:pointer;border-bottom:1px solid var(--border);font-size:11px;display:flex;align-items:center;gap:7px;}
 .sr-item:hover{background:var(--blue3);}
-.sr-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.sr-main{flex:1;}
-.sr-sub{font-size:10px;color:var(--dim);}
+.sr-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sr-main{flex:1;}.sr-sub{font-size:9px;color:var(--dim);}
 
-/* PDF controls */
-#pdfControls{display:none;align-items:center;gap:4px;background:var(--panel2);border:1px solid var(--border2);border-radius:var(--r);padding:3px 7px;flex-shrink:0;}
+/* pdf controls */
+#pdfControls{display:none;align-items:center;gap:3px;background:var(--panel2);border:1px solid var(--border2);border-radius:var(--r);padding:2px 6px;flex-shrink:0;}
 #pdfControls span{font-size:10px;color:var(--dim);}
-#pdfControls button{background:var(--blue2);border:1px solid var(--border2);color:var(--text);padding:2px 7px;border-radius:3px;cursor:pointer;font-size:10px;}
-#pdfControls button:hover{border-color:var(--green);}
-#pdfRenderScale{width:52px;background:var(--panel2);border:1px solid var(--border2);color:var(--text);padding:2px 4px;border-radius:3px;font-size:10px;}
-.hcoord{font-size:10px;color:var(--dim);min-width:130px;flex-shrink:0;}
+#pdfControls button{background:var(--blue2);border:1px solid var(--border2);color:var(--text);padding:1px 6px;border-radius:3px;cursor:pointer;font-size:10px;}
+#pdfRenderScale{width:46px;background:var(--panel2);border:1px solid var(--border2);color:var(--text);padding:2px 3px;border-radius:3px;font-size:10px;}
+.scale-row{display:flex;align-items:center;gap:3px;flex-shrink:0;}
+.scale-row label,.scale-row span{font-size:10px;color:var(--dim);}
+.scale-row input,.scale-row select{background:var(--panel2);border:1px solid var(--border2);color:var(--text);padding:3px 5px;border-radius:4px;font-size:10px;}
+.hcoord{font-size:10px;color:var(--dim);min-width:120px;flex-shrink:0;}
 
-/* BODY */
+/* ── BODY ── */
 .body{display:flex;flex:1;overflow:hidden;}
-
-/* LEFT */
-aside{width:200px;background:var(--panel2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
+aside{width:205px;background:var(--panel2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0;}
 .sec{border-bottom:1px solid var(--border);padding:9px;}
 .stitle{font-family:'Rajdhani',sans-serif;font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:7px;}
 .pal{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
 .pitem{background:var(--blue);border:1px solid var(--border2);border-radius:4px;padding:6px 3px;cursor:pointer;text-align:center;transition:.15s;user-select:none;}
 .pitem:hover{border-color:var(--green);}
 .pitem.act{border-color:var(--green);background:var(--blue3);box-shadow:0 0 0 1px var(--green);}
-.psym{width:32px;height:32px;margin:0 auto 3px;display:flex;align-items:center;justify-content:center;}
-.psym svg{width:28px;height:28px;}
-.plbl{font-size:8.5px;color:var(--dim);line-height:1.3;}
+.psym{width:30px;height:30px;margin:0 auto 3px;display:flex;align-items:center;justify-content:center;}
+.psym svg{width:26px;height:26px;}
+.plbl{font-size:8px;color:var(--dim);line-height:1.3;}
+
+/* niveau */
+.niv-list{display:flex;flex-direction:column;gap:3px;}
+.niv{display:flex;align-items:center;gap:5px;padding:4px 7px;background:var(--blue);border:1px solid var(--border2);border-radius:4px;cursor:pointer;font-size:11px;transition:.15s;}
+.niv:hover{border-color:var(--green);}
+.niv.act{border-color:var(--green);background:var(--blue3);}
+.niv-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0;cursor:pointer;}
+.niv-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.niv-h{font-size:9px;color:var(--amber);white-space:nowrap;}
+.niv-eye{font-size:10px;cursor:pointer;opacity:.6;flex-shrink:0;}
+.niv-eye:hover{opacity:1;}
+
+/* circuit */
 .circ-list{display:flex;flex-direction:column;gap:3px;}
 .circ{display:flex;align-items:center;gap:5px;padding:4px 7px;background:var(--blue);border:1px solid var(--border2);border-radius:4px;cursor:pointer;font-size:11px;transition:.15s;}
 .circ:hover{border-color:var(--green);}
@@ -80,8 +93,13 @@ aside{width:200px;background:var(--panel2);border-right:1px solid var(--border);
 .frow{margin-bottom:7px;}
 .flbl{font-size:9px;color:var(--dim);margin-bottom:2px;text-transform:uppercase;letter-spacing:.4px;}
 
-/* CANVAS */
-.cvwrap{flex:1;position:relative;overflow:hidden;background:#09121c;cursor:default;}
+/* emoji picker */
+.emoji-db{display:grid;grid-template-columns:repeat(6,1fr);gap:3px;max-height:120px;overflow-y:auto;margin-top:4px;}
+.emoji-btn{background:var(--blue);border:1px solid var(--border2);border-radius:3px;padding:3px;cursor:pointer;font-size:14px;text-align:center;transition:.1s;}
+.emoji-btn:hover{border-color:var(--green);background:var(--blue3);}
+
+/* ── CANVAS ── */
+.cvwrap{flex:1;position:relative;overflow:hidden;background:#f0f0f0;cursor:default;}
 .cvwrap.mode-place{cursor:crosshair!important;}
 .cvwrap.mode-cable{cursor:crosshair!important;}
 .cvwrap.mode-del{cursor:not-allowed!important;}
@@ -90,27 +108,29 @@ aside{width:200px;background:var(--panel2);border-right:1px solid var(--border);
 .ortho-badge.show{display:block;}
 #vp{position:absolute;top:0;left:0;transform-origin:0 0;}
 #planCanvas{display:block;max-width:none;user-select:none;pointer-events:none;}
+/* White overlay for lightening plan */
+#planOverlay{position:absolute;top:0;left:0;pointer-events:none;background:white;opacity:0;}
 #svg{position:absolute;top:0;left:0;overflow:visible;pointer-events:all;}
 #loadOverlay{position:absolute;inset:0;background:rgba(9,18,28,.88);display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;z-index:20;}
 #loadOverlay.show{display:flex;}
-.load-spinner{width:34px;height:34px;border:3px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;}
+.load-spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-#dropzone{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;background:#09121c;}
-.dropinner{border:2px dashed var(--border2);border-radius:12px;padding:44px 52px;text-align:center;transition:.2s;}
+#dropzone{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:10;background:#e8e8e8;}
+.dropinner{border:2px dashed #aaa;border-radius:12px;padding:40px 50px;text-align:center;transition:.2s;background:white;}
 .dropinner.ov{border-color:var(--green);}
-.dicon{font-size:52px;margin-bottom:12px;}
-.dtitle{font-family:'Rajdhani',sans-serif;font-size:22px;margin-bottom:5px;}
-.dsub{font-size:11px;color:var(--dim);margin-bottom:14px;line-height:1.9;}
+.dicon{font-size:48px;margin-bottom:12px;}
+.dtitle{font-family:'Rajdhani',sans-serif;font-size:20px;color:#333;margin-bottom:5px;}
+.dsub{font-size:11px;color:#666;margin-bottom:14px;line-height:1.9;}
 .dupbtn{display:inline-block;background:var(--green);color:var(--panel);padding:8px 20px;border-radius:5px;font-weight:600;font-size:13px;cursor:pointer;}
 
-/* RIGHT */
+/* ── RIGHT ── */
 .rpanel{width:268px;background:var(--panel2);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;}
 .rtabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;}
-.rtab{flex:1;padding:8px 3px;text-align:center;font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;cursor:pointer;color:var(--dim);border-bottom:2px solid transparent;transition:.15s;}
+.rtab{flex:1;padding:8px 3px;text-align:center;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.7px;cursor:pointer;color:var(--dim);border-bottom:2px solid transparent;transition:.15s;}
 .rtab:hover{color:var(--text);}
 .rtab.act{color:var(--green);border-bottom-color:var(--green);}
 .rcont{flex:1;overflow-y:auto;padding:11px;}
-.prop-head{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:7px;}
+.prop-head{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:600;color:var(--green);margin-bottom:10px;}
 .prow{margin-bottom:8px;}
 .plbl2{font-size:9.5px;color:var(--dim);margin-bottom:2px;text-transform:uppercase;letter-spacing:.4px;}
 .pinp,.psel{width:100%;background:var(--blue);border:1px solid var(--border2);color:var(--text);padding:4px 7px;border-radius:4px;font-size:11px;font-family:'Figtree',sans-serif;}
@@ -118,22 +138,16 @@ aside{width:200px;background:var(--panel2);border-right:1px solid var(--border);
 .pempty{text-align:center;color:var(--dim);padding:28px 0;font-size:12px;line-height:1.9;}
 .pdelbtn{width:100%;background:none;border:1px solid var(--red);color:var(--red);padding:5px;border-radius:4px;cursor:pointer;font-size:11px;margin-top:7px;transition:.15s;}
 .pdelbtn:hover{background:var(--red);color:white;}
-
-/* rotation btns */
-.rot-row{display:flex;gap:5px;margin-bottom:8px;}
-.rot-btn{flex:1;background:var(--blue);border:1px solid var(--border2);color:var(--dim);padding:5px 4px;border-radius:4px;cursor:pointer;font-size:11px;text-align:center;transition:.15s;}
+.rot-row{display:flex;gap:4px;margin-bottom:8px;}
+.rot-btn{flex:1;background:var(--blue);border:1px solid var(--border2);color:var(--dim);padding:4px 3px;border-radius:4px;cursor:pointer;font-size:10px;text-align:center;transition:.15s;}
 .rot-btn:hover{border-color:var(--green);color:var(--text);}
 .rot-btn.act{background:var(--green);color:var(--panel);border-color:var(--green);font-weight:600;}
-
-/* color swatch */
-.color-row{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-top:3px;}
-.cswatch{width:20px;height:20px;border-radius:3px;cursor:pointer;border:2px solid transparent;flex-shrink:0;transition:.1s;}
+.color-row{display:flex;gap:3px;align-items:center;flex-wrap:wrap;margin-top:3px;}
+.cswatch{width:18px;height:18px;border-radius:3px;cursor:pointer;border:2px solid transparent;flex-shrink:0;}
 .cswatch:hover,.cswatch.act{border-color:#fff;}
-.cpick{width:28px;height:20px;border-radius:3px;cursor:pointer;border:1px solid var(--border2);padding:0;background:none;}
-
-/* stuklijst */
-.stuk-table{width:100%;border-collapse:collapse;font-size:11px;}
-.stuk-table th{text-align:left;padding:4px 5px;background:var(--blue);color:var(--dim);font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border2);}
+.cpick{width:24px;height:18px;border-radius:3px;cursor:pointer;border:1px solid var(--border2);padding:0;background:none;}
+.stuk-table{width:100%;border-collapse:collapse;font-size:10px;}
+.stuk-table th{text-align:left;padding:4px 5px;background:var(--blue);color:var(--dim);font-size:8px;text-transform:uppercase;border-bottom:1px solid var(--border2);}
 .stuk-table td{padding:4px 5px;border-bottom:1px solid var(--border);vertical-align:top;}
 .stuk-table tr:hover td{background:var(--blue);}
 .stuk-num{font-weight:600;color:var(--green);}
@@ -141,10 +155,6 @@ aside{width:200px;background:var(--panel2);border-right:1px solid var(--border);
 .xbtn{width:100%;border:none;padding:7px;border-radius:4px;cursor:pointer;font:600 11px 'Figtree',sans-serif;margin-bottom:5px;}
 .xbtn-g{background:var(--green);color:var(--panel);}
 .xbtn-b{background:var(--blue2);color:var(--text);border:1px solid var(--border2);}
-
-/* HIGHLIGHT on canvas */
-.hl-pulse{animation:hlpulse 1.2s ease-in-out 3;}
-@keyframes hlpulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 
 footer{height:23px;background:var(--blue);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 10px;gap:14px;flex-shrink:0;font-size:10px;color:var(--dim);}
 .sb-mode{color:var(--green);font-weight:600;}
@@ -155,17 +165,18 @@ footer{height:23px;background:var(--blue);border-top:1px solid var(--border);dis
 </style>
 </head>
 <body>
+
 <header>
   <div class="logo"><b>Verlichtingsplanner</b> / Zoeker</div>
   <div class="hsep"></div>
-  <button class="hbtn act" id="btnSelect" onclick="setMode('select')">▸ Selecteer</button>
-  <button class="hbtn" id="btnCable" onclick="startCableMode()">⟶ Kabel (K)</button>
-  <button class="hbtn" id="btnDel" onclick="setMode('del')">✕ Verwijder</button>
+  <button class="hbtn act" id="btnSelect" onclick="setMode('select')">▸ Select</button>
+  <button class="hbtn" id="btnCable" onclick="startCableMode()">⟶ Kabel</button>
+  <button class="hbtn" id="btnDel" onclick="setMode('del')">✕ Del</button>
+  <button class="hbtn" id="btnUndo" onclick="undo()" disabled title="Ongedaan maken (Ctrl+Z)">↩ Undo</button>
   <div class="hsep"></div>
-  <!-- SEARCH -->
   <div class="search-wrap">
     <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="Zoek naam, nr, type, kabel..." oninput="doSearch(this.value)" onkeydown="searchKey(event)">
+    <input type="text" id="searchInput" placeholder="Zoek naam, nr, type..." oninput="doSearch(this.value)" onkeydown="searchKey(event)">
     <span class="search-clear" id="searchClear" onclick="clearSearch()">✕</span>
     <div id="searchResults"></div>
   </div>
@@ -185,10 +196,11 @@ footer{height:23px;background:var(--blue);border-top:1px solid var(--border);dis
       <option value="3">3x</option>
     </select>
   </div>
-  <div class="scale-row" style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
-    <span style="font-size:10px;color:var(--dim)">1px=</span>
-    <input type="number" id="scaleInput" value="0.05" step="0.005" min="0.001" style="width:58px;background:var(--panel2);border:1px solid var(--border2);color:var(--text);padding:3px 6px;border-radius:4px;font-size:10px;" oninput="scale=+this.value||0.05;redraw()">
-    <span style="font-size:10px;color:var(--dim)">m</span>
+  <div class="scale-row">
+    <label>Schaal 1:</label>
+    <input type="number" id="scaleRatio" value="500" min="1" step="1" style="width:55px" oninput="applyScalePreset()" title="Planschaal (bv. 500 voor 1:500)">
+    <span style="font-size:9px;color:var(--dim)">=</span>
+    <span id="scaleDisplay" style="font-size:9px;color:var(--amber)">0.066m/px</span>
   </div>
   <div class="hcoord" id="coordDisplay">x:0.00m y:0.00m</div>
 </header>
@@ -199,13 +211,24 @@ footer{height:23px;background:var(--blue);border-top:1px solid var(--border);dis
   <div class="sec">
     <div class="stitle">Armaturen & elementen</div>
     <div class="pal" id="palette"></div>
-    <button class="cbtn" style="margin-top:5px" onclick="addCustomType()">+ Nieuw type toevoegen</button>
+    <button class="cbtn" style="margin-top:5px" onclick="addCustomType()">+ Nieuw type</button>
   </div>
+
+  <!-- NIVEAUS -->
+  <div class="sec">
+    <div class="stitle">Niveaus / Lagen</div>
+    <div class="niv-list" id="niveauList"></div>
+    <button class="cbtn" onclick="addNiveau()">+ Niveau toevoegen</button>
+  </div>
+
+  <!-- KRINGEN -->
   <div class="sec">
     <div class="stitle">Kringen</div>
     <div class="circ-list" id="circuitList"></div>
     <button class="cbtn" onclick="addCircuit()">+ Kring toevoegen</button>
   </div>
+
+  <!-- KABELTYPE -->
   <div class="sec">
     <div class="stitle">Kabeltype</div>
     <div class="frow">
@@ -227,6 +250,8 @@ footer{height:23px;background:var(--blue);border-top:1px solid var(--border);dis
       <input class="finp" id="customCable" placeholder="Bv. EXVB 2x1.5mm²">
     </div>
   </div>
+
+  <!-- WEERGAVE -->
   <div class="sec">
     <div class="stitle">Weergave</div>
     <div style="display:flex;flex-direction:column;gap:5px">
@@ -234,10 +259,12 @@ footer{height:23px;background:var(--blue);border-top:1px solid var(--border);dis
       <label style="display:flex;align-items:center;gap:5px;font-size:11px"><input type="checkbox" id="showLengths" checked onchange="redraw()"> Kabellengtes</label>
       <label style="display:flex;align-items:center;gap:5px;font-size:11px"><input type="checkbox" id="showRefs" checked onchange="redraw()"> Referenties</label>
       <label style="display:flex;align-items:center;gap:5px;font-size:11px"><input type="checkbox" id="showFromTo" checked onchange="redraw()"> Van/Naar labels</label>
+      <label style="display:flex;align-items:center;gap:5px;font-size:11px"><input type="checkbox" id="showAllNiveaus" checked onchange="redraw()"> Alle niveaus zichtbaar</label>
     </div>
     <div style="margin-top:8px">
-      <div class="flbl">Plan transparantie</div>
-      <input type="range" min="0" max="100" value="100" style="width:100%" oninput="document.getElementById('planCanvas').style.opacity=this.value/100">
+      <div class="flbl">Plan lichtheid</div>
+      <input type="range" min="0" max="95" value="0" style="width:100%" oninput="setPlanLight(this.value)" title="0=origineel, hoger=lichter">
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--dim);margin-top:2px"><span>Origineel</span><span>Lichter →</span></div>
     </div>
   </div>
 </aside>
@@ -246,12 +273,12 @@ footer{height:23px;background:var(--blue);border-top:1px solid var(--border);dis
 <div class="cvwrap" id="cvwrap"
   onmousedown="cvDown(event)" onmousemove="cvMove(event)" onmouseup="cvUp(event)"
   onwheel="cvWheel(event)" ondragover="event.preventDefault()" ondrop="doDrop(event)">
-<div class="ortho-badge" id="orthoBadge">⊢ Ortho-snap (Shift)</div>
+  <div class="ortho-badge" id="orthoBadge">⊢ Ortho-snap (Shift)</div>
   <div id="dropzone">
     <div class="dropinner" id="dropinner">
       <div class="dicon">📐</div>
       <div class="dtitle">Grondplan uploaden</div>
-      <div class="dsub">Sleep een <strong>PDF</strong> of afbeelding (PNG/JPG)<br>PDF wordt op hoge resolutie gerenderd</div>
+      <div class="dsub">Sleep een <strong>PDF</strong> of PNG/JPG<br>PDF = vectorieel renderen op hoge resolutie</div>
       <label class="dupbtn">Bestand kiezen
         <input type="file" accept="image/*,application/pdf" style="display:none" onchange="loadFile(this)">
       </label>
@@ -264,6 +291,7 @@ footer{height:23px;background:var(--blue);border-top:1px solid var(--border);dis
   </div>
   <div id="vp">
     <canvas id="planCanvas" style="display:none"></canvas>
+    <div id="planOverlay"></div>
     <svg id="svg" xmlns="http://www.w3.org/2000/svg" style="position:absolute;top:0;left:0;overflow:visible"></svg>
   </div>
 </div>
@@ -292,60 +320,112 @@ footer{height:23px;background:var(--blue);border-top:1px solid var(--border);dis
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-// ── STATE ─────────────────────────────────────────────────────────────────────
-let elements=[], cables=[], circuits=[
+// ── STATE ────────────────────────────────────────────────────────────────────
+let elements=[], cables=[];
+let circuits=[
   {id:'c1',name:'Kring 1',kabelnr:'',color:'#d4ff00'},
   {id:'c2',name:'Kring 2',kabelnr:'',color:'#22ddff'},
   {id:'c3',name:'Kring 3',kabelnr:'',color:'#ff8833'},
 ];
-let activeCircuit='c1', selectedId=null, highlightId=null;
+let niveaus=[
+  {id:'nv0',name:'Gelijkvloers',height:0,color:'#4488ff',visible:true},
+  {id:'nv1',name:'Op tanks',height:4,color:'#ff8833',visible:true},
+];
+let activeCircuit='c1', activeNiveau='nv0', selectedId=null, highlightId=null;
 let nextId=1, nextKb=1;
 let nextRef={kast:1,doos:1,lamp:1,tl1:1,tl2:1,extl:1,exled:1,strip:1,nood:1,buiten:1,schakelaar:1};
-// per-circuit per-type counters for auto-labeling
-let circTypeCounters={};
-let scale=0.05;
+let circTypeCounters={}, lastPlacedLabel={};
+let customTypes={};
+let paletteOrder=['kast','doos','lamp','tl1','tl2','extl','exled','strip','nood','buiten','schakelaar'];
+let scale=0.066; // m/px at 1:500, 2x render
+
+// viewport
 let vx=60,vy=60,vzoom=1,isPan=false,panSX=0,panSY=0;
 let planW=0,planH=0;
-let mode='select',placeType='',cablePend=null,ghostX=0,ghostY=0,prevPt=null;
-// drag state — elements
-let isDragging=false,dragElemId=null,dragOffX=0,dragOffY=0,dragMoved=false;
-// drag state — cable waypoints
-let isDragWpt=false,dragWptCableId=null,dragWptIdx=-1;
-// orthogonal cable snap (Shift key)
-let orthoSnap=false;
-// last placed label per circuit+type for auto-increment
-let lastPlacedLabel={};
-// custom component types (user-defined)
-let customTypes={}; // id -> {lbl,icon,ref,cat:'arm'}
-let paletteOrder=['kast','doos','lamp','tl1','tl2','extl','exled','strip','nood','buiten','schakelaar'];
-let pdfDoc=null,pdfPage=1,pdfTotalPages=1,pdfArrayBuffer=null;
-const HITRAD=20;
 
-// Preset cable colors
+// mode
+let mode='select',placeType='',cablePend=null,ghostX=0,ghostY=0,prevPt=null;
+let isDragging=false,dragElemId=null,dragOffX=0,dragOffY=0,dragMoved=false;
+let isDragWpt=false,dragWptCableId=null,dragWptIdx=-1;
+let orthoSnap=false;
+
+// undo
+let undoStack=[];
+const MAX_UNDO=50;
+
+// pdf
+let pdfDoc=null,pdfPage=1,pdfTotalPages=1;
+
+const HITRAD=20;
 const CABLE_COLORS=['#d4ff00','#22ddff','#ff8833','#ff4455','#aa55ff','#55ff88','#ff55aa','#ffffff','#ffdd00','#ff8888'];
 const CIRCUIT_COLORS=['#d4ff00','#22ddff','#ff8833','#ff4455','#aa55ff','#55ff88','#ff55aa','#ffdd00'];
+const NIVEAU_COLORS=['#4488ff','#ff8833','#ff4455','#aa55ff','#22ddff','#55ff88'];
 
-// TYPEINFO — extended with new fixture types
-const TYPEINFO={
-  kast:    {lbl:'Verdeelkast',     icon:'🔌', ref:'K',   cat:'infra'},
-  doos:    {lbl:'Aansluitdoos',    icon:'⭕', ref:'AD',  cat:'infra'},
-  lamp:    {lbl:'Downlight/Spot',  icon:'💡', ref:'DL',  cat:'arm'},
-  tl1:     {lbl:'Enkele TL',       icon:'▬',  ref:'TL1', cat:'arm'},
-  tl2:     {lbl:'Dubbele TL',      icon:'▬▬', ref:'TL2', cat:'arm'},
-  extl:    {lbl:'EX Armatuur TL',  icon:'⚠',  ref:'EXT', cat:'arm'},
-  exled:   {lbl:'EX LED Armatuur', icon:'⚡', ref:'EXL', cat:'arm'},
-  strip:   {lbl:'LED strip',       icon:'〰',  ref:'LS',  cat:'arm'},
-  nood:    {lbl:'Noodverlichting', icon:'🚨', ref:'NV',  cat:'arm'},
-  buiten:  {lbl:'Buitenverlichting',icon:'🌐',ref:'BV',  cat:'arm'},
-  schakelaar:{lbl:'Schakelaar',    icon:'🔘', ref:'SCH', cat:'infra'},
+// ── EMOJI DB ─────────────────────────────────────────────────────────────────
+const EMOJI_DB = {
+  lampen:   ['💡','🔦','🕯','🌟','⭐','✨','🔆','🌕','🏮','🔅','🪔','💫'],
+  industrie:['⚡','🔌','🔋','🪫','🔧','⚙️','🛠','🔩','🔑','🗝','🏭','⚠'],
+  aansl:    ['⭕','🔴','🟠','🟡','🟢','🔵','🟣','⚫','🟤','⚪','🔶','🔷'],
+  schak:    ['🔘','🔆','🔅','↕','↔','⬆','⬇','⬅','➡','🔄','♻','🔃'],
+  ex_zone:  ['☢','☣','⚠','🚫','🛑','⛔','📛','🔞','⚡','💥','🌡','🧪'],
+  diversen: ['📦','🏷','📋','📌','📍','🗺','🗂','📁','🔐','🔒','🔓','🛡'],
 };
-// Dynamic merged type info (builtin + user custom types)
+
+// ── TYPE INFO ─────────────────────────────────────────────────────────────────
+const TYPEINFO={
+  kast:     {lbl:'Verdeelkast',    icon:'🔌',ref:'K',  cat:'infra'},
+  doos:     {lbl:'Aansluitdoos',   icon:'⭕',ref:'AD', cat:'infra'},
+  lamp:     {lbl:'Downlight/Spot', icon:'💡',ref:'DL', cat:'arm'},
+  tl1:      {lbl:'Enkele TL',      icon:'▬', ref:'TL1',cat:'arm'},
+  tl2:      {lbl:'Dubbele TL',     icon:'▬▬',ref:'TL2',cat:'arm'},
+  extl:     {lbl:'EX Armatuur TL', icon:'⚠', ref:'EXT',cat:'arm'},
+  exled:    {lbl:'EX LED Armatuur',icon:'⚡',ref:'EXL',cat:'arm'},
+  strip:    {lbl:'LED strip',      icon:'〰', ref:'LS', cat:'arm'},
+  nood:     {lbl:'Noodverlichting',icon:'🚨',ref:'NV', cat:'arm'},
+  buiten:   {lbl:'Buitenverlichting',icon:'🌐',ref:'BV',cat:'arm'},
+  schakelaar:{lbl:'Schakelaar',    icon:'🔘',ref:'SCH',cat:'infra'},
+};
 function allTypeInfo(){return Object.assign({},TYPEINFO,customTypes);}
 function getPaletteOrder(){return [...paletteOrder,...Object.keys(customTypes)];}
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
+// ── UNDO ─────────────────────────────────────────────────────────────────────
+function saveHistory(){
+  undoStack.push(JSON.stringify({
+    elements:elements.map(e=>({...e})),
+    cables:cables.map(c=>({...c,wpts:[...(c.wpts||[])]}))}));
+  if(undoStack.length>MAX_UNDO)undoStack.shift();
+  document.getElementById('btnUndo').disabled=false;
+}
+function undo(){
+  if(!undoStack.length)return;
+  const s=JSON.parse(undoStack.pop());
+  elements=s.elements; cables=s.cables;
+  document.getElementById('btnUndo').disabled=undoStack.length===0;
+  if(selectedId){
+    const stillExists=elements.find(e=>e.id===selectedId)||
+      (selectedId.startsWith('cable:')&&cables.find(c=>c.id===selectedId.replace('cable:','')));
+    if(!stillExists)selectedId=null;
+  }
+  renderProps();renderElemList();updateStatus();redraw();
+}
+
+// ── SCALE PRESET ─────────────────────────────────────────────────────────────
+function applyScalePreset(){
+  const ratio=parseFloat(document.getElementById('scaleRatio').value)||500;
+  const rs=parseFloat(document.getElementById('pdfRenderScale')?.value||'2');
+  // 1 canvas px = (1/rs) paper px = (1/rs)*(25.4/96) mm paper = that * ratio mm real / 1000 = m
+  scale=(ratio/rs)*(25.4/96)/1000;
+  document.getElementById('scaleDisplay').textContent=scale.toFixed(4)+'m/px';
+  redraw();
+}
+function setPlanLight(val){
+  // val 0 = original, 95 = nearly white
+  document.getElementById('planOverlay').style.opacity=(val/100)*0.92;
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
-  buildPalette(); renderCircuits(); redraw();
+  buildPalette();renderNiveaus();renderCircuits();applyScalePreset();redraw();
   document.addEventListener('keydown',onKey);
   document.getElementById('cableTypeSelect').addEventListener('change',function(){
     document.getElementById('customRow').style.display=this.value==='__custom'?'block':'none';
@@ -354,46 +434,55 @@ document.addEventListener('DOMContentLoaded',()=>{
   di.addEventListener('dragover',e=>{e.preventDefault();di.classList.add('ov');});
   di.addEventListener('dragleave',()=>di.classList.remove('ov'));
   di.addEventListener('drop',e=>{e.preventDefault();di.classList.remove('ov');handleFile(e.dataTransfer.files[0]);});
-  document.addEventListener('click',e=>{
-    if(!e.target.closest('.search-wrap')) closeSearch();
-  });
+  document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))closeSearch();});
 });
 
-// ── PALETTE ───────────────────────────────────────────────────────────────────
+// ── PALETTE ──────────────────────────────────────────────────────────────────
 function buildPalette(){
   const TI=allTypeInfo();
-  const order=getPaletteOrder();
-  document.getElementById('palette').innerHTML=order.map(t=>`
+  document.getElementById('palette').innerHTML=getPaletteOrder().map(t=>`
     <div class="pitem" id="pi-${t}" onclick="pickPlace('${t}')" title="${TI[t]?.lbl||t}">
-      <div class="psym">${symSVG(t,26)}</div>
+      <div class="psym">${symSVG(t,24)}</div>
       <div class="plbl">${TI[t]?.lbl||t}</div>
     </div>`).join('');
 }
 
-// ── CUSTOM TYPES ──────────────────────────────────────────────────────────────
+// ── CUSTOM TYPES ─────────────────────────────────────────────────────────────
 function addCustomType(){
-  const lbl=prompt('Naam nieuw type (bv. Paneel LED):','');
-  if(!lbl)return;
-  const icon=prompt('Icoon (1 emoji, bv. 🔦):','🔦')||'🔦';
-  const ref=prompt('Referentieprefix (bv. PL):','CU')||'CU';
-  const id='ct_'+Math.random().toString(36).slice(2,7);
-  customTypes[id]={lbl,icon,ref,cat:'arm'};
-  paletteOrder.push(id);
-  // init ref counter
-  nextRef[id]=1;
-  buildPalette();
+  const lbl=prompt('Naam nieuw type (bv. Paneel LED):','');if(!lbl)return;
+  showEmojiPicker(icon=>{
+    const ref=prompt('Referentieprefix (bv. PL):','CU')||'CU';
+    const id='ct_'+Math.random().toString(36).slice(2,7);
+    customTypes[id]={lbl,icon,ref,cat:'arm'};
+    paletteOrder.push(id);nextRef[id]=1;
+    buildPalette();
+  });
 }
-function removeCustomType(id){
-  if(!confirm('Type "'+customTypes[id]?.lbl+'" verwijderen uit palet?'))return;
-  delete customTypes[id];
-  paletteOrder=paletteOrder.filter(x=>x!==id);
-  buildPalette();
+function showEmojiPicker(cb){
+  const modal=document.createElement('div');
+  modal.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center';
+  let html='<div style="background:#1a2e4c;border:1px solid #d4ff00;border-radius:8px;padding:16px;width:320px;max-height:80vh;overflow-y:auto">';
+  html+='<div style="font-family:Rajdhani,sans-serif;font-size:14px;font-weight:700;color:#d4ff00;margin-bottom:10px">Kies emoji icoon</div>';
+  for(const[cat,emojis] of Object.entries(EMOJI_DB)){
+    html+=`<div style="font-size:9px;text-transform:uppercase;color:#5a7a99;margin:8px 0 4px">${cat}</div>`;
+    html+='<div class="emoji-db">';
+    html+=emojis.map(em=>`<button class="emoji-btn" onclick="window._epick('${em}')">${em}</button>`).join('');
+    html+='</div>';
+  }
+  html+='<div style="margin-top:10px;font-size:10px;color:#5a7a99">Of typ zelf: <input id="emojiManual" style="background:#0f1a28;border:1px solid #253a58;color:#dce8f5;padding:3px 6px;border-radius:4px;width:60px"> <button onclick="window._epick(document.getElementById(\'emojiManual\').value)" style="background:#d4ff00;color:#0f1a28;border:none;padding:3px 8px;border-radius:4px;cursor:pointer;font-weight:600;margin-left:4px">OK</button></div>';
+  html+='</div>';
+  modal.innerHTML=html;
+  document.body.appendChild(modal);
+  window._epick=(em)=>{document.body.removeChild(modal);delete window._epick;cb(em||'🔦');};
+  modal.addEventListener('click',e=>{if(e.target===modal){document.body.removeChild(modal);delete window._epick;}});
 }
+
+// ── FILE LOADING ──────────────────────────────────────────────────────────────
 function loadFile(inp){if(inp.files[0])handleFile(inp.files[0]);}
 function doDrop(e){e.preventDefault();if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);}
 function handleFile(f){
   if(!f)return;
-  if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf')) loadPDF(f);
+  if(f.type==='application/pdf'||f.name.toLowerCase().endsWith('.pdf'))loadPDF(f);
   else loadImage(f);
 }
 function loadImage(file){
@@ -402,10 +491,9 @@ function loadImage(file){
     const img=new Image();
     img.onload=()=>{
       const c=document.getElementById('planCanvas');
-      c.width=img.naturalWidth; c.height=img.naturalHeight;
+      c.width=img.naturalWidth;c.height=img.naturalHeight;
       c.getContext('2d').drawImage(img,0,0);
-      planW=c.width; planH=c.height;
-      showPlan();
+      planW=c.width;planH=c.height;showPlan();
     };
     img.src=ev.target.result;
   };
@@ -416,14 +504,12 @@ function loadPDF(file){
   const r=new FileReader();
   r.onload=async ev=>{
     try{
-      pdfArrayBuffer=ev.target.result;
-      const task=pdfjsLib.getDocument({data:pdfArrayBuffer,enableXfa:true});
+      const task=pdfjsLib.getDocument({data:ev.target.result,enableXfa:true});
       task.onProgress=p=>{if(p.total>0)document.getElementById('loadProg').textContent=Math.round(p.loaded/p.total*100)+'%';};
       pdfDoc=await task.promise;
-      pdfTotalPages=pdfDoc.numPages; pdfPage=1;
+      pdfTotalPages=pdfDoc.numPages;pdfPage=1;
       document.getElementById('pdfControls').style.display='flex';
-      updatePDFCtrl();
-      await renderPDFPage(pdfPage);
+      updatePDFCtrl();await renderPDFPage(pdfPage);
     }catch(err){hideLoad();alert('PDF fout:\n'+err.message);}
   };
   r.readAsArrayBuffer(file);
@@ -435,39 +521,39 @@ async function renderPDFPage(n){
     const rs=parseFloat(document.getElementById('pdfRenderScale').value)||2;
     const vp=page.getViewport({scale:rs});
     const c=document.getElementById('planCanvas');
-    c.width=Math.floor(vp.width); c.height=Math.floor(vp.height);
+    c.width=Math.floor(vp.width);c.height=Math.floor(vp.height);
     const ctx=c.getContext('2d');
-    ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
     await page.render({canvasContext:ctx,viewport:vp}).promise;
-    planW=c.width; planH=c.height;
+    planW=c.width;planH=c.height;
     document.getElementById('sbPdf').textContent=`PDF p.${n}/${pdfTotalPages} · ${rs}x`;
-    showPlan();
+    applyScalePreset();showPlan();
   }catch(err){hideLoad();alert('Render fout: '+err.message);}
 }
 async function rerenderPDF(){if(pdfDoc)await renderPDFPage(pdfPage);}
 async function changePage(d){
   if(!pdfDoc)return;
-  const np=pdfPage+d;
-  if(np<1||np>pdfTotalPages)return;
-  pdfPage=np; updatePDFCtrl();
-  await renderPDFPage(pdfPage);
+  const np=pdfPage+d;if(np<1||np>pdfTotalPages)return;
+  pdfPage=np;updatePDFCtrl();await renderPDFPage(pdfPage);
 }
 function updatePDFCtrl(){document.getElementById('pdfPageInfo').textContent=pdfPage+'/'+pdfTotalPages;}
 function showLoad(t,p){document.getElementById('loadOverlay').classList.add('show');document.getElementById('loadTxt').textContent=t;document.getElementById('loadProg').textContent=p;}
 function hideLoad(){document.getElementById('loadOverlay').classList.remove('show');}
 function showPlan(){
   const c=document.getElementById('planCanvas');
-  c.style.display='block'; c.style.width=planW+'px'; c.style.height=planH+'px';
+  c.style.display='block';c.style.width=planW+'px';c.style.height=planH+'px';
+  const ov=document.getElementById('planOverlay');
+  ov.style.width=planW+'px';ov.style.height=planH+'px';
   document.getElementById('svg').setAttribute('width',planW);
   document.getElementById('svg').setAttribute('height',planH);
   document.getElementById('dropzone').style.display='none';
   const w=document.getElementById('cvwrap');
   const sc=Math.min((w.clientWidth-60)/planW,(w.clientHeight-60)/planH,1);
-  vzoom=sc; vx=(w.clientWidth-planW*sc)/2; vy=(w.clientHeight-planH*sc)/2;
-  applyVP(); hideLoad(); redraw();
+  vzoom=sc;vx=(w.clientWidth-planW*sc)/2;vy=(w.clientHeight-planH*sc)/2;
+  applyVP();hideLoad();redraw();
 }
 
-// ── VIEWPORT ──────────────────────────────────────────────────────────────────
+// ── VIEWPORT ─────────────────────────────────────────────────────────────────
 function applyVP(){document.getElementById('vp').style.transform=`translate(${vx}px,${vy}px) scale(${vzoom})`;}
 function toWorld(cx,cy){return{x:(cx-vx)/vzoom,y:(cy-vy)/vzoom};}
 function cvWheel(e){
@@ -476,8 +562,7 @@ function cvWheel(e){
   const mx=e.clientX-r.left,my=e.clientY-r.top;
   const f=e.deltaY<0?1.15:1/1.15;
   const nz=Math.max(0.04,Math.min(14,vzoom*f));
-  vx=mx-(mx-vx)*nz/vzoom; vy=my-(my-vy)*nz/vzoom; vzoom=nz;
-  applyVP();
+  vx=mx-(mx-vx)*nz/vzoom;vy=my-(my-vy)*nz/vzoom;vzoom=nz;applyVP();
 }
 
 // ── MOUSE ─────────────────────────────────────────────────────────────────────
@@ -486,132 +571,93 @@ function cvDown(e){
   if(e.button!==0)return;
   const r=document.getElementById('cvwrap').getBoundingClientRect();
   const w=toWorld(e.clientX-r.left,e.clientY-r.top);
-
   if(mode==='place'){placeElem(w.x,w.y);return;}
-
   if(mode==='cable'){
     if(!cablePend){
-      const h=hitElem(w.x,w.y);
-      if(h)cablePend={fromId:h.id,pts:[{x:w.x,y:w.y}]};
+      const h=hitElem(w.x,w.y);if(h)cablePend={fromId:h.id,pts:[{x:w.x,y:w.y}]};
     } else {
-      const snapped=orthoSnap?snapOrtho(cablePend.pts[cablePend.pts.length-1]||{x:w.x,y:w.y},w):w;
-      const h=hitElem(snapped.x,snapped.y);
+      const sn=orthoSnap?snapOrtho(cablePend.pts[cablePend.pts.length-1],w):w;
+      const h=hitElem(sn.x,sn.y);
       if(h&&h.id!==cablePend.fromId)finishCable(h.id);
-      else cablePend.pts.push(snapped);
+      else cablePend.pts.push(sn);
     }
     redraw();return;
   }
-
   if(mode==='del'){
-    const h=hitElem(w.x,w.y);if(h){delElem(h.id);return;}
-    const k=hitCable(w.x,w.y);if(k){delCable(k.id);return;}
+    const h=hitElem(w.x,w.y);if(h){saveHistory();delElem(h.id);return;}
+    const k=hitCable(w.x,w.y);if(k){saveHistory();delCable(k.id);return;}
     return;
   }
-
-  // SELECT — check waypoints first, then elements, then cables
+  // select — check waypoints first
   if(selectedId&&selectedId.startsWith('cable:')){
-    // Only check waypoints when that cable is selected
     const wh=hitWaypoint(w.x,w.y);
-    if(wh){
-      isDragWpt=true; dragWptCableId=wh.cable.id; dragWptIdx=wh.idx;
-      document.getElementById('cvwrap').classList.add('mode-drag');
-      return;
-    }
+    if(wh){isDragWpt=true;dragWptCableId=wh.cable.id;dragWptIdx=wh.idx;
+      document.getElementById('cvwrap').classList.add('mode-drag');return;}
   }
   const h=hitElem(w.x,w.y);
-  if(h){
-    selectedId=h.id;
-    isDragging=true; dragElemId=h.id;
-    dragOffX=w.x-h.x; dragOffY=w.y-h.y; dragMoved=false;
-    document.getElementById('cvwrap').classList.add('mode-drag');
-    renderProps();redraw();return;
-  }
+  if(h){selectedId=h.id;isDragging=true;dragElemId=h.id;dragOffX=w.x-h.x;dragOffY=w.y-h.y;dragMoved=false;
+    document.getElementById('cvwrap').classList.add('mode-drag');renderProps();redraw();return;}
   const k=hitCable(w.x,w.y);
   if(k){selectedId='cable:'+k.id;renderProps();redraw();return;}
   selectedId=null;renderProps();redraw();
   isPan=true;panSX=e.clientX-vx;panSY=e.clientY-vy;
 }
-
 function cvMove(e){
   const r=document.getElementById('cvwrap').getBoundingClientRect();
   const raw=toWorld(e.clientX-r.left,e.clientY-r.top);
   orthoSnap=e.shiftKey;
   document.getElementById('orthoBadge').classList.toggle('show',orthoSnap&&mode==='cable'&&!!cablePend);
   let w=raw;
-  if(orthoSnap&&mode==='cable'&&cablePend&&cablePend.pts.length>0){
-    const last=cablePend.pts[cablePend.pts.length-1];
-    w=snapOrtho(last,raw);
-  }
+  if(orthoSnap&&mode==='cable'&&cablePend&&cablePend.pts.length>0)
+    w=snapOrtho(cablePend.pts[cablePend.pts.length-1],raw);
   ghostX=w.x;ghostY=w.y;prevPt=w;
   document.getElementById('coordDisplay').textContent=`x:${(raw.x*scale).toFixed(2)}m y:${(raw.y*scale).toFixed(2)}m`;
-
-  if(isDragWpt&&dragWptCableId!==null){
+  if(isDragWpt&&dragWptCableId){
     const c=cables.find(x=>x.id===dragWptCableId);
-    if(c&&c.wpts&&c.wpts[dragWptIdx]!==undefined){
-      c.wpts[dragWptIdx]={x:raw.x,y:raw.y};
-    }
+    if(c&&c.wpts&&c.wpts[dragWptIdx]!==undefined)c.wpts[dragWptIdx]={x:raw.x,y:raw.y};
     redraw();return;
   }
   if(isDragging&&dragElemId){
     const el=elements.find(x=>x.id===dragElemId);
-    if(el){el.x=raw.x-dragOffX; el.y=raw.y-dragOffY; dragMoved=true;}
+    if(el){el.x=raw.x-dragOffX;el.y=raw.y-dragOffY;dragMoved=true;}
     redraw();return;
   }
   if(isPan){vx=e.clientX-panSX;vy=e.clientY-panSY;applyVP();}
   if(mode==='place'||mode==='cable')redraw();
 }
-
-function cvUp(e){
-  if(isDragWpt){
-    isDragWpt=false; dragWptCableId=null; dragWptIdx=-1;
-    document.getElementById('cvwrap').classList.remove('mode-drag');
-    redraw();return;
-  }
+function cvUp(){
+  if(isDragWpt){isDragWpt=false;dragWptCableId=null;dragWptIdx=-1;document.getElementById('cvwrap').classList.remove('mode-drag');redraw();return;}
   if(isDragging){
-    isDragging=false;
-    document.getElementById('cvwrap').classList.remove('mode-drag');
-    if(dragMoved)renderElemList();
-    dragElemId=null;dragMoved=false;
-    redraw();return;
+    isDragging=false;document.getElementById('cvwrap').classList.remove('mode-drag');
+    if(dragMoved)renderElemList();dragElemId=null;dragMoved=false;redraw();return;
   }
   if(isPan)isPan=false;
 }
-// Snap point to nearest 45° from anchor
 function snapOrtho(anchor,pt){
-  const dx=pt.x-anchor.x, dy=pt.y-anchor.y;
-  const len=Math.hypot(dx,dy);
+  const dx=pt.x-anchor.x,dy=pt.y-anchor.y,len=Math.hypot(dx,dy);
   if(len<1)return pt;
-  const angle=Math.atan2(dy,dx);
-  const snapped=Math.round(angle/(Math.PI/4))*(Math.PI/4);
-  return{x:anchor.x+len*Math.cos(snapped), y:anchor.y+len*Math.sin(snapped)};
+  const a=Math.round(Math.atan2(dy,dx)/(Math.PI/4))*(Math.PI/4);
+  return{x:anchor.x+len*Math.cos(a),y:anchor.y+len*Math.sin(a)};
 }
 
-// ── HIT TEST ──────────────────────────────────────────────────────────────────
+// ── HIT TEST ─────────────────────────────────────────────────────────────────
 function hitElem(wx,wy){
   for(let i=elements.length-1;i>=0;i--){
-    const e=elements[i];
-    if(Math.hypot(wx-e.x,wy-e.y)<HITRAD)return e;
-  }
-  return null;
+    const e=elements[i];if(Math.hypot(wx-e.x,wy-e.y)<HITRAD)return e;
+  }return null;
 }
 function hitWaypoint(wx,wy){
-  // Returns {cable,idx} if within 10px of a waypoint, else null
-  for(const c of cables){
-    if(!c.wpts||!c.wpts.length)continue;
-    for(let i=0;i<c.wpts.length;i++){
-      if(Math.hypot(wx-c.wpts[i].x,wy-c.wpts[i].y)<12)
-        return{cable:c,idx:i};
-    }
-  }
-  return null;
+  for(const c of cables){if(!c.wpts)continue;
+    for(let i=0;i<c.wpts.length;i++)
+      if(Math.hypot(wx-c.wpts[i].x,wy-c.wpts[i].y)<12)return{cable:c,idx:i};
+  }return null;
 }
 function hitCable(wx,wy){
   for(const c of cables){
     const pts=cPts(c);
     for(let i=0;i<pts.length-1;i++)
       if(segD(wx,wy,pts[i].x,pts[i].y,pts[i+1].x,pts[i+1].y)<9)return c;
-  }
-  return null;
+  }return null;
 }
 function segD(px,py,ax,ay,bx,by){
   const dx=bx-ax,dy=by-ay,t=dx||dy?Math.max(0,Math.min(1,((px-ax)*dx+(py-ay)*dy)/(dx*dx+dy*dy))):0;
@@ -628,52 +674,36 @@ function cLen(c){
   return l*scale;
 }
 
-// ── PLACEMENT ─────────────────────────────────────────────────────────────────
+// ── PLACEMENT ────────────────────────────────────────────────────────────────
 function placeElem(wx,wy){
-  const t=placeType, id='e'+nextId++;
+  saveHistory();
+  const t=placeType,id='e'+nextId++;
   const TI=allTypeInfo();
   const circ=circuits.find(c=>c.id===activeCircuit);
   const typeRef=TI[t]?.ref||'X';
-  const lk=activeCircuit+'_'+t; // key for last-label tracking
-
+  const lk=activeCircuit+'_'+t;
   let label;
   const last=lastPlacedLabel[lk];
-  if(last){
-    // Try to increment the trailing number in the last label
-    // Works for: "106.1" → "106.2", "TL1.03" → "TL1.04", "K01" → "K02"
-    label=incrementLabel(last);
-  } else if(circ&&circ.kabelnr){
-    // per-circuit per-type counter
+  if(last){label=incrementLabel(last);}
+  else if(circ&&circ.kabelnr){
     circTypeCounters[lk]=(circTypeCounters[lk]||0)+1;
     label=circ.kabelnr+'.'+typeRef+'.'+String(circTypeCounters[lk]).padStart(2,'0');
   } else {
-    const rn=nextRef[t]++;
-    label=typeRef+String(rn).padStart(2,'0');
+    label=typeRef+String(nextRef[t]++).padStart(2,'0');
   }
   lastPlacedLabel[lk]=label;
-
   elements.push({id,type:t,x:wx,y:wy,label,ref:label,circuit:activeCircuit,
-    watt:0,notes:'',armatuurtype:'',kasttype:'',rotation:0,hoogte:''});
+    niveau:activeNiveau,watt:0,notes:'',armatuurtype:'',kasttype:'',rotation:0,hoogte:''});
   selectedId=id;renderProps();renderElemList();updateStatus();redraw();
 }
-
-// Increment trailing number in a label string
-// "106.1" → "106.2", "AB.03" → "AB.04", "TL01" → "TL02"
 function incrementLabel(lbl){
   const m=lbl.match(/^(.*?)(\d+)([^\d]*)$/);
   if(!m)return lbl+'_2';
-  const prefix=m[1], num=parseInt(m[2]), suffix=m[3];
-  const padded=String(num+1).padStart(m[2].length,'0');
-  return prefix+padded+suffix;
+  return m[1]+String(parseInt(m[2])+1).padStart(m[2].length,'0')+m[3];
 }
-
-// When user manually edits a label, update the tracker for that element's circuit+type
-function onLabelChange(elemId,newVal){
-  const el=elements.find(e=>e.id===elemId);if(!el)return;
-  el.label=newVal;
-  const lk=el.circuit+'_'+el.type;
-  lastPlacedLabel[lk]=newVal;
-  redraw();
+function onLabelChange(eid,val){
+  const el=elements.find(e=>e.id===eid);if(!el)return;
+  el.label=val;lastPlacedLabel[el.circuit+'_'+el.type]=val;redraw();
 }
 function getCableType(){
   const s=document.getElementById('cableTypeSelect');
@@ -682,13 +712,15 @@ function getCableType(){
 function startCableMode(){cablePend=null;setMode('cable');}
 function finishCable(toId){
   if(!cablePend)return;
+  saveHistory();
   const circ=circuits.find(c=>c.id===activeCircuit);
   const id='kb'+nextKb++;
+  // Cable label = circuit kabelnr (not auto-incrementing)
+  const kabelnr=circ&&circ.kabelnr?circ.kabelnr:'KB'+String(nextKb-1).padStart(2,'0');
   cables.push({id,fromId:cablePend.fromId,toId,wpts:cablePend.pts.slice(1),
-    kabeltype:getCableType(),kabelnr:'KB'+String(nextKb-1).padStart(2,'0'),
+    kabeltype:getCableType(),kabelnr,
     color:circ?circ.color:'#d4ff00',circuit:activeCircuit,notes:''});
-  cablePend=null;
-  selectedId='cable:'+id;
+  cablePend=null;selectedId='cable:'+id;
   renderProps();renderElemList();updateStatus();redraw();
 }
 function delElem(id){
@@ -702,8 +734,19 @@ function delCable(id){
   if(selectedId==='cable:'+id)selectedId=null;
   renderProps();updateStatus();redraw();
 }
+function delWaypoint(cid,idx){
+  const c=cables.find(x=>x.id===cid);if(!c||!c.wpts)return;
+  saveHistory();c.wpts.splice(idx,1);renderProps();redraw();
+}
+function duplicateElem(id){
+  saveHistory();
+  const src=elements.find(e=>e.id===id);if(!src)return;
+  const nid='e'+nextId++;
+  elements.push({...src,id:nid,x:src.x+30,y:src.y+30});
+  selectedId=nid;renderProps();renderElemList();updateStatus();redraw();
+}
 
-// ── MODE ──────────────────────────────────────────────────────────────────────
+// ── MODE ─────────────────────────────────────────────────────────────────────
 function setMode(m){
   mode=m;
   if(m!=='place'){placeType='';document.querySelectorAll('.pitem').forEach(p=>p.classList.remove('act'));}
@@ -716,7 +759,7 @@ function setMode(m){
   if(m==='select')document.getElementById('btnSelect').classList.add('act');
   if(m==='cable')document.getElementById('btnCable').classList.add('act');
   if(m==='del')document.getElementById('btnDel').classList.add('act');
-  const mn={select:'Selecteren',place:'Element plaatsen',cable:cablePend?'Kabel — kies eindpunt':'Kabel — kies startpunt',del:'Verwijderen'};
+  const mn={select:'Selecteren',place:'Element plaatsen',cable:cablePend?'Kabel — eindpunt':'Kabel — startpunt',del:'Verwijderen'};
   document.getElementById('sbMode').textContent=mn[m]||m;
 }
 function pickPlace(t){
@@ -729,25 +772,59 @@ function onKey(e){
   if(e.key==='Escape'){cablePend=null;setMode('select');redraw();}
   if(e.key==='s'||e.key==='S')setMode('select');
   if(e.key==='k'||e.key==='K')startCableMode();
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}
   if(e.key==='ArrowLeft')changePage(-1);
   if(e.key==='ArrowRight')changePage(1);
   if(e.key==='r'||e.key==='R'){
     if(selectedId&&!selectedId.startsWith('cable:')){
       const el=elements.find(x=>x.id===selectedId);
-      if(el){el.rotation=(el.rotation+90)%360;renderProps();redraw();}
+      if(el){saveHistory();el.rotation=(el.rotation+90)%360;renderProps();redraw();}
     }
   }
   if((e.key==='Delete'||e.key==='Backspace')&&selectedId){
+    saveHistory();
     if(selectedId.startsWith('cable:'))delCable(selectedId.replace('cable:',''));
     else delElem(selectedId);
   }
 }
 
-// ── CIRCUITS ──────────────────────────────────────────────────────────────────
+// ── NIVEAUS ──────────────────────────────────────────────────────────────────
+function addNiveau(){
+  const name=prompt('Naam niveau (bv. +3m Dak):','Niveau '+(niveaus.length+1));if(!name)return;
+  const h=parseFloat(prompt('Hoogte in meters (bv. 3.5):','0')||'0');
+  const id='nv'+Math.random().toString(36).slice(2,7);
+  niveaus.push({id,name,height:h,color:NIVEAU_COLORS[niveaus.length%NIVEAU_COLORS.length],visible:true});
+  renderNiveaus();
+}
+function renderNiveaus(){
+  document.getElementById('niveauList').innerHTML=niveaus.map(nv=>`
+    <div class="niv ${nv.id===activeNiveau?'act':''}" onclick="activeNiveau='${nv.id}';renderNiveaus();redraw()">
+      <div class="niv-dot" style="background:${nv.color}" onclick="event.stopPropagation();changeNiveauColor('${nv.id}')"></div>
+      <div class="niv-name">${nv.name}</div>
+      <div class="niv-h">${nv.height}m</div>
+      <div class="niv-eye" onclick="event.stopPropagation();toggleNiveau('${nv.id}')">${nv.visible?'👁':'🚫'}</div>
+      <div style="font-size:9px;color:var(--dim);cursor:pointer" onclick="event.stopPropagation();editNiveau('${nv.id}')">✏</div>
+    </div>`).join('');
+}
+function toggleNiveau(id){
+  const nv=niveaus.find(x=>x.id===id);if(!nv)return;nv.visible=!nv.visible;renderNiveaus();redraw();
+}
+function editNiveau(id){
+  const nv=niveaus.find(x=>x.id===id);if(!nv)return;
+  const name=prompt('Naam:',nv.name);if(name)nv.name=name;
+  const h=prompt('Hoogte (m):',String(nv.height));if(h!==null)nv.height=parseFloat(h)||0;
+  renderNiveaus();redraw();
+}
+function changeNiveauColor(id){
+  const nv=niveaus.find(x=>x.id===id);if(!nv)return;
+  const inp=document.createElement('input');inp.type='color';inp.value=nv.color;
+  inp.oninput=e=>{nv.color=e.target.value;renderNiveaus();redraw();};inp.click();
+}
+
+// ── CIRCUITS ─────────────────────────────────────────────────────────────────
 function addCircuit(){
-  const name=prompt('Naam kring (bv. Bureel verdieping):','Kring '+(circuits.length+1));
-  if(!name)return;
-  const kabelnr=prompt('Kabelnummer automaat (bv. 106-750V):\n(leeg laten = geen prefix)','');
+  const name=prompt('Naam kring:','Kring '+(circuits.length+1));if(!name)return;
+  const kabelnr=prompt('Kabelnummer automaat (bv. 106-750V):','');
   const id='c_'+Math.random().toString(36).slice(2,7);
   circuits.push({id,name,kabelnr:kabelnr||'',color:CIRCUIT_COLORS[circuits.length%CIRCUIT_COLORS.length]});
   renderCircuits();
@@ -756,131 +833,93 @@ function renderCircuits(){
   document.getElementById('circuitList').innerHTML=circuits.map(c=>`
     <div class="circ ${c.id===activeCircuit?'act':''}" onclick="activeCircuit='${c.id}';renderCircuits()">
       <div class="cdot" style="background:${c.color}" onclick="event.stopPropagation();changeCircuitColor('${c.id}')"></div>
-      <div style="flex:1;min-width:0;overflow:hidden">
-        <div style="display:flex;align-items:center;gap:3px">
-          <div class="cname" style="flex:1" id="cn_${c.id}">${c.name}</div>
-          <span style="font-size:9px;color:var(--dim);cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();editCircuit('${c.id}')" title="Naam/kabelnr bewerken">✏</span>
-        </div>
-        ${c.kabelnr?`<div style="font-size:8.5px;color:var(--amber);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.kabelnr}</div>`:''}
+      <div style="flex:1;min-width:0">
+        <div class="cname">${c.name}</div>
+        ${c.kabelnr?`<div style="font-size:8px;color:var(--amber);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.kabelnr}</div>`:''}
       </div>
-      <div class="ccnt">${cables.filter(k=>k.circuit===c.id).length}k/${elements.filter(e=>e.circuit===c.id).length}el</div>
+      <div class="ccnt">${cables.filter(k=>k.circuit===c.id).length}k</div>
+      <span style="font-size:9px;color:var(--dim);cursor:pointer;flex-shrink:0" onclick="event.stopPropagation();editCircuit('${c.id}')">✏</span>
     </div>`).join('');
 }
 function editCircuit(id){
   const c=circuits.find(x=>x.id===id);if(!c)return;
-  const name=prompt('Naam kring:',c.name);
-  if(name===null)return;
-  if(name.trim())c.name=name.trim();
-  const kabelnr=prompt('Kabelnummer automaat (leeg = geen prefix):',c.kabelnr||'');
-  if(kabelnr!==null)c.kabelnr=kabelnr.trim();
-  // if kabelnr changed, reset counters for this circuit
-  if(kabelnr!==c.kabelnr){
-    Object.keys(circTypeCounters).filter(k=>k.startsWith(id+'_')).forEach(k=>delete circTypeCounters[k]);
-    Object.keys(lastPlacedLabel).filter(k=>k.startsWith(id+'_')).forEach(k=>delete lastPlacedLabel[k]);
-  }
+  const name=prompt('Naam:',c.name);if(name&&name.trim())c.name=name.trim();
+  const kabelnr=prompt('Kabelnummer automaat:',c.kabelnr||'');
+  if(kabelnr!==null){c.kabelnr=kabelnr.trim();}
   renderCircuits();redraw();
 }
 function changeCircuitColor(id){
-  const inp=document.createElement('input');inp.type='color';
   const c=circuits.find(x=>x.id===id);if(!c)return;
-  inp.value=c.color;
-  inp.oninput=e=>{
-    c.color=e.target.value;
-    // update all cables in this circuit
-    cables.filter(k=>k.circuit===id).forEach(k=>k.color=e.target.value);
-    renderCircuits();redraw();
-  };
+  const inp=document.createElement('input');inp.type='color';inp.value=c.color;
+  inp.oninput=e=>{c.color=e.target.value;cables.filter(k=>k.circuit===id).forEach(k=>k.color=e.target.value);renderCircuits();redraw();};
   inp.click();
 }
 
-// ── SEARCH ────────────────────────────────────────────────────────────────────
+// ── SEARCH ───────────────────────────────────────────────────────────────────
 let searchQ='';
 function doSearch(q){
   searchQ=q.trim().toLowerCase();
   document.getElementById('searchClear').classList.toggle('show',!!searchQ);
   if(!searchQ){closeSearch();redraw();return;}
   const results=[];
+  const TI=allTypeInfo();
   elements.forEach(el=>{
     const circ=circuits.find(c=>c.id===el.circuit);
-    const hay=[el.label,el.ref,el.armatuurtype,el.kasttype,el.notes,el.hoogte||'',TYPEINFO[el.type]?.lbl||'',circ?circ.name:'',circ?circ.kabelnr:''].join(' ').toLowerCase();
-    if(hay.includes(searchQ)) results.push({kind:'elem',obj:el,circ});
+    const nv=niveaus.find(n=>n.id===el.niveau);
+    const hay=[el.label,el.ref,el.armatuurtype,el.kasttype,el.notes,el.hoogte||'',TI[el.type]?.lbl||'',circ?circ.name:'',circ?circ.kabelnr||'':'',nv?nv.name:''].join(' ').toLowerCase();
+    if(hay.includes(searchQ))results.push({kind:'elem',obj:el,circ,nv});
   });
   cables.forEach(c=>{
     const from=elements.find(e=>e.id===c.fromId),to=elements.find(e=>e.id===c.toId);
     const hay=[c.kabelnr,c.kabeltype,c.notes,from?from.label:'',to?to.label:''].join(' ').toLowerCase();
-    if(hay.includes(searchQ)) results.push({kind:'cable',obj:c,from,to});
+    if(hay.includes(searchQ))results.push({kind:'cable',obj:c,from,to});
   });
   const box=document.getElementById('searchResults');
-  if(!results.length){
-    box.innerHTML='<div style="padding:10px;font-size:11px;color:var(--dim)">Geen resultaten gevonden</div>';
-    box.classList.add('show');return;
-  }
+  if(!results.length){box.innerHTML='<div style="padding:10px;font-size:11px;color:var(--dim)">Geen resultaten</div>';box.classList.add('show');return;}
   box.innerHTML=results.slice(0,30).map(r=>{
     if(r.kind==='elem'){
       const col=r.circ?r.circ.color:'#fff';
-      return `<div class="sr-item" onclick="selectAndJump('${r.obj.id}')">
+      const nvc=r.nv?r.nv.color:'#fff';
+      return`<div class="sr-item" onclick="selectAndJump('${r.obj.id}')">
         <div class="sr-dot" style="background:${col}"></div>
-        <div class="sr-main">${r.obj.label} — ${TYPEINFO[r.obj.type]?.lbl||r.obj.type}
-          <div class="sr-sub">${r.obj.armatuurtype||r.obj.kasttype||''}${r.circ?' · '+r.circ.name:''}</div>
+        <div class="sr-main">${r.obj.label} — ${allTypeInfo()[r.obj.type]?.lbl||r.obj.type}
+          <div class="sr-sub" style="display:flex;gap:5px">
+            <span>${r.obj.armatuurtype||r.obj.kasttype||''}</span>
+            ${r.nv?`<span style="color:${nvc}">▪ ${r.nv.name}</span>`:''}
+          </div>
         </div>
-        <span style="font-size:10px;color:var(--dim)">${TYPEINFO[r.obj.type]?.icon||''}</span>
       </div>`;
     } else {
-      const len=cLen(r.obj).toFixed(1);
-      return `<div class="sr-item" onclick="selectAndJump('cable:${r.obj.id}')">
+      return`<div class="sr-item" onclick="selectAndJump('cable:${r.obj.id}')">
         <div class="sr-dot" style="background:${r.obj.color||'#fff'}"></div>
         <div class="sr-main">${r.obj.kabelnr} — ${r.obj.kabeltype||'—'}
-          <div class="sr-sub">${r.from?r.from.label:'?'} → ${r.to?r.to.label:'?'} · ${len}m</div>
+          <div class="sr-sub">${r.from?r.from.label:'?'} → ${r.to?r.to.label:'?'} · ${cLen(r.obj).toFixed(1)}m</div>
         </div>
-        <span style="font-size:10px;color:var(--amber)">${len}m</span>
       </div>`;
     }
   }).join('');
   box.classList.add('show');
 }
 function searchKey(e){if(e.key==='Escape')clearSearch();}
-function clearSearch(){
-  document.getElementById('searchInput').value='';
-  searchQ='';
-  document.getElementById('searchClear').classList.remove('show');
-  closeSearch();
-  highlightId=null;
-  redraw();
-}
+function clearSearch(){document.getElementById('searchInput').value='';searchQ='';document.getElementById('searchClear').classList.remove('show');closeSearch();highlightId=null;redraw();}
 function closeSearch(){document.getElementById('searchResults').classList.remove('show');}
 function selectAndJump(id){
-  closeSearch();
-  selectedId=id;
-  highlightId=id;
-  renderProps();
-  // pan/zoom to element
+  closeSearch();selectedId=id;highlightId=id;renderProps();
   let tx,ty;
-  if(id.startsWith('cable:')){
-    const c=cables.find(x=>x.id===id.replace('cable:',''));
-    if(c){const pts=cPts(c);const m=ptMid(pts);tx=m.x;ty=m.y;}
-  } else {
-    const el=elements.find(e=>e.id===id);
-    if(el){tx=el.x;ty=el.y;}
-  }
-  if(tx!==undefined){
-    const wrap=document.getElementById('cvwrap');
-    const cx=wrap.clientWidth/2,cy=wrap.clientHeight/2;
-    vx=cx-tx*vzoom; vy=cy-ty*vzoom;
-    applyVP();
-  }
-  redraw();
-  setTimeout(()=>{highlightId=null;redraw();},2500);
-  showRTab('props');
+  if(id.startsWith('cable:')){const c=cables.find(x=>x.id===id.replace('cable:',''));if(c){const m=ptMid(cPts(c));tx=m.x;ty=m.y;}}
+  else{const el=elements.find(e=>e.id===id);if(el){tx=el.x;ty=el.y;}}
+  if(tx!==undefined){const wrap=document.getElementById('cvwrap');vx=wrap.clientWidth/2-tx*vzoom;vy=wrap.clientHeight/2-ty*vzoom;applyVP();}
+  redraw();setTimeout(()=>{highlightId=null;redraw();},2500);showRTab('props');
 }
 
-// ── DRAW ──────────────────────────────────────────────────────────────────────
+// ── DRAW ─────────────────────────────────────────────────────────────────────
 function redraw(){
-  const svg=document.getElementById('svg');
-  svg.innerHTML='';
+  const svg=document.getElementById('svg');svg.innerHTML='';
   const showLbl=document.getElementById('showLabels')?.checked??true;
   const showLen=document.getElementById('showLengths')?.checked??true;
   const showRef=document.getElementById('showRefs')?.checked??true;
   const showFT=document.getElementById('showFromTo')?.checked??true;
+  const showAll=document.getElementById('showAllNiveaus')?.checked??true;
 
   // defs
   const defs=mkel('defs');
@@ -889,65 +928,82 @@ function redraw(){
     const mk=mkel('marker',{id:cid,markerWidth:'8',markerHeight:'6',refX:'7',refY:'3',orient:'auto'});
     mk.appendChild(mkel('polygon',{points:'0 0,8 3,0 6',fill:col,opacity:'.95'}));
     defs.appendChild(mk);
+    // reversed arrow for "from" end
+    const mkR=mkel('marker',{id:cid+'R',markerWidth:'8',markerHeight:'6',refX:'1',refY:'3',orient:'auto'});
+    mkR.appendChild(mkel('polygon',{points:'8 0,0 3,8 6',fill:col,opacity:'.5'}));
+    defs.appendChild(mkR);
   });
-  // glow filter for highlights
+  // glow
   const filt=mkel('filter',{id:'glow',x:'-30%',y:'-30%',width:'160%',height:'160%'});
-  const fe=mkel('feGaussianBlur',{stdDeviation:'4',result:'blur'});
+  const feB=mkel('feGaussianBlur',{stdDeviation:'4',result:'blur'});
   const feM=mkel('feMerge');
-  const n1=mkel('feMergeNode',{in:'blur'});
-  const n2=mkel('feMergeNode',{in:'SourceGraphic'});
-  feM.appendChild(n1);feM.appendChild(n2);
-  filt.appendChild(fe);filt.appendChild(feM);
-  defs.appendChild(filt);
+  [mkel('feMergeNode',{in:'blur'}),mkel('feMergeNode',{in:'SourceGraphic'})].forEach(n=>feM.appendChild(n));
+  filt.appendChild(feB);filt.appendChild(feM);defs.appendChild(filt);
   svg.appendChild(defs);
 
   // cables
   cables.forEach(c=>{
     const pts=cPts(c);if(pts.length<2)return;
+    const fromEl=elements.find(e=>e.id===c.fromId);
+    const toEl=elements.find(e=>e.id===c.toId);
     const isSel=selectedId==='cable:'+c.id;
     const isHL=highlightId==='cable:'+c.id;
     const col=c.color||'#d4ff00';
     const cid='arr'+col.replace(/[^a-zA-Z0-9]/g,'');
     const d=pts.map((p,i)=>(i===0?`M${p.x} ${p.y}`:`L${p.x} ${p.y}`)).join(' ');
-    svg.appendChild(mkel('path',{d,stroke:'#000',strokeWidth:'6',fill:'none',opacity:'.2',strokeLinecap:'round',strokeLinejoin:'round'}));
-    const lattr={d,stroke:col,strokeWidth:isSel?'3.5':'2.2',fill:'none',strokeLinecap:'round',strokeLinejoin:'round','marker-end':`url(#${cid})`};
+
+    // Cross-niveau detection
+    const fromNv=niveaus.find(n=>n.id===fromEl?.niveau);
+    const toNv=niveaus.find(n=>n.id===toEl?.niveau);
+    const crossNiveau=fromEl&&toEl&&fromEl.niveau!==toEl.niveau;
+    const strokeDash=crossNiveau?'8 4':'none';
+
+    svg.appendChild(mkel('path',{d,stroke:'#000',strokeWidth:'5',fill:'none',opacity:'.15',strokeLinecap:'round',strokeLinejoin:'round'}));
+    const lattr={d,stroke:col,strokeWidth:isSel?'3.5':'2.2',fill:'none',strokeLinecap:'round',strokeLinejoin:'round',
+      'marker-end':`url(#${cid})`,strokeDasharray:strokeDash};
     if(isHL)lattr.filter='url(#glow)';
     svg.appendChild(mkel('path',lattr));
 
     const mid=ptMid(pts),len=cLen(c).toFixed(2);
+
+    // Cross-niveau label
+    if(crossNiveau&&fromNv&&toNv){
+      const dh=Math.abs(toNv.height-fromNv.height).toFixed(1);
+      const arrow=toNv.height>fromNv.height?'↑':'↓';
+      const bg=mkel('rect',{x:mid.x-18,y:mid.y-22,width:36,height:13,rx:'3',fill:'#1a0050',opacity:'.9'});
+      svg.appendChild(bg);
+      const tx=mkel('text',{x:mid.x,y:mid.y-12,fill:'#aa55ff','font-size':'8.5','font-family':'Figtree,sans-serif','font-weight':'700','text-anchor':'middle'});
+      tx.textContent=`${arrow}${dh}m`;svg.appendChild(tx);
+    }
+
     if(showLbl||showLen){
       let l1='';
       if(showLbl)l1+=c.kabelnr;
       if(showLbl&&showLen)l1+='  ';
       if(showLen)l1+=len+'m';
       if(l1){
-        const bw=l1.length*5.8+8;
+        const bw=l1.length*5.5+8;
         svg.appendChild(mkel('rect',{x:mid.x-bw/2,y:mid.y-12,width:bw,height:14,rx:'3',fill:'#0a1420',opacity:'.92'}));
-        const t=mkel('text',{x:mid.x,y:mid.y-1,fill:col,'font-size':'9.5','font-family':'Figtree,sans-serif','font-weight':'600','text-anchor':'middle'});
+        const t=mkel('text',{x:mid.x,y:mid.y-1,fill:col,'font-size':'9','font-family':'Figtree,sans-serif','font-weight':'600','text-anchor':'middle'});
         t.textContent=l1;svg.appendChild(t);
       }
       if(showLbl&&c.kabeltype){
-        const bw2=c.kabeltype.length*4.8+6;
-        svg.appendChild(mkel('rect',{x:mid.x-bw2/2,y:mid.y+2,width:bw2,height:12,rx:'3',fill:'#0a1420',opacity:'.82'}));
-        const t2=mkel('text',{x:mid.x,y:mid.y+11,fill:col,'font-size':'8','font-family':'Figtree,sans-serif','text-anchor':'middle',opacity:'.88'});
+        const bw2=c.kabeltype.length*4.5+6;
+        svg.appendChild(mkel('rect',{x:mid.x-bw2/2,y:mid.y+2,width:bw2,height:11,rx:'3',fill:'#0a1420',opacity:'.82'}));
+        const t2=mkel('text',{x:mid.x,y:mid.y+10,fill:col,'font-size':'7.5','font-family':'Figtree,sans-serif','text-anchor':'middle',opacity:'.88'});
         t2.textContent=c.kabeltype;svg.appendChild(t2);
       }
     }
+    // Van/naar directional labels
     if(showFT){
-      const from=elements.find(e=>e.id===c.fromId),to=elements.find(e=>e.id===c.toId);
-      if(from)drawEndTag(svg,pts[0],'↑'+from.label,col);
-      if(to)drawEndTag(svg,pts[pts.length-1],'↓'+to.label,col);
+      if(fromEl)drawEndTag(svg,pts[0],'↑'+fromEl.label,col);
+      if(toEl)drawEndTag(svg,pts[pts.length-1],'↓'+toEl.label,col);
     }
-    if(isSel){
-      // show waypoint handles - always visible when selected
-      (c.wpts||[]).forEach((wp,wi)=>{
-        const wh=mkel('circle',{cx:wp.x,cy:wp.y,r:'7',fill:'#1a2e4c',stroke:col,strokeWidth:'2',opacity:'.95',style:'cursor:grab'});
-        svg.appendChild(wh);
-        // small cross inside
-        svg.appendChild(mkel('line',{x1:wp.x-3,y1:wp.y,x2:wp.x+3,y2:wp.y,stroke:col,strokeWidth:'1.5'}));
-        svg.appendChild(mkel('line',{x1:wp.x,y1:wp.y-3,x2:wp.x,y2:wp.y+3,stroke:col,strokeWidth:'1.5'}));
-      });
-    }
+    if(isSel)(c.wpts||[]).forEach((wp)=>{
+      svg.appendChild(mkel('circle',{cx:wp.x,cy:wp.y,r:'7',fill:'#1a2e4c',stroke:col,strokeWidth:'2',opacity:'.95',style:'cursor:grab'}));
+      svg.appendChild(mkel('line',{x1:wp.x-3,y1:wp.y,x2:wp.x+3,y2:wp.y,stroke:col,strokeWidth:'1.5'}));
+      svg.appendChild(mkel('line',{x1:wp.x,y1:wp.y-3,x2:wp.x,y2:wp.y+3,stroke:col,strokeWidth:'1.5'}));
+    });
   });
 
   // cable preview
@@ -956,42 +1012,69 @@ function redraw(){
     if(from){
       const all=[{x:from.x,y:from.y},...cablePend.pts.slice(1),prevPt];
       const d=all.map((p,i)=>(i===0?`M${p.x} ${p.y}`:`L${p.x} ${p.y}`)).join(' ');
-      svg.appendChild(mkel('path',{d,stroke:'#fff',strokeWidth:'1.5',fill:'none',strokeDasharray:'6 4',opacity:'.45',strokeLinecap:'round'}));
+      svg.appendChild(mkel('path',{d,stroke:'#fff',strokeWidth:'1.5',fill:'none',strokeDasharray:'5 3',opacity:'.45',strokeLinecap:'round'}));
       let l=0;for(let i=1;i<all.length;i++)l+=Math.hypot(all[i].x-all[i-1].x,all[i].y-all[i-1].y);
       const t=mkel('text',{x:prevPt.x+8,y:prevPt.y-6,fill:'#fff','font-size':'10','font-family':'Figtree,sans-serif',opacity:'.7'});
       t.textContent=(l*scale).toFixed(2)+'m';svg.appendChild(t);
     }
   }
 
-  // elements
-  elements.forEach(el=>{
+  // elements — sorted: non-active niveaus first, active on top
+  const sortedElems=[...elements].sort((a,b)=>{
+    const aActive=a.niveau===activeNiveau?1:0;
+    const bActive=b.niveau===activeNiveau?1:0;
+    return aActive-bActive;
+  });
+
+  sortedElems.forEach(el=>{
+    const nv=niveaus.find(n=>n.id===el.niveau);
+    // Visibility
+    if(!showAll&&nv&&!nv.visible)return;
+    const isActive=el.niveau===activeNiveau;
     const isSel=selectedId===el.id;
     const isHL=highlightId===el.id;
     const circ=circuits.find(c=>c.id===el.circuit);
     const col=circ?circ.color:'#fff';
+    const nvCol=nv?nv.color:'#888';
     const rot=el.rotation||0;
-    const g=mkel('g',{transform:`translate(${el.x},${el.y}) rotate(${rot})`,style:'cursor:pointer'});
-    if(isHL) g.appendChild(mkel('circle',{r:'30',fill:'none',stroke:'#fff',strokeWidth:'2.5',opacity:'.9',filter:'url(#glow)'}));
-    else if(isSel) g.appendChild(mkel('circle',{r:'26',fill:'none',stroke:'#fff',strokeWidth:'1.8',strokeDasharray:'4 3',opacity:'.7'}));
-    g.appendChild(mkel('circle',{r:'22',fill:'none',stroke:col,strokeWidth:'1.2',opacity:'.3'}));
+    // Opacity based on niveau
+    const baseOpacity=isActive?1:0.45;
+
+    const g=mkel('g',{transform:`translate(${el.x},${el.y}) rotate(${rot})`,style:'cursor:pointer',opacity:String(baseOpacity)});
+
+    if(isHL)g.appendChild(mkel('circle',{r:'28',fill:'none',stroke:'#fff',strokeWidth:'2.5',opacity:'.9',filter:'url(#glow)'}));
+    else if(isSel)g.appendChild(mkel('circle',{r:'25',fill:'none',stroke:'#fff',strokeWidth:'1.8',strokeDasharray:'4 3',opacity:'.7'}));
+
+    // Niveau ring — colored thick ring showing which niveau
+    g.appendChild(mkel('circle',{r:'20',fill:'none',stroke:nvCol,strokeWidth:isActive?'2.5':'1.5',opacity:isActive?'.6':'.4'}));
+    // Circuit ring
+    g.appendChild(mkel('circle',{r:'14',fill:'none',stroke:col,strokeWidth:'1',opacity:'.3'}));
+
     drawSym(g,el.type,col);
     svg.appendChild(g);
-    // label outside rotation (always horizontal)
+
+    // Label — always horizontal, outside rotation transform
+    const labelG=mkel('g',{transform:`translate(${el.x},${el.y})`,opacity:String(baseOpacity)});
     if(showRef){
-      const bw=el.label.length*6.5+6;
-      const labelG=mkel('g',{transform:`translate(${el.x},${el.y})`});
+      const bw=el.label.length*6+6;
       labelG.appendChild(mkel('rect',{x:-bw/2,y:21,width:bw,height:13,rx:'3',fill:'#0a1420',opacity:'.92'}));
       const t=mkel('text',{x:'0',y:'31',fill:col,'font-size':'9.5','font-family':'Figtree,sans-serif','font-weight':'700','text-anchor':'middle'});
       t.textContent=el.label;labelG.appendChild(t);
-      // hoogte badge
-      if(el.hoogte){
-        const hw=el.hoogte.length*5+8;
-        labelG.appendChild(mkel('rect',{x:-hw/2,y:35,width:hw,height:11,rx:'3',fill:'#1a2e4c',opacity:'.9'}));
-        const th=mkel('text',{x:'0',y:'44',fill:col,'font-size':'8','font-family':'Figtree,sans-serif','text-anchor':'middle',opacity:'.85'});
-        th.textContent='↕'+el.hoogte+'m';labelG.appendChild(th);
-      }
-      svg.appendChild(labelG);
     }
+    // Niveau badge (small colored square + height)
+    if(nv&&!isActive){
+      const bw2=nv.name.length*4+14;
+      labelG.appendChild(mkel('rect',{x:-bw2/2,y:35,width:bw2,height:11,rx:'2',fill:nvCol,opacity:'.8'}));
+      const tn=mkel('text',{x:'0',y:'44',fill:'#000','font-size':'7.5','font-family':'Figtree,sans-serif','text-anchor':'middle','font-weight':'600'});
+      tn.textContent='▲'+nv.name;labelG.appendChild(tn);
+    }
+    // Height badge
+    if(el.hoogte){
+      labelG.appendChild(mkel('rect',{x:-16,y:showRef?49:35,width:32,height:11,rx:'2',fill:'#1a2e4c',opacity:'.88'}));
+      const th=mkel('text',{x:'0',y:showRef?58:44,fill:nvCol,'font-size':'7.5','font-family':'Figtree,sans-serif','text-anchor':'middle',opacity:'.9'});
+      th.textContent='↕'+el.hoogte+'m';labelG.appendChild(th);
+    }
+    svg.appendChild(labelG);
   });
 
   // ghost
@@ -1000,18 +1083,17 @@ function redraw(){
     drawSym(g,placeType,'#fff');svg.appendChild(g);
   }
 
-  renderCircuits();updateStatus();
+  renderCircuits();renderNiveaus();updateStatus();
 }
 
 function drawEndTag(svg,pt,text,col){
-  const bw=text.length*4.5+6;
-  svg.appendChild(mkel('rect',{x:pt.x+4,y:pt.y-10,width:bw,height:12,rx:'2',fill:'#0a1420',opacity:'.82'}));
-  const t=mkel('text',{x:pt.x+7,y:pt.y,fill:col,'font-size':'8','font-family':'Figtree,sans-serif',opacity:'.9'});
+  const bw=text.length*4.2+5;
+  svg.appendChild(mkel('rect',{x:pt.x+3,y:pt.y-10,width:bw,height:11,rx:'2',fill:'#0a1420',opacity:'.8'}));
+  const t=mkel('text',{x:pt.x+5,y:pt.y,fill:col,'font-size':'7.5','font-family':'Figtree,sans-serif',opacity:'.9'});
   t.textContent=text;svg.appendChild(t);
 }
 function ptMid(pts){
-  let tot=0;
-  for(let i=1;i<pts.length;i++)tot+=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);
+  let tot=0;for(let i=1;i<pts.length;i++)tot+=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);
   let acc=0,h=tot/2;
   for(let i=1;i<pts.length;i++){
     const seg=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);
@@ -1022,85 +1104,55 @@ function ptMid(pts){
 }
 function mkel(tag,attrs={}){
   const e=document.createElementNS('http://www.w3.org/2000/svg',tag);
-  Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));
-  return e;
+  Object.entries(attrs).forEach(([k,v])=>e.setAttribute(k,v));return e;
 }
 
-// ── SYMBOLS ───────────────────────────────────────────────────────────────────
+// ── SYMBOLS ──────────────────────────────────────────────────────────────────
 function symSVG(type,sz){
   if(customTypes[type]){
     const icon=customTypes[type].icon||'?';
-    return `<svg viewBox="0 0 30 30" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg"><circle cx="15" cy="15" r="12" fill="#1a2040" stroke="#aa55ff" stroke-width="2"/><text x="15" y="21" text-anchor="middle" font-size="14" font-family="sans-serif">${icon}</text></svg>`;
+    return`<svg viewBox="0 0 30 30" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg"><circle cx="15" cy="15" r="12" fill="#1a2040" stroke="#aa55ff" stroke-width="2"/><text x="15" y="21" text-anchor="middle" font-size="13" font-family="sans-serif">${icon}</text></svg>`;
   }
-  return `<svg viewBox="0 0 30 30" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg">${symParts(type)}</svg>`;
+  return`<svg viewBox="0 0 30 30" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg">${symParts(type)}</svg>`;
+}
+function symParts(type){
+  switch(type){
+    case 'kast':return`<rect x="3" y="4" width="24" height="22" rx="2" fill="#1a2e4c" stroke="#d4ff00" stroke-width="2"/><line x1="3" y1="10" x2="27" y2="10" stroke="#d4ff00" stroke-width="1.5"/><rect x="6" y="13" width="7" height="4" rx="1" fill="#d4ff00" opacity=".7"/><rect x="6" y="19" width="7" height="4" rx="1" fill="#d4ff00" opacity=".7"/><rect x="16" y="13" width="8" height="10" rx="1" fill="none" stroke="#d4ff00" stroke-width="1.2" opacity=".6"/>`;
+    case 'doos':return`<circle cx="15" cy="15" r="11" fill="#0f1a28" stroke="#22ddff" stroke-width="2"/><line x1="9" y1="9" x2="21" y2="21" stroke="#22ddff" stroke-width="2"/><line x1="21" y1="9" x2="9" y2="21" stroke="#22ddff" stroke-width="2"/>`;
+    case 'lamp':return`<circle cx="15" cy="15" r="11" fill="#1a1500" stroke="#ffaa22" stroke-width="2.5"/><circle cx="15" cy="15" r="5" fill="#ffaa22"/>${[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;return`<line x1="${(15+13*Math.cos(a)).toFixed(1)}" y1="${(15+13*Math.sin(a)).toFixed(1)}" x2="${(15+17*Math.cos(a)).toFixed(1)}" y2="${(15+17*Math.sin(a)).toFixed(1)}" stroke="#ffaa22" stroke-width="1.5" opacity=".6"/>`;}).join('')}`;
+    case 'tl1':return`<rect x="2" y="12" width="26" height="6" rx="3" fill="#1a2030" stroke="#dce8f5" stroke-width="1.8"/><rect x="4" y="13.5" width="22" height="3" rx="1.5" fill="#dce8f5" opacity=".35"/><line x1="9" y1="12" x2="9" y2="8" stroke="#dce8f5" stroke-width="1.5"/><line x1="21" y1="12" x2="21" y2="8" stroke="#dce8f5" stroke-width="1.5"/><line x1="7" y1="18" x2="7" y2="22" stroke="#dce8f5" stroke-width="1.5"/><line x1="23" y1="18" x2="23" y2="22" stroke="#dce8f5" stroke-width="1.5"/>`;
+    case 'tl2':return`<rect x="2" y="9" width="26" height="5" rx="2.5" fill="#1a2030" stroke="#dce8f5" stroke-width="1.5"/><rect x="4" y="10" width="22" height="3" rx="1.5" fill="#dce8f5" opacity=".3"/><rect x="2" y="16" width="26" height="5" rx="2.5" fill="#1a2030" stroke="#dce8f5" stroke-width="1.5"/><rect x="4" y="17" width="22" height="3" rx="1.5" fill="#dce8f5" opacity=".3"/><line x1="7" y1="9" x2="7" y2="6" stroke="#dce8f5" stroke-width="1.5"/><line x1="23" y1="9" x2="23" y2="6" stroke="#dce8f5" stroke-width="1.5"/><line x1="7" y1="21" x2="7" y2="24" stroke="#dce8f5" stroke-width="1.5"/><line x1="23" y1="21" x2="23" y2="24" stroke="#dce8f5" stroke-width="1.5"/>`;
+    case 'extl':return`<rect x="1" y="10" width="28" height="10" rx="2" fill="#1a1005" stroke="#ff8833" stroke-width="2" stroke-dasharray="3 2"/><rect x="3" y="12" width="24" height="6" rx="3" fill="#1a2030" stroke="#dce8f5" stroke-width="1.5"/><rect x="5" y="13.5" width="20" height="3" rx="1.5" fill="#dce8f5" opacity=".3"/><text x="15" y="8" text-anchor="middle" font-size="5.5" fill="#ff8833" font-family="sans-serif" font-weight="700">EX</text><line x1="8" y1="18" x2="8" y2="22" stroke="#ff8833" stroke-width="1.5"/><line x1="22" y1="18" x2="22" y2="22" stroke="#ff8833" stroke-width="1.5"/>`;
+    case 'exled':return`<circle cx="15" cy="15" r="11" fill="#1a0a00" stroke="#ff8833" stroke-width="2" stroke-dasharray="3 2"/><circle cx="15" cy="15" r="6" fill="#1a2030" stroke="#ffaa22" stroke-width="1.5"/><circle cx="15" cy="15" r="3" fill="#ffaa22"/><text x="15" y="6" text-anchor="middle" font-size="4.5" fill="#ff8833" font-family="sans-serif" font-weight="700">EX</text>${[...Array(6)].map((_,i)=>{const a=i*Math.PI/3;return`<line x1="${(15+7*Math.cos(a)).toFixed(1)}" y1="${(15+7*Math.sin(a)).toFixed(1)}" x2="${(15+10*Math.cos(a)).toFixed(1)}" y2="${(15+10*Math.sin(a)).toFixed(1)}" stroke="#ffaa22" stroke-width="1.5" opacity=".6"/>`;}).join('')}`;
+    case 'strip':return`<rect x="2" y="12" width="26" height="6" rx="3" fill="#1a2010" stroke="#d4ff00" stroke-width="1.5" stroke-dasharray="5 3"/><circle cx="7" cy="15" r="2" fill="#d4ff00"/><circle cx="13" cy="15" r="2" fill="#d4ff00"/><circle cx="19" cy="15" r="2" fill="#d4ff00"/><circle cx="25" cy="15" r="2" fill="#d4ff00"/>`;
+    case 'nood':return`<rect x="2" y="9" width="26" height="12" rx="3" fill="#2a0808" stroke="#ff4455" stroke-width="2"/><text x="15" y="19" text-anchor="middle" font-size="10" fill="#ff4455" font-weight="700" font-family="sans-serif">E</text><line x1="7" y1="9" x2="4" y2="5" stroke="#ff4455" stroke-width="1.5"/><line x1="23" y1="9" x2="26" y2="5" stroke="#ff4455" stroke-width="1.5"/>`;
+    case 'buiten':return`<circle cx="15" cy="15" r="13" fill="none" stroke="#d4ff00" stroke-width="1.2" stroke-dasharray="3 2" opacity=".5"/><circle cx="15" cy="15" r="9" fill="#101a10" stroke="#d4ff00" stroke-width="2"/><circle cx="15" cy="15" r="3" fill="#d4ff00"/>`;
+    case 'schakelaar':return`<circle cx="15" cy="15" r="10" fill="#1a2030" stroke="#5a7a99" stroke-width="2"/><line x1="15" y1="5" x2="15" y2="15" stroke="#5a7a99" stroke-width="2.5" stroke-linecap="round"/><line x1="15" y1="15" x2="22" y2="22" stroke="#5a7a99" stroke-width="2" stroke-linecap="round"/>`;
+    default:return`<circle cx="15" cy="15" r="10" fill="none" stroke="#fff" stroke-width="2"/>`;
+  }
 }
 function drawSym(g,type,col){
   if(customTypes[type]){
     const icon=customTypes[type].icon||'?';
     g.appendChild(mkel('circle',{r:'12',fill:'#1a2040',stroke:col,strokeWidth:'2',cx:'0',cy:'0'}));
-    const t=mkel('text',{x:'0',y:'6','text-anchor':'middle','font-size':'14','font-family':'sans-serif'});
-    t.textContent=icon;g.appendChild(t);
-    return;
+    const t=mkel('text',{x:'0',y:'6','text-anchor':'middle','font-size':'13','font-family':'sans-serif'});
+    t.textContent=icon;g.appendChild(t);return;
   }
-  const tmp=mkel('g');tmp.innerHTML=symParts(type);
-  tmp.setAttribute('transform','translate(-15,-15)');
-  g.appendChild(tmp);
-}
-function symParts(type){
-  switch(type){
-    case 'kast': return`<rect x="3" y="4" width="24" height="22" rx="2" fill="#1a2e4c" stroke="#d4ff00" stroke-width="2"/><line x1="3" y1="10" x2="27" y2="10" stroke="#d4ff00" stroke-width="1.5"/><rect x="6" y="13" width="7" height="4" rx="1" fill="#d4ff00" opacity=".7"/><rect x="6" y="19" width="7" height="4" rx="1" fill="#d4ff00" opacity=".7"/><rect x="16" y="13" width="8" height="10" rx="1" fill="none" stroke="#d4ff00" stroke-width="1.2" opacity=".6"/>`;
-    case 'doos': return`<circle cx="15" cy="15" r="11" fill="#0f1a28" stroke="#22ddff" stroke-width="2"/><line x1="9" y1="9" x2="21" y2="21" stroke="#22ddff" stroke-width="2"/><line x1="21" y1="9" x2="9" y2="21" stroke="#22ddff" stroke-width="2"/>`;
-    case 'lamp': return`<circle cx="15" cy="15" r="11" fill="#1a1500" stroke="#ffaa22" stroke-width="2.5"/><circle cx="15" cy="15" r="5" fill="#ffaa22"/>${[...Array(8)].map((_,i)=>{const a=i*Math.PI/4;return`<line x1="${(15+13*Math.cos(a)).toFixed(1)}" y1="${(15+13*Math.sin(a)).toFixed(1)}" x2="${(15+17*Math.cos(a)).toFixed(1)}" y2="${(15+17*Math.sin(a)).toFixed(1)}" stroke="#ffaa22" stroke-width="1.5" opacity=".6"/>`;}).join('')}`;
-    // Enkele TL — één buis
-    case 'tl1': return`<rect x="2" y="12" width="26" height="6" rx="3" fill="#1a2030" stroke="#dce8f5" stroke-width="1.8"/><rect x="4" y="13.5" width="22" height="3" rx="1.5" fill="#dce8f5" opacity=".35"/><line x1="9" y1="12" x2="9" y2="8" stroke="#dce8f5" stroke-width="1.5"/><line x1="21" y1="12" x2="21" y2="8" stroke="#dce8f5" stroke-width="1.5"/><line x1="7" y1="18" x2="7" y2="22" stroke="#dce8f5" stroke-width="1.5"/><line x1="23" y1="18" x2="23" y2="22" stroke="#dce8f5" stroke-width="1.5"/>`;
-    // Dubbele TL — twee buizen
-    case 'tl2': return`<rect x="2" y="9" width="26" height="5" rx="2.5" fill="#1a2030" stroke="#dce8f5" stroke-width="1.5"/><rect x="4" y="10" width="22" height="3" rx="1.5" fill="#dce8f5" opacity=".3"/>
-      <rect x="2" y="16" width="26" height="5" rx="2.5" fill="#1a2030" stroke="#dce8f5" stroke-width="1.5"/><rect x="4" y="17" width="22" height="3" rx="1.5" fill="#dce8f5" opacity=".3"/>
-      <line x1="7" y1="9" x2="7" y2="6" stroke="#dce8f5" stroke-width="1.5"/><line x1="23" y1="9" x2="23" y2="6" stroke="#dce8f5" stroke-width="1.5"/>
-      <line x1="7" y1="21" x2="7" y2="24" stroke="#dce8f5" stroke-width="1.5"/><line x1="23" y1="21" x2="23" y2="24" stroke="#dce8f5" stroke-width="1.5"/>`;
-    // EX Armatuur TL — gestreept kader (explosieveilig)
-    case 'extl': return`<rect x="1" y="10" width="28" height="10" rx="2" fill="#1a1005" stroke="#ff8833" stroke-width="2" stroke-dasharray="3 2"/><rect x="3" y="12" width="24" height="6" rx="3" fill="#1a2030" stroke="#dce8f5" stroke-width="1.5"/><rect x="5" y="13.5" width="20" height="3" rx="1.5" fill="#dce8f5" opacity=".3"/>
-      <text x="15" y="8" text-anchor="middle" font-size="5.5" fill="#ff8833" font-family="sans-serif" font-weight="700">EX</text>
-      <line x1="8" y1="18" x2="8" y2="22" stroke="#ff8833" stroke-width="1.5"/><line x1="22" y1="18" x2="22" y2="22" stroke="#ff8833" stroke-width="1.5"/>`;
-    // EX LED — explosieveilig ronde armatuur
-    case 'exled': return`<circle cx="15" cy="15" r="11" fill="#1a0a00" stroke="#ff8833" stroke-width="2" stroke-dasharray="3 2"/>
-      <circle cx="15" cy="15" r="6" fill="#1a2030" stroke="#ffaa22" stroke-width="1.5"/>
-      <circle cx="15" cy="15" r="3" fill="#ffaa22"/>
-      <text x="15" y="6" text-anchor="middle" font-size="4.5" fill="#ff8833" font-family="sans-serif" font-weight="700">EX</text>
-      ${[...Array(6)].map((_,i)=>{const a=i*Math.PI/3;return`<line x1="${(15+7*Math.cos(a)).toFixed(1)}" y1="${(15+7*Math.sin(a)).toFixed(1)}" x2="${(15+10*Math.cos(a)).toFixed(1)}" y2="${(15+10*Math.sin(a)).toFixed(1)}" stroke="#ffaa22" stroke-width="1.5" opacity=".6"/>`;}).join('')}`;
-    case 'strip': return`<rect x="2" y="12" width="26" height="6" rx="3" fill="#1a2010" stroke="#d4ff00" stroke-width="1.5" stroke-dasharray="5 3"/><circle cx="7" cy="15" r="2" fill="#d4ff00"/><circle cx="13" cy="15" r="2" fill="#d4ff00"/><circle cx="19" cy="15" r="2" fill="#d4ff00"/><circle cx="25" cy="15" r="2" fill="#d4ff00"/>`;
-    case 'nood': return`<rect x="2" y="9" width="26" height="12" rx="3" fill="#2a0808" stroke="#ff4455" stroke-width="2"/><text x="15" y="19" text-anchor="middle" font-size="10" fill="#ff4455" font-weight="700" font-family="sans-serif">E</text><line x1="7" y1="9" x2="4" y2="5" stroke="#ff4455" stroke-width="1.5"/><line x1="23" y1="9" x2="26" y2="5" stroke="#ff4455" stroke-width="1.5"/>`;
-    case 'buiten': return`<circle cx="15" cy="15" r="13" fill="none" stroke="#d4ff00" stroke-width="1.2" stroke-dasharray="3 2" opacity=".5"/><circle cx="15" cy="15" r="9" fill="#101a10" stroke="#d4ff00" stroke-width="2"/><circle cx="15" cy="15" r="3" fill="#d4ff00"/>`;
-    case 'schakelaar': return`<circle cx="15" cy="15" r="10" fill="#1a2030" stroke="#5a7a99" stroke-width="2"/><line x1="15" y1="5" x2="15" y2="15" stroke="#5a7a99" stroke-width="2.5" stroke-linecap="round"/><line x1="15" y1="15" x2="22" y2="22" stroke="#5a7a99" stroke-width="2" stroke-linecap="round"/>`;
-    default: return`<circle cx="15" cy="15" r="10" fill="none" stroke="#fff" stroke-width="2"/>`;
-  }
+  const tmp=mkel('g');tmp.innerHTML=symParts(type);tmp.setAttribute('transform','translate(-15,-15)');g.appendChild(tmp);
 }
 
-// ── PROPERTIES PANEL ──────────────────────────────────────────────────────────
+// ── PROPERTIES PANEL ─────────────────────────────────────────────────────────
 function showRTab(t){
   ['props','list','stuk'].forEach(x=>{
     document.getElementById('rt-'+x).classList.toggle('act',x===t);
     document.getElementById('r'+x.charAt(0).toUpperCase()+x.slice(1)).style.display=x===t?'':'none';
   });
-  if(t==='stuk')renderStuk();
-  if(t==='list')renderElemList();
+  if(t==='stuk')renderStuk();if(t==='list')renderElemList();
 }
-
-function colorSwatches(currentColor, onchange){
-  const swatches=CABLE_COLORS.map(c=>`
-    <div class="cswatch ${c===currentColor?'act':''}" style="background:${c}" onclick="${onchange}('${c}')" title="${c}"></div>
-  `).join('');
-  return `<div class="color-row">${swatches}
-    <input type="color" class="cpick" value="${currentColor}" oninput="${onchange}(this.value)" title="Aangepaste kleur">
-  </div>`;
+function colorSwatches(cur,fn){
+  return`<div class="color-row">${CABLE_COLORS.map(c=>`<div class="cswatch ${c===cur?'act':''}" style="background:${c}" onclick="${fn}('${c}')"></div>`).join('')}<input type="color" class="cpick" value="${cur}" oninput="${fn}(this.value)"></div>`;
 }
-
-function setCableColor(id,col){
-  const c=cables.find(x=>x.id===id);if(!c)return;
-  c.color=col;redraw();
-  // re-render props to update swatch active state
-  renderProps();
-}
+function setCableColor(id,col){const c=cables.find(x=>x.id===id);if(!c)return;c.color=col;redraw();renderProps();}
 
 function renderProps(){
   const pane=document.getElementById('rProps');
@@ -1108,28 +1160,34 @@ function renderProps(){
 
   if(selectedId.startsWith('cable:')){
     const cid=selectedId.replace('cable:','');
-    const c=cables.find(x=>x.id===cid);
-    if(!c){pane.innerHTML='';return;}
+    const c=cables.find(x=>x.id===cid);if(!c){pane.innerHTML='';return;}
     const from=elements.find(e=>e.id===c.fromId),to=elements.find(e=>e.id===c.toId);
     const len=cLen(c).toFixed(2);
-    // expose setCableColor globally for inline onclick
-    window._setCableColor=(col)=>setCableColor(cid,col);
+    window._scCol=(col)=>setCableColor(cid,col);
+    // Direction info
+    const fromNv=niveaus.find(n=>n.id===from?.niveau);
+    const toNv=niveaus.find(n=>n.id===to?.niveau);
+    const crossInfo=fromNv&&toNv&&from?.niveau!==to?.niveau
+      ?`<div style="background:#1a0050;border:1px solid #aa55ff;padding:5px 8px;border-radius:4px;font-size:10px;margin-bottom:8px">
+          ↕ Niveau-overgang: <span style="color:#aa55ff">${fromNv.name} → ${toNv.name}</span><br>
+          Hoogteverschil: <span style="color:var(--amber)">${Math.abs(toNv.height-fromNv.height).toFixed(1)} m</span>
+        </div>`:'';
     pane.innerHTML=`
       <div class="prop-head" style="color:${c.color||'#22ddff'}">🔌 ${c.kabelnr}</div>
-      <div class="prow"><div class="plbl2">Kabelnummer</div>
+      ${crossInfo}
+      <div class="prow"><div class="plbl2">Kabelnummer / Label</div>
         <input class="pinp" value="${c.kabelnr}" oninput="cables.find(x=>x.id==='${cid}').kabelnr=this.value;redraw()">
       </div>
-      <div class="prow"><div class="plbl2">Leidingkleur</div>
-        ${colorSwatches(c.color||'#d4ff00','window._setCableColor')}
+      <div class="prow"><div class="plbl2">Richting voeding</div>
+        <div style="background:var(--blue);padding:6px 8px;border-radius:4px;font-size:11px;display:flex;align-items:center;gap:6px">
+          <span style="color:${c.color||'#fff'}">${from?from.label:'?'}</span>
+          <span style="font-size:16px">⟶</span>
+          <span style="color:${c.color||'#fff'}">${to?to.label:'?'}</span>
+        </div>
       </div>
+      <div class="prow"><div class="plbl2">Leidingkleur</div>${colorSwatches(c.color||'#d4ff00','window._scCol')}</div>
       <div class="prow"><div class="plbl2">Kabeltype</div>
         <input class="pinp" value="${c.kabeltype||''}" oninput="cables.find(x=>x.id==='${cid}').kabeltype=this.value;redraw()">
-      </div>
-      <div class="prow"><div class="plbl2">Van</div>
-        <div style="background:var(--blue);padding:5px 8px;border-radius:4px;font-size:11px;color:var(--green)">${from?`${TYPEINFO[from.type]?.icon||''} ${from.label} — ${TYPEINFO[from.type]?.lbl||from.type}`:'Onbekend'}</div>
-      </div>
-      <div class="prow"><div class="plbl2">Naar</div>
-        <div style="background:var(--blue);padding:5px 8px;border-radius:4px;font-size:11px;color:var(--green)">${to?`${TYPEINFO[to.type]?.icon||''} ${to.label} — ${TYPEINFO[to.type]?.lbl||to.type}`:'Onbekend'}</div>
       </div>
       <div class="prow"><div class="plbl2">Berekende lengte</div>
         <div style="background:var(--blue);padding:5px 8px;border-radius:4px;font-size:12px;font-weight:700;color:var(--amber)">${len} m <span style="font-size:9px;color:var(--dim);font-weight:400">(+10% = ${(+len*1.1).toFixed(2)}m)</span></div>
@@ -1142,36 +1200,40 @@ function renderProps(){
       <div class="prow"><div class="plbl2">Notitie</div>
         <input class="pinp" value="${c.notes||''}" oninput="cables.find(x=>x.id==='${cid}').notes=this.value">
       </div>
-      ${c.wpts&&c.wpts.length?`
-      <div class="prow"><div class="plbl2">Tussenpunten (${c.wpts.length}) — sleep om te verplaatsen</div>
-        ${c.wpts.map((wp,i)=>`
-        <div style="display:flex;align-items:center;gap:5px;margin-bottom:3px;font-size:10px;background:var(--blue);padding:4px 7px;border-radius:4px">
-          <div style="flex:1;color:var(--dim)">Punt ${i+1}: x${(wp.x*scale).toFixed(2)}m y${(wp.y*scale).toFixed(2)}m</div>
-          <span style="cursor:pointer;color:var(--red)" onclick="delWaypoint('${cid}',${i})" title="Verwijder punt">✕</span>
+      ${c.wpts&&c.wpts.length?`<div class="prow"><div class="plbl2">Tussenpunten (sleep om te verplaatsen)</div>
+        ${c.wpts.map((wp,i)=>`<div style="display:flex;align-items:center;gap:5px;font-size:10px;background:var(--blue);padding:3px 7px;border-radius:4px;margin-bottom:3px">
+          <div style="flex:1;color:var(--dim)">Pt${i+1}: ${(wp.x*scale).toFixed(2)}m, ${(wp.y*scale).toFixed(2)}m</div>
+          <span style="cursor:pointer;color:var(--red)" onclick="delWaypoint('${cid}',${i})">✕</span>
         </div>`).join('')}
       </div>`:''}
-      <button class="pdelbtn" onclick="delCable('${cid}')">🗑 Kabel verwijderen</button>`;
+      <button class="pdelbtn" onclick="saveHistory();delCable('${cid}')">🗑 Kabel verwijderen</button>`;
     return;
   }
 
-  const el=elements.find(e=>e.id===selectedId);
-  if(!el){pane.innerHTML='';return;}
+  const el=elements.find(e=>e.id===selectedId);if(!el){pane.innerHTML='';return;}
   const connKb=cables.filter(c=>c.fromId===el.id||c.toId===el.id);
   const rot=el.rotation||0;
-  const isArm=TYPEINFO[el.type]?.cat==='arm';
+  const isArm=allTypeInfo()[el.type]?.cat==='arm';
+  const elNv=niveaus.find(n=>n.id===el.niveau);
 
   pane.innerHTML=`
-    <div class="prop-head">${TYPEINFO[el.type]?.icon||'?'} ${TYPEINFO[el.type]?.lbl||el.type}</div>
+    <div class="prop-head">${allTypeInfo()[el.type]?.icon||'?'} ${allTypeInfo()[el.type]?.lbl||el.type}</div>
 
     <div class="prow"><div class="plbl2">Referentie / Label</div>
       <input class="pinp" value="${el.label}" oninput="onLabelChange('${el.id}',this.value)">
     </div>
 
+    <div class="prow"><div class="plbl2">Niveau / Laag</div>
+      <select class="psel" onchange="elements.find(e=>e.id==='${el.id}').niveau=this.value;redraw()">
+        ${niveaus.map(nv=>`<option value="${nv.id}" ${nv.id===el.niveau?'selected':''}>${nv.name} (${nv.height}m)</option>`).join('')}
+      </select>
+    </div>
+
     ${isArm?`
     <div class="prow"><div class="plbl2">Richting armatuur</div>
       <div class="rot-row">
-        <div class="rot-btn ${rot===0?'act':''}" onclick="setElemRot('${el.id}',0)">— Horizontaal</div>
-        <div class="rot-btn ${rot===90?'act':''}" onclick="setElemRot('${el.id}',90)">| Verticaal</div>
+        <div class="rot-btn ${rot===0?'act':''}" onclick="setElemRot('${el.id}',0)">— H</div>
+        <div class="rot-btn ${rot===90?'act':''}" onclick="setElemRot('${el.id}',90)">| V</div>
         <div class="rot-btn ${rot===45?'act':''}" onclick="setElemRot('${el.id}',45)">∕ 45°</div>
         <div class="rot-btn ${rot!==0&&rot!==90&&rot!==45?'act':''}" onclick="setElemRotCustom('${el.id}')">⟳</div>
       </div>
@@ -1181,12 +1243,16 @@ function renderProps(){
       <input class="pinp" placeholder="Bv. 24-mod Hager 3-fase" value="${el.kasttype||''}" oninput="elements.find(e=>e.id==='${el.id}').kasttype=this.value">
     </div>`:''}
 
-    ${isArm?`<div class="prow"><div class="plbl2">Armatuurtype / Omschrijving</div>
+    ${isArm?`<div class="prow"><div class="plbl2">Armatuurtype</div>
       <input class="pinp" placeholder="Bv. Philips RC127B LED 36W" value="${el.armatuurtype||''}" oninput="elements.find(e=>e.id==='${el.id}').armatuurtype=this.value">
     </div>
     <div class="prow"><div class="plbl2">Vermogen (W)</div>
       <input class="pinp" type="number" value="${el.watt||0}" oninput="elements.find(e=>e.id==='${el.id}').watt=+this.value">
     </div>`:''}
+
+    <div class="prow"><div class="plbl2">Hoogte / Niveau (m)</div>
+      <input class="pinp" type="text" placeholder="Bv. 3.50" value="${el.hoogte||''}" oninput="elements.find(e=>e.id==='${el.id}').hoogte=this.value;redraw()">
+    </div>
 
     <div class="prow"><div class="plbl2">Kring</div>
       <select class="psel" onchange="elements.find(e=>e.id==='${el.id}').circuit=this.value;redraw()">
@@ -1198,14 +1264,10 @@ function renderProps(){
       <input class="pinp" value="${el.notes||''}" oninput="elements.find(e=>e.id==='${el.id}').notes=this.value">
     </div>
 
-    <div class="prow"><div class="plbl2">Hoogte / Niveau (m)</div>
-      <input class="pinp" type="text" placeholder="Bv. 3.00 m" value="${el.hoogte||''}" oninput="elements.find(e=>e.id==='${el.id}').hoogte=this.value;redraw()">
-    </div>
-
     ${connKb.length?`<div class="plbl2" style="margin:10px 0 5px">Verbonden kabels (${connKb.length})</div>
     ${connKb.map(c=>{
       const other=elements.find(e=>e.id===(c.fromId===el.id?c.toId:c.fromId));
-      const dir=c.fromId===el.id?'→':'←';
+      const dir=c.fromId===el.id?'⟶':'⟵';
       const len=cLen(c).toFixed(2);
       return`<div style="background:var(--blue);border-left:3px solid ${c.color||'#fff'};border-radius:0 4px 4px 0;padding:5px 8px;margin-bottom:3px;font-size:10px;line-height:1.8;cursor:pointer" onclick="selectedId='cable:${c.id}';renderProps();redraw()">
         <div style="color:${c.color||'#fff'};font-weight:700">${c.kabelnr} ${dir} ${other?other.label:'?'}</div>
@@ -1214,64 +1276,54 @@ function renderProps(){
     }).join('')}`:''}
 
     <div style="display:flex;gap:5px;margin-top:8px">
-      <button class="pdelbtn" style="flex:1;margin:0" onclick="delElem('${el.id}')">🗑 Verwijder</button>
+      <button class="pdelbtn" style="flex:1;margin:0" onclick="saveHistory();delElem('${el.id}')">🗑 Verwijder</button>
       <button style="flex:1;background:var(--blue2);border:1px solid var(--border2);color:var(--text);padding:5px;border-radius:4px;cursor:pointer;font-size:11px" onclick="duplicateElem('${el.id}')">⧉ Dupliceer</button>
     </div>`;
 }
 
-function delWaypoint(cid,idx){
-  const c=cables.find(x=>x.id===cid);if(!c||!c.wpts)return;
-  c.wpts.splice(idx,1);
-  renderProps();redraw();
-}
-function setElemRot(id,deg){
-  const el=elements.find(e=>e.id===id);if(!el)return;
-  el.rotation=deg;renderProps();redraw();
-}
+function setElemRot(id,deg){const el=elements.find(e=>e.id===id);if(!el)return;saveHistory();el.rotation=deg;renderProps();redraw();}
 function setElemRotCustom(id){
   const el=elements.find(e=>e.id===id);if(!el)return;
-  const v=prompt('Hoek in graden (0-359):',String(el.rotation||0));
-  if(v===null)return;
-  el.rotation=((+v)%360+360)%360;
-  renderProps();redraw();
-}
-function duplicateElem(id){
-  const src=elements.find(e=>e.id===id);if(!src)return;
-  const nid='e'+nextId++;
-  const copy={...src,id:nid,x:src.x+30,y:src.y+30};
-  elements.push(copy);
-  selectedId=nid;renderProps();renderElemList();updateStatus();redraw();
+  const v=prompt('Hoek (0-359):',String(el.rotation||0));if(v===null)return;
+  saveHistory();el.rotation=((+v)%360+360)%360;renderProps();redraw();
 }
 
-// ── ELEMENT LIST ──────────────────────────────────────────────────────────────
+// ── ELEMENT LIST ─────────────────────────────────────────────────────────────
 function renderElemList(){
   const el=document.getElementById('rList');
   const TI=allTypeInfo();
   const order=getPaletteOrder();
-  if(!elements.length&&!cables.length){el.innerHTML='<div class="pempty">Nog geen elementen geplaatst</div>';return;}
+  if(!elements.length&&!cables.length){el.innerHTML='<div class="pempty">Nog geen elementen</div>';return;}
   let html='';
-  order.forEach(t=>{
-    const els=elements.filter(e=>e.type===t);if(!els.length)return;
-    html+=`<div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);padding:7px 0 3px;font-weight:700">${TI[t]?.lbl||t} (${els.length})</div>`;
-    els.forEach(e=>{
-      const circ=circuits.find(c=>c.id===e.circuit);
-      html+=`<div style="display:flex;align-items:center;gap:5px;padding:4px 7px;background:var(--blue);border:1px solid ${selectedId===e.id?'var(--green)':'var(--border2)'};border-radius:4px;margin-bottom:3px;cursor:pointer;font-size:11px" onclick="selectAndJump('${e.id}')">
-        <div style="width:7px;height:7px;border-radius:50%;background:${circ?circ.color:'#fff'};flex-shrink:0"></div>
-        <div style="flex:1">${e.label}</div>
-        <div style="font-size:9px;color:var(--dim);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.armatuurtype||e.kasttype||''}</div>
-        <div style="font-size:9px;color:var(--amber)">${e.watt?e.watt+'W':''}</div>
-      </div>`;
+  // Group by niveau first
+  niveaus.forEach(nv=>{
+    const nvElems=elements.filter(e=>e.niveau===nv.id);
+    if(!nvElems.length)return;
+    html+=`<div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:${nv.color};padding:7px 0 3px;font-weight:700;display:flex;align-items:center;gap:4px"><div style="width:8px;height:8px;background:${nv.color};border-radius:2px"></div>${nv.name} (${nv.height}m)</div>`;
+    order.forEach(t=>{
+      const els=nvElems.filter(e=>e.type===t);if(!els.length)return;
+      html+=`<div style="font-size:8.5px;color:var(--dim);padding:2px 6px;margin-bottom:2px">${TI[t]?.lbl||t}</div>`;
+      els.forEach(e=>{
+        const circ=circuits.find(c=>c.id===e.circuit);
+        html+=`<div style="display:flex;align-items:center;gap:4px;padding:3px 7px;background:var(--blue);border:1px solid ${selectedId===e.id?'var(--green)':'var(--border2)'};border-radius:4px;margin-bottom:2px;cursor:pointer;font-size:10px" onclick="selectAndJump('${e.id}')">
+          <div style="width:6px;height:6px;border-radius:50%;background:${circ?circ.color:'#fff'};flex-shrink:0"></div>
+          <div style="flex:1">${e.label}</div>
+          <div style="font-size:8.5px;color:var(--dim);max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.armatuurtype||e.kasttype||''}</div>
+          <div style="font-size:8.5px;color:var(--amber)">${e.watt?e.watt+'W':''}</div>
+        </div>`;
+      });
     });
   });
+  // Cables
   if(cables.length){
     html+=`<div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);padding:7px 0 3px;font-weight:700">Kabels (${cables.length})</div>`;
     cables.forEach(c=>{
       const from=elements.find(e=>e.id===c.fromId),to=elements.find(e=>e.id===c.toId);
       const len=cLen(c).toFixed(2);
-      html+=`<div style="display:flex;align-items:center;gap:5px;padding:4px 7px;background:var(--blue);border:1px solid ${selectedId==='cable:'+c.id?'var(--green)':'var(--border2)'};border-radius:4px;margin-bottom:3px;cursor:pointer;font-size:10px" onclick="selectAndJump('cable:${c.id}')">
-        <div style="width:7px;height:7px;border-radius:50%;background:${c.color||'#fff'};flex-shrink:0"></div>
+      html+=`<div style="display:flex;align-items:center;gap:4px;padding:3px 7px;background:var(--blue);border:1px solid ${selectedId==='cable:'+c.id?'var(--green)':'var(--border2)'};border-radius:4px;margin-bottom:2px;cursor:pointer;font-size:10px" onclick="selectAndJump('cable:${c.id}')">
+        <div style="width:6px;height:6px;border-radius:50%;background:${c.color||'#fff'};flex-shrink:0"></div>
         <div style="flex:1;font-weight:600">${c.kabelnr}</div>
-        <div style="color:var(--dim)">${from?from.label:'?'}→${to?to.label:'?'}</div>
+        <div style="color:var(--dim)">${from?from.label:'?'}⟶${to?to.label:'?'}</div>
         <div style="color:var(--amber);font-weight:700">${len}m</div>
       </div>`;
     });
@@ -1279,49 +1331,50 @@ function renderElemList(){
   el.innerHTML=html;
 }
 
-// ── STUKLIJST ─────────────────────────────────────────────────────────────────
+// ── STUKLIJST ────────────────────────────────────────────────────────────────
 function renderStuk(){
   const el=document.getElementById('rStuk');
-  const TI=allTypeInfo();
-  const order=getPaletteOrder();
+  const TI=allTypeInfo();const order=getPaletteOrder();
   let html=`<button class="xbtn xbtn-g" onclick="exportCSV()">⬇ Export CSV</button>
     <button class="xbtn xbtn-b" onclick="window.print()">🖨 Print</button>
-    <table class="stuk-table"><tr><th>Ref</th><th>Type</th><th>Omschrijving</th><th>Kring</th></tr>`;
-  order.forEach(t=>{
-    const els=elements.filter(e=>e.type===t);if(!els.length)return;
-    html+=`<tr><td colspan="4" class="stuk-section">${TI[t]?.lbl||t} (${els.length})</td></tr>`;
-    els.forEach(e=>{
-      const circ=circuits.find(c=>c.id===e.circuit);
-      const desc=[e.armatuurtype||e.kasttype,e.watt?e.watt+'W':'',e.hoogte?'↕'+e.hoogte+'m':'',e.notes].filter(Boolean).join(' — ')||'—';
-      html+=`<tr><td class="stuk-num">${e.label}</td><td style="font-size:9.5px">${TI[e.type]?.lbl||e.type}</td><td style="color:var(--dim);font-size:9.5px">${desc}</td><td style="color:${circ?circ.color:'#fff'};font-size:9.5px">${circ?circ.name:'?'}</td></tr>`;
+    <table class="stuk-table"><tr><th>Ref</th><th>Type</th><th>Omschrijving</th><th>Niveau</th><th>Kring</th></tr>`;
+  niveaus.forEach(nv=>{
+    const nvElems=elements.filter(e=>e.niveau===nv.id);if(!nvElems.length)return;
+    html+=`<tr><td colspan="5" class="stuk-section" style="color:${nv.color}">▲ ${nv.name} — ${nv.height}m (${nvElems.length} elem.)</td></tr>`;
+    order.forEach(t=>{
+      const els=nvElems.filter(e=>e.type===t);if(!els.length)return;
+      html+=`<tr><td colspan="5" class="stuk-section">${TI[t]?.lbl||t} (${els.length})</td></tr>`;
+      els.forEach(e=>{
+        const circ=circuits.find(c=>c.id===e.circuit);
+        const desc=[e.armatuurtype||e.kasttype,e.watt?e.watt+'W':'',e.hoogte?'↕'+e.hoogte+'m':'',e.notes].filter(Boolean).join(' — ')||'—';
+        html+=`<tr><td class="stuk-num">${e.label}</td><td style="font-size:9px">${TI[e.type]?.lbl||e.type}</td><td style="color:var(--dim);font-size:9px">${desc}</td><td style="color:${nv.color};font-size:9px">${nv.name}</td><td style="color:${circ?circ.color:'#fff'};font-size:9px">${circ?circ.name:'?'}</td></tr>`;
+      });
     });
   });
   if(cables.length){
-    html+=`<tr><td colspan="4" class="stuk-section">Kabels (${cables.length})</td></tr>`;
-    html+=`<tr><th>Nr</th><th>Type</th><th>Van→Naar</th><th>m</th></tr>`;
+    html+=`<tr><td colspan="5" class="stuk-section">Kabels (${cables.length})</td></tr>`;
+    html+=`<tr><th>Nr</th><th>Type</th><th colspan="2">Van ⟶ Naar</th><th>m</th></tr>`;
     let tot=0;const byType={};
     cables.forEach(c=>{
       const from=elements.find(e=>e.id===c.fromId),to=elements.find(e=>e.id===c.toId);
+      const fromNv=niveaus.find(n=>n.id===from?.niveau),toNv=niveaus.find(n=>n.id===to?.niveau);
       const len=cLen(c);tot+=len;
       const t=c.kabeltype||'Onbekend';byType[t]=(byType[t]||0)+len;
-      html+=`<tr><td class="stuk-num" style="color:${c.color||'var(--green)'}">${c.kabelnr}</td><td style="font-size:9px">${t}</td><td style="color:var(--dim);font-size:9px">${from?from.label:'?'}→${to?to.label:'?'}</td><td style="color:var(--amber);font-weight:600">${len.toFixed(2)}</td></tr>`;
+      const cross=from&&to&&from.niveau!==to.niveau?` ↕${Math.abs((toNv?.height||0)-(fromNv?.height||0)).toFixed(1)}m`:'';
+      html+=`<tr><td class="stuk-num" style="color:${c.color||'var(--green)'}">${c.kabelnr}</td><td style="font-size:9px">${t}</td><td colspan="2" style="color:var(--dim);font-size:9px">${from?from.label:'?'} ⟶ ${to?to.label:'?'}${cross}</td><td style="color:var(--amber);font-weight:600">${len.toFixed(2)}</td></tr>`;
     });
-    html+=`<tr><td colspan="3" style="text-align:right;color:var(--dim);font-size:9px">Totaal:</td><td style="color:var(--amber);font-weight:700">${tot.toFixed(2)} m</td></tr>`;
-    html+=`<tr><td colspan="4" class="stuk-section">Per kabeltype (+10% marge)</td></tr>`;
+    html+=`<tr><td colspan="4" style="text-align:right;color:var(--dim);font-size:9px">Totaal:</td><td style="color:var(--amber);font-weight:700">${tot.toFixed(2)} m</td></tr>`;
+    html+=`<tr><td colspan="5" class="stuk-section">Per kabeltype (+10%)</td></tr>`;
     Object.entries(byType).forEach(([t,l])=>{
-      html+=`<tr><td colspan="3" style="font-size:10px">${t}</td><td style="color:var(--amber);font-weight:600">${(l*1.1).toFixed(1)} m</td></tr>`;
+      html+=`<tr><td colspan="4">${t}</td><td style="color:var(--amber);font-weight:600">${(l*1.1).toFixed(1)} m</td></tr>`;
     });
     const totW=elements.filter(e=>e.watt).reduce((s,e)=>s+e.watt,0);
-    if(totW>0){
-      html+=`<tr><td colspan="4" class="stuk-section">Belasting</td></tr>
-        <tr><td colspan="3">Totaal vermogen</td><td style="color:var(--amber);font-weight:700">${totW} W</td></tr>
-        <tr><td colspan="3">Stroom @ 230V</td><td style="color:var(--amber);font-weight:700">${(totW/230).toFixed(2)} A</td></tr>`;
-    }
+    if(totW>0)html+=`<tr><td colspan="5" class="stuk-section">Belasting</td></tr><tr><td colspan="4">Totaal vermogen</td><td style="color:var(--amber);font-weight:700">${totW} W</td></tr><tr><td colspan="4">Stroom @ 230V</td><td style="color:var(--amber);font-weight:700">${(totW/230).toFixed(2)} A</td></tr>`;
   }
   el.innerHTML=html+'</table>';
 }
 
-// ── STATUS ────────────────────────────────────────────────────────────────────
+// ── STATUS ───────────────────────────────────────────────────────────────────
 function updateStatus(){
   document.getElementById('sbEl').textContent=elements.length+' elementen';
   document.getElementById('sbKb').textContent=cables.length+' kabels';
@@ -1330,55 +1383,58 @@ function updateStatus(){
 
 // ── SAVE / LOAD ───────────────────────────────────────────────────────────────
 function saveProject(){
-  const d={elements,cables,circuits,scale,nextId,nextKb,nextRef,
-    circTypeCounters,lastPlacedLabel,customTypes,paletteOrder};
+  const d={elements,cables,circuits,niveaus,scale,nextId,nextKb,nextRef,circTypeCounters,lastPlacedLabel,customTypes,paletteOrder,v:3};
   const blob=new Blob([JSON.stringify(d)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='verlichtingsplan.vcp';a.click();
 }
 function loadProject(){
-  const inp=document.createElement('input');inp.type='file';inp.accept='.vcp,.wcp,.json';
+  const inp=document.createElement('input');inp.type='file';inp.accept='.vcp,.json';
   inp.onchange=e=>{
     const f=e.target.files[0];if(!f)return;
     const r=new FileReader();
     r.onload=ev=>{
       try{
         const d=JSON.parse(ev.target.result);
-        elements=d.elements||[];cables=d.cables||[];circuits=d.circuits||circuits;scale=d.scale||0.05;
+        elements=d.elements||[];cables=d.cables||[];circuits=d.circuits||circuits;
+        niveaus=d.niveaus||niveaus;scale=d.scale||0.066;
         nextId=d.nextId||elements.length+1;nextKb=d.nextKb||cables.length+1;
         if(d.nextRef)nextRef=d.nextRef;
         if(d.circTypeCounters)circTypeCounters=d.circTypeCounters;
         if(d.lastPlacedLabel)lastPlacedLabel=d.lastPlacedLabel;
         if(d.customTypes)customTypes=d.customTypes;
         if(d.paletteOrder)paletteOrder=d.paletteOrder;
-        // patch missing fields on old saves
-        circuits.forEach(c=>{if(c.kabelnr===undefined)c.kabelnr='';});
-        elements.forEach(e=>{if(e.hoogte===undefined)e.hoogte='';});
+        // patch missing fields
+        circuits.forEach(c=>{if(!c.kabelnr)c.kabelnr='';});
+        elements.forEach(e=>{if(!e.hoogte)e.hoogte='';if(!e.niveau)e.niveau=niveaus[0]?.id||'nv0';if(!e.wpts)e.wpts=[];});
         cables.forEach(c=>{if(!c.wpts)c.wpts=[];});
-        document.getElementById('scaleInput').value=scale;
-        buildPalette();renderCircuits();renderElemList();renderProps();redraw();
-        alert('Project geladen.\nUpload het grondplan opnieuw als het ontbreekt.');
-      }catch(err){alert('Fout bij laden: '+err.message);}
+        document.getElementById('scaleRatio').value=Math.round(scale*96/25.4*2*1000)||500;
+        applyScalePreset();
+        buildPalette();renderNiveaus();renderCircuits();renderElemList();renderProps();redraw();
+        alert('Project geladen.\nUpload het grondplan opnieuw.');
+      }catch(err){alert('Fout: '+err.message);}
     };
     r.readAsText(f);
   };
   inp.click();
 }
 function exportCSV(){
-  const TI=allTypeInfo();
-  const order=getPaletteOrder();
-  let csv='ELEMENTEN\nType;Referentie;Omschrijving;Richting;Hoogte(m);Kring;Kring-kabelnr;Vermogen(W)\n';
-  order.forEach(t=>{
-    elements.filter(e=>e.type===t).forEach(e=>{
-      const circ=circuits.find(c=>c.id===e.circuit);
-      csv+=`${TI[e.type]?.lbl||e.type};${e.label};${e.armatuurtype||e.kasttype||e.notes||''};${e.rotation||0}°;${e.hoogte||''};${circ?circ.name:''};${circ?circ.kabelnr||'':''};${e.watt||0}\n`;
+  const TI=allTypeInfo();const order=getPaletteOrder();
+  let csv='ELEMENTEN\nType;Referentie;Omschrijving;Niveau;Hoogte(m);Kring;Kring-kabelnr;Richting;Vermogen(W)\n';
+  niveaus.forEach(nv=>{
+    order.forEach(t=>{
+      elements.filter(e=>e.type===t&&e.niveau===nv.id).forEach(e=>{
+        const circ=circuits.find(c=>c.id===e.circuit);
+        csv+=`${TI[e.type]?.lbl||e.type};${e.label};${e.armatuurtype||e.kasttype||''};${nv.name};${e.hoogte||nv.height};${circ?circ.name:''};${circ?circ.kabelnr||'':''};${e.rotation||0}°;${e.watt||0}\n`;
+      });
     });
   });
-  csv+='\nKABELS\nKabelnr;Kleur;Kabeltype;Van;Naar;Lengte(m);+10%(m);Kring;Notitie\n';
+  csv+='\nKABELS\nKabelnr;Kleur;Kabeltype;Van;Van-niveau;Naar;Naar-niveau;Lengte(m);+10%(m);Kring\n';
   cables.forEach(c=>{
     const from=elements.find(e=>e.id===c.fromId),to=elements.find(e=>e.id===c.toId);
+    const fromNv=niveaus.find(n=>n.id===from?.niveau),toNv=niveaus.find(n=>n.id===to?.niveau);
     const len=cLen(c).toFixed(2);
     const circ=circuits.find(ci=>ci.id===c.circuit);
-    csv+=`${c.kabelnr};${c.color||''};${c.kabeltype||''};${from?from.label:''};${to?to.label:''};${len};${(+len*1.1).toFixed(2)};${circ?circ.name:''};${c.notes||''}\n`;
+    csv+=`${c.kabelnr};${c.color||''};${c.kabeltype||''};${from?from.label:''};${fromNv?fromNv.name:''};${to?to.label:''};${toNv?toNv.name:''};${len};${(+len*1.1).toFixed(2)};${circ?circ.name:''}\n`;
   });
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='verlichtingsplan.csv';a.click();
