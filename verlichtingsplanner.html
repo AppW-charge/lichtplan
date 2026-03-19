@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verlichtingsplanner / Zoeker</title>
+<title>Verlichtingsplanner / Zoeker v5</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Figtree:wght@300;400;500;600&display=swap');
@@ -301,8 +301,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/p
 
 // ── STATE ────────────────────────────────────────────────────────────────────
 let EL=[],KB=[];
-let circuits=[{id:'c1',name:'Kring 1',kabelnr:'',color:'#d4ff00'},{id:'c2',name:'Kring 2',kabelnr:'',color:'#22ddff'},{id:'c3',name:'Kring 3',kabelnr:'',color:'#ff8833'}];
-let niveaus=[{id:'nv0',name:'Gelijkvloers',height:0,color:'#4488ff',visible:true},{id:'nv1',name:'Op tanks',height:4,color:'#ff8833',visible:true}];
+let circuits=[{id:'c1',name:'Kring 1',kabelnr:'',color:'#4dabf7'},{id:'c2',name:'Kring 2',kabelnr:'',color:'#74c0fc'},{id:'c3',name:'Kring 3',kabelnr:'',color:'#fd7e14'}];
+let niveaus=[{id:'nv0',name:'Gelijkvloers',height:0,color:'#4488ff',visible:true},{id:'nv1',name:'Op tanks',height:4,color:'#fd7e14',visible:true}];
 let ktypes=['NYM-J 3x1.5mm²','NYM-J 3x2.5mm²','NYM-J 5x1.5mm²','NYM-J 5x2.5mm²','XVB 3G1.5mm²','XVB 3G2.5mm²','XVB 5G1.5mm²','XVB 5G2.5mm²','VVMB 3x1.5mm²','VVMB 5x1.5mm²','EXVB 3G1.5mm²','EXVB 3G2.5mm²'];
 let activeKT=ktypes[0],activeCircuit='c1',activeNiveau='nv0',selId=null,hlId=null;
 let nxId=1,nxKb=1,nxRef={kast:1,doos:1,lamp:1,tl1:1,tl2:1,extl:1,exled:1,strip:1,nood:1,buiten:1,sch:1};
@@ -317,9 +317,9 @@ let ortho=false;
 let undoStack=[];
 let pdfDoc=null,pdfPg=1,pdfTotal=1;
 const HR=20;
-const CCOLS=['#d4ff00','#22ddff','#ff8833','#ff4455','#aa55ff','#55ff88','#ff55aa','#ffffff','#ffdd00','#88ccff'];
-const NCOLS=['#4488ff','#ff8833','#ff4455','#aa55ff','#22ddff','#55ff88','#ffdd00','#ff88cc'];
-const CIRCOLS=['#d4ff00','#22ddff','#ff8833','#ff4455','#aa55ff','#55ff88','#ff55aa','#ffdd00'];
+const CCOLS=['#4dabf7','#74c0fc','#fd7e14','#fa5252','#9b59b6','#2ecc71','#e67e22','#ffffff','#3498db','#1abc9c'];
+const NCOLS=['#4488ff','#fd7e14','#fa5252','#9b59b6','#74c0fc','#2ecc71','#f39c12','#e91e8c'];
+const CIRCOLS=['#4dabf7','#74c0fc','#fd7e14','#fa5252','#9b59b6','#2ecc71','#e67e22','#3498db'];
 
 const TI={
   kast:{lbl:'Verdeelkast',ref:'K',cat:'i'},doos:{lbl:'Aansluitdoos',ref:'AD',cat:'i'},
@@ -422,11 +422,11 @@ function openSymPicker(cb){
       <div class="mgrid">`;
     SYMDB[curCat].forEach(s=>{
       h+=`<div class="msym" onclick="window._ms('${s.id}')" onmouseenter="window._mh('${s.id}')">
-        <svg viewBox="-16 -16 32 32" width="28" height="28">${s.p('#d4ff00')}</svg>
+        <svg viewBox="-16 -16 32 32" width="28" height="28">${s.p('#4dabf7')}</svg>
         <div class="mtt">${s.n}</div></div>`;
     });
     h+=`</div>`;
-    if(prev)h+=`<div class="mprev"><svg viewBox="-16 -16 32 32">${prev.p('#d4ff00')}</svg><div class="mpn">${prev.n}</div></div>`;
+    if(prev)h+=`<div class="mprev"><svg viewBox="-16 -16 32 32">${prev.p('#4dabf7')}</svg><div class="mpn">${prev.n}</div></div>`;
     h+=`<div style="font-size:10px;color:var(--dim)">Klik om te selecteren · of sluit</div></div>`;
     m.innerHTML=h;
   }
@@ -601,7 +601,7 @@ function finCable(toId){
   const circ=circuits.find(c=>c.id===activeCircuit);
   const id='kb'+nxKb++;
   const kn=circ?.kabelnr?circ.kabelnr:'KB'+String(nxKb-1).padStart(2,'0');
-  KB.push({id,fromId:cPend.fromId,toId,wpts:cPend.pts.slice(1),kabeltype:activeKT,kabelnr:kn,color:circ?circ.color:'#d4ff00',circuit:activeCircuit,notes:''});
+  KB.push({id,fromId:cPend.fromId,toId,wpts:cPend.pts.slice(1),kabeltype:activeKT,kabelnr:kn,color:circ?circ.color:'#4dabf7',circuit:activeCircuit,notes:''});
   cPend=null;selId='k:'+id;renderP();renderList();updSt();redraw();
 }
 function delEl(id){EL=EL.filter(e=>e.id!==id);KB=KB.filter(c=>c.fromId!==id&&c.toId!==id);if(selId===id)selId=null;renderP();renderList();updSt();redraw();}
@@ -726,7 +726,7 @@ function redraw(){
   const shA=document.getElementById('shA')?.checked??true;
 
   const defs=mkel('defs');
-  [...new Set(KB.map(c=>c.color||'#d4ff00'))].forEach(col=>{
+  [...new Set(KB.map(c=>c.color||'#4dabf7'))].forEach(col=>{
     const cid='arr'+col.replace(/[^a-zA-Z0-9]/g,'');
     const mk=mkel('marker',{id:cid,markerWidth:'8',markerHeight:'6',refX:'7',refY:'3',orient:'auto'});
     mk.appendChild(mkel('polygon',{points:'0 0,8 3,0 6',fill:col,opacity:'.95'}));defs.appendChild(mk);
@@ -741,7 +741,7 @@ function redraw(){
     const pts=cPts(c);if(pts.length<2)return;
     const fEl=EL.find(e=>e.id===c.fromId),tEl=EL.find(e=>e.id===c.toId);
     const isSel=selId==='k:'+c.id,isHL=hlId==='k:'+c.id;
-    const col=c.color||'#d4ff00';const cid='arr'+col.replace(/[^a-zA-Z0-9]/g,'');
+    const col=c.color||'#4dabf7';const cid='arr'+col.replace(/[^a-zA-Z0-9]/g,'');
     const d=pts.map((p,i)=>(i===0?`M${p.x} ${p.y}`:`L${p.x} ${p.y}`)).join(' ');
     const cross=fEl&&tEl&&fEl.niveau!==tEl.niveau;
     svg.appendChild(mkel('path',{d,stroke:'#000',strokeWidth:'5',fill:'none',opacity:'.15',strokeLinecap:'round',strokeLinejoin:'round'}));
@@ -780,7 +780,7 @@ function redraw(){
     if(!shA&&nv&&!nv.visible)return;
     const isAct=el.niveau===activeNiveau,isSel=selId===el.id,isHL=hlId===el.id;
     const circ=circuits.find(c=>c.id===el.circuit);
-    const col=el.colOv||(circ?circ.color:'#d4ff00');
+    const col=el.colOv||(circ?circ.color:'#4dabf7');
     const nvCol=nv?nv.color:'#888';
     const rot=el.rotation||0,sz=el.size||1,op=isAct?1:0.45;
 
@@ -824,7 +824,7 @@ function showTab(t){
   if(t==='stuk')renderStuk();if(t==='list')renderList();
 }
 function cSw(cur,fn){
-  return`<div class="csrow">${CCOLS.map(c=>`<div class="csw ${c.toLowerCase()===cur?.toLowerCase()?'on':''}" style="background:${c}" onclick="(${fn})('${c}')"></div>`).join('')}<input type="color" class="cpick" value="${cur||'#d4ff00'}" oninput="(${fn})(this.value)"></div>`;
+  return`<div class="csrow">${CCOLS.map(c=>`<div class="csw ${c.toLowerCase()===cur?.toLowerCase()?'on':''}" style="background:${c}" onclick="(${fn})('${c}')"></div>`).join('')}<input type="color" class="cpick" value="${cur||'#4dabf7'}" oninput="(${fn})(this.value)"></div>`;
 }
 function setKbCol(id,col){const c=KB.find(x=>x.id===id);if(!c)return;c.color=col;redraw();renderP();}
 function setElCol(id,col){const el=EL.find(x=>x.id===id);if(!el)return;el.colOv=col;redraw();renderP();}
@@ -837,11 +837,11 @@ function renderP(){
     const fr=EL.find(e=>e.id===c.fromId),to=EL.find(e=>e.id===c.toId);
     const len=cLen(c).toFixed(2);const frNv=niveaus.find(n=>n.id===fr?.niveau),toNv=niveaus.find(n=>n.id===to?.niveau);
     const cross=fr&&to&&fr.niveau!==to.niveau;
-    pane.innerHTML=`<div class="ph" style="color:${c.color||'#22ddff'}">🔌 ${c.kabelnr}</div>
+    pane.innerHTML=`<div class="ph" style="color:${c.color||'#74c0fc'}">🔌 ${c.kabelnr}</div>
       ${cross?`<div style="background:rgba(80,0,150,.3);border:1px solid #aa55ff;padding:5px 8px;border-radius:4px;font-size:10px;margin-bottom:8px">↕ ${frNv?.name} → ${toNv?.name} · ${Math.abs((toNv?.height||0)-(frNv?.height||0)).toFixed(1)}m</div>`:''}
       <div class="pr"><div class="pl">Kabelnummer</div><input class="pi" value="${c.kabelnr}" oninput="KB.find(x=>x.id==='${cid}').kabelnr=this.value;redraw()"></div>
       <div class="pr"><div class="pl">Richting</div><div style="background:var(--blue);padding:5px 8px;border-radius:4px;font-size:11px;display:flex;align-items:center;gap:8px"><b style="color:${c.color||'#fff'}">${fr?.label||'?'}</b><span style="font-size:16px">⟶</span><b style="color:${c.color||'#fff'}">${to?.label||'?'}</b></div></div>
-      <div class="pr"><div class="pl">Leidingkleur</div>${cSw(c.color||'#d4ff00',`function(col){setKbCol('${cid}',col)}`)}</div>
+      <div class="pr"><div class="pl">Leidingkleur</div>${cSw(c.color||'#4dabf7',`function(col){setKbCol('${cid}',col)}`)}</div>
       <div class="pr"><div class="pl">Kabeltype</div><input class="pi" value="${c.kabeltype||''}" oninput="KB.find(x=>x.id==='${cid}').kabeltype=this.value;redraw()"></div>
       <div class="pr"><div class="pl">Lengte</div><div style="background:var(--blue);padding:5px 8px;border-radius:4px;font-size:12px;font-weight:700;color:var(--amber)">${len}m <span style="font-size:9px;color:var(--dim);font-weight:400">(+10% = ${(+len*1.1).toFixed(2)}m)</span></div></div>
       <div class="pr"><div class="pl">Kring</div><select class="ps" onchange="const c2=KB.find(x=>x.id==='${cid}');c2.circuit=this.value;const ci=circuits.find(ci=>ci.id===this.value);if(ci)c2.color=ci.color;renderP();redraw()">${circuits.map(ci=>`<option value="${ci.id}" ${ci.id===c.circuit?'selected':''}>${ci.name}</option>`).join('')}</select></div>
@@ -852,7 +852,7 @@ function renderP(){
   }
   const el=EL.find(e=>e.id===selId);if(!el){pane.innerHTML='';return;}
   const T=ati();const isArm=T[el.type]?.cat==='a';const rot=el.rotation||0;
-  const circ=circuits.find(c=>c.id===el.circuit);const elCol=el.colOv||(circ?circ.color:'#d4ff00');const eid=el.id;
+  const circ=circuits.find(c=>c.id===el.circuit);const elCol=el.colOv||(circ?circ.color:'#4dabf7');const eid=el.id;
   const connKb=KB.filter(c=>c.fromId===el.id||c.toId===el.id);
   pane.innerHTML=`<div class="ph">${T[el.type]?.lbl||el.type}</div>
     <div class="pr"><div class="pl">Referentie / Label</div><input class="pi" value="${el.label}" oninput="onLblCh('${eid}',this.value)"></div>
