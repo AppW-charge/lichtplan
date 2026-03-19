@@ -1,0 +1,7 @@
+name = "lichtplan"
+compatibility_date = "2025-09-27"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "."
+not_found_handling = "single-page-application"
