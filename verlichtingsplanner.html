@@ -306,6 +306,7 @@ let niveaus=[{id:'nv0',name:'Gelijkvloers',height:0,color:'#4488ff',visible:true
 let ktypes=['NYM-J 3x1.5mm²','NYM-J 3x2.5mm²','NYM-J 5x1.5mm²','NYM-J 5x2.5mm²','XVB 3G1.5mm²','XVB 3G2.5mm²','XVB 5G1.5mm²','XVB 5G2.5mm²','VVMB 3x1.5mm²','VVMB 5x1.5mm²','EXVB 3G1.5mm²','EXVB 3G2.5mm²'];
 let activeKT=ktypes[0],activeCircuit='c1',activeNiveau='nv0',selId=null,hlId=null;
 let nxId=1,nxKb=1,nxRef={kast:1,doos:1,lamp:1,tl1:1,tl2:1,extl:1,exled:1,strip:1,nood:1,buiten:1,sch:1};
+let defaultSize=1; // remembered symbol size
 let circTC={},lastLbl={},ctypes={},palOrder=['kast','doos','lamp','tl1','tl2','extl','exled','strip','nood','buiten','sch'];
 let scale=0.066;
 let vx=60,vy=60,vz=1,isPan=false,psx=0,psy=0;
@@ -351,7 +352,12 @@ function SP(t,c){
   }
 }
 function svgPal(t,sz){
-  const col='#c8dff0'; // soft light blue-white — clearly visible on dark bg
+  const cols={
+    kast:'#d4ff00', doos:'#22ddff', lamp:'#ffaa22', tl1:'#e8f0ff',
+    tl2:'#c8d8ff', extl:'#ff8833', exled:'#ff6622', strip:'#d4ff00',
+    nood:'#ff4455', buiten:'#55ff88', sch:'#aaaacc',
+  };
+  const col=cols[t]||'#c8dff0';
   if(ctypes[t]){const ico=ctypes[t].icon||'?';return`<svg viewBox="-16 -16 32 32" width="${sz}" height="${sz}"><circle r="12" fill="#0d1b2a" stroke="${col}" stroke-width="2"/><text x="0" y="5" text-anchor="middle" font-size="12" font-family="sans-serif">${ico}</text></svg>`;}
   return`<svg viewBox="-16 -16 32 32" width="${sz}" height="${sz}">${SP(t,col)}</svg>`;
 }
@@ -589,7 +595,7 @@ function placeEl(wx,wy){
   else if(circ?.kabelnr){circTC[lk]=(circTC[lk]||0)+1;lbl=circ.kabelnr+'.'+(T[t]?.ref||'X')+'.'+String(circTC[lk]).padStart(2,'0');}
   else{lbl=(T[t]?.ref||'X')+String(nxRef[t]++).padStart(2,'0');}
   lastLbl[lk]=lbl;
-  EL.push({id,type:t,x:wx,y:wy,label:lbl,circuit:activeCircuit,niveau:activeNiveau,watt:0,notes:'',armatuurtype:'',kasttype:'',rotation:0,hoogte:'',colOv:null,size:1});
+  EL.push({id,type:t,x:wx,y:wy,label:lbl,circuit:activeCircuit,niveau:activeNiveau,watt:0,notes:'',armatuurtype:'',kasttype:'',rotation:0,hoogte:'',colOv:null,size:defaultSize});
   selId=id;renderP();renderList();updSt();redraw();
 }
 function incLbl(l){const m=l.match(/^(.*?)(\d+)([^\d]*)$/);if(!m)return l+'_2';return m[1]+String(parseInt(m[2])+1).padStart(m[2].length,'0')+m[3];}
@@ -858,7 +864,7 @@ function renderP(){
     <div class="pr"><div class="pl">Referentie / Label</div><input class="pi" value="${el.label}" oninput="onLblCh('${eid}',this.value)"></div>
     <div class="pr"><div class="pl">Symboolkleur</div>${cSw(elCol,`function(col){setElCol('${eid}',col)}`)}
       <button style="margin-top:4px;background:none;border:1px solid var(--border2);color:var(--dim);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:9px" onclick="clrElCol('${eid}')">↩ Kringkleur</button></div>
-    <div class="pr"><div class="pl">Symboolgrootte</div><div style="display:flex;align-items:center;gap:6px"><input type="range" min="0.5" max="3" step="0.1" value="${el.size||1}" style="flex:1" oninput="EL.find(e=>e.id==='${eid}').size=+this.value;this.nextElementSibling.textContent=Math.round(+this.value*100)+'%';redraw()"><span style="font-size:10px;color:var(--amber);min-width:34px">${Math.round((el.size||1)*100)}%</span></div></div>
+    <div class="pr"><div class="pl">Symboolgrootte</div><div style="display:flex;align-items:center;gap:6px"><input type="range" min="0.5" max="3" step="0.1" value="${el.size||1}" style="flex:1" oninput="const _e=EL.find(e=>e.id==='${eid}');if(_e){_e.size=+this.value;defaultSize=+this.value;this.nextElementSibling.textContent=Math.round(+this.value*100)+'%';redraw()}"><span style="font-size:10px;color:var(--amber);min-width:34px">${Math.round((el.size||1)*100)}%</span></div><div style="font-size:9px;color:var(--dim);margin-top:2px">Nieuwe elementen gebruiken ook deze grootte</div></div>
     <div class="pr"><div class="pl">Niveau</div><select class="ps" onchange="EL.find(e=>e.id==='${eid}').niveau=this.value;redraw()">${niveaus.map(nv=>`<option value="${nv.id}" ${nv.id===el.niveau?'selected':''}>${nv.name} (${nv.height}m)</option>`).join('')}</select></div>
     ${isArm?`<div class="pr"><div class="pl">Richting</div><div class="rr"><div class="rb ${rot===0?'act':''}" onclick="setR('${eid}',0)">—H</div><div class="rb ${rot===90?'act':''}" onclick="setR('${eid}',90)">|V</div><div class="rb ${rot===45?'act':''}" onclick="setR('${eid}',45)">∕45</div><div class="rb ${rot!==0&&rot!==90&&rot!==45?'act':''}" onclick="setRF('${eid}')">⟳</div></div></div>`:''}
     ${el.type==='kast'?`<div class="pr"><div class="pl">Kastomschrijving</div><input class="pi" placeholder="Bv. 24-mod Hager" value="${el.kasttype||''}" oninput="EL.find(e=>e.id==='${eid}').kasttype=this.value"></div>`:''}
@@ -921,7 +927,7 @@ function updSt(){document.getElementById('sbe').textContent=EL.length+' elemente
 
 // ── SAVE/LOAD/EXPORT ──────────────────────────────────────────────────────────
 function saveProj(){
-  const d={EL,KB,circuits,niveaus,ktypes,activeKT,scale,nxId,nxKb,nxRef,circTC,lastLbl,ctypes,palOrder,v:5};
+  const d={EL,KB,circuits,niveaus,ktypes,activeKT,scale,nxId,nxKb,nxRef,circTC,lastLbl,ctypes,palOrder,defaultSize,v:5};
   const blob=new Blob([JSON.stringify(d)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='verlichtingsplan.vcp';a.click();
 }
 function loadProj(){
@@ -931,7 +937,7 @@ function loadProj(){
       EL=d.EL||[];KB=d.KB||[];circuits=d.circuits||circuits;niveaus=d.niveaus||niveaus;
       if(d.ktypes)ktypes=d.ktypes;if(d.activeKT)activeKT=d.activeKT;
       scale=d.scale||0.066;nxId=d.nxId||EL.length+1;nxKb=d.nxKb||KB.length+1;
-      if(d.nxRef)nxRef=d.nxRef;if(d.circTC)circTC=d.circTC;if(d.lastLbl)lastLbl=d.lastLbl;if(d.ctypes)ctypes=d.ctypes;if(d.palOrder)palOrder=d.palOrder;
+      if(d.nxRef)nxRef=d.nxRef;if(d.circTC)circTC=d.circTC;if(d.lastLbl)lastLbl=d.lastLbl;if(d.ctypes)ctypes=d.ctypes;if(d.palOrder)palOrder=d.palOrder;if(d.defaultSize)defaultSize=d.defaultSize;
       circuits.forEach(c=>{if(!c.kabelnr)c.kabelnr='';});EL.forEach(e=>{if(!e.hoogte)e.hoogte='';if(!e.niveau)e.niveau=niveaus[0]?.id||'nv0';if(!e.wpts)e.wpts=[];if(e.size===undefined)e.size=1;});KB.forEach(c=>{if(!c.wpts)c.wpts=[];});
       document.getElementById('scR').value=Math.round(scale*96/25.4*2*1000)||500;applyScale();
       buildPal();renderNiv();renderCirc();renderKT();renderList();renderP();redraw();
