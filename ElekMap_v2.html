@@ -1,0 +1,2184 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ElekMap v2 — Industrieel Installatieplan</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;font-family:'Segoe UI',system-ui,sans-serif;background:#0b1120;color:#e2e8f0;font-size:13px;user-select:none}
+:root{
+  --bg:#0b1120;--bg2:#111827;--bg3:#1e293b;--bg4:#263348;--bg5:#334155;
+  --br:#1e2d45;--br2:#2d4060;--text:#e2e8f0;--dim:#94a3b8;--dim2:#64748b;
+  --blue:#3b82f6;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7;
+  --teal:#34d399;--cyan:#06b6d4;
+  --lp-w:280px; --rp-w:300px;
+}
+
+#app{display:flex;flex-direction:column;height:100vh}
+
+/* ── TOP BAR ── */
+#topbar{height:44px;background:var(--bg2);border-bottom:1px solid var(--br);display:flex;align-items:center;gap:4px;padding:0 8px;flex-shrink:0;z-index:100}
+.logo{font-size:16px;font-weight:900;color:#60a5fa;letter-spacing:-.5px;margin-right:2px;white-space:nowrap;flex-shrink:0}
+.logo em{color:var(--amber);font-style:normal}
+.tbdiv{width:1px;height:22px;background:var(--br2);flex-shrink:0;margin:0 3px}
+
+/* TABS */
+#tabs{display:flex;gap:2px;flex-shrink:0}
+.tabt{padding:4px 10px;border-radius:5px 5px 0 0;border:1px solid transparent;border-bottom:none;background:transparent;color:var(--dim);font-size:11px;font-weight:600;cursor:pointer;transition:all .1s;white-space:nowrap;position:relative;top:1px}
+.tabt:hover{color:var(--text);background:var(--bg3)}
+.tabt.on{background:var(--bg);border-color:var(--br);color:var(--text);border-bottom-color:var(--bg)}
+
+/* LAYER DROPDOWN */
+#laagwrap{display:flex;align-items:center;gap:5px;flex-shrink:0}
+#laagwrap label{font-size:10px;color:var(--dim2);white-space:nowrap}
+#laagsel{background:var(--bg3);border:1px solid var(--br);border-radius:5px;color:var(--text);font-size:11px;padding:3px 6px;outline:none;cursor:pointer}
+.ib{padding:3px 7px;border-radius:4px;border:1px solid var(--br);background:var(--bg3);color:var(--dim);font-size:10px;cursor:pointer;white-space:nowrap;transition:all .1s}
+.ib:hover{background:var(--bg4);color:var(--text)}
+.ib.on{background:#1d4ed8;border-color:var(--blue);color:#fff}
+
+/* SEARCH */
+#qs{position:relative;flex:1;max-width:260px}
+#qsi{width:100%;padding:4px 8px 4px 26px;background:var(--bg3);border:1px solid var(--br);border-radius:5px;color:var(--text);font-size:11px;outline:none}
+#qsi:focus{border-color:var(--blue)}
+#qs .sico{position:absolute;left:7px;top:50%;transform:translateY(-50%);color:var(--dim2);pointer-events:none;font-size:11px}
+#qsdrop{position:absolute;top:calc(100%+4px);left:0;right:0;background:var(--bg2);border:1px solid var(--br2);border-radius:7px;max-height:260px;overflow-y:auto;z-index:999;display:none;box-shadow:0 8px 24px rgba(0,0,0,.6)}
+#qsdrop.on{display:block}
+.qri{padding:6px 10px;cursor:pointer;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--br)}
+.qri:last-child{border-bottom:none}
+.qri:hover{background:var(--bg3)}
+.qri .qt{font-size:11px;font-weight:700;min-width:90px}
+.qri .qd{font-size:10px;color:var(--dim);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qri .qtp{font-size:9px;padding:1px 4px;border-radius:3px;background:var(--bg4);color:var(--dim)}
+
+#tbstatus{font-size:10px;color:var(--dim2);margin-left:auto;white-space:nowrap;flex-shrink:0}
+
+/* ── MAIN ── */
+#main{display:flex;flex:1;overflow:hidden}
+
+/* ── LEFT PANEL ── */
+#lp{width:var(--lp-w);min-width:160px;max-width:520px;background:var(--bg2);border-right:1px solid var(--br);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0;position:relative;transition:width .0s}
+#lp-handle{position:absolute;right:0;top:0;bottom:0;width:5px;cursor:col-resize;z-index:10;background:transparent}
+#lp-handle:hover{background:var(--blue);opacity:.3}
+.ph{padding:6px 10px;font-size:9px;font-weight:700;color:var(--dim2);text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:var(--bg2)}
+.ph button{font-size:9px;padding:1px 5px;border-radius:3px;border:1px solid var(--br);background:var(--bg3);color:var(--dim);cursor:pointer}
+.ph button:hover{background:var(--bg4);color:var(--text)}
+
+/* QUICK PALETTE */
+#qp{padding:5px 6px;border-bottom:1px solid var(--br);flex-shrink:0}
+#qpgrid{display:flex;flex-wrap:wrap;gap:2px}
+.qpbtn{padding:3px 4px;border-radius:4px;border:1px solid var(--br);background:var(--bg3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;min-width:44px;flex:1;transition:all .1s}
+.qpbtn:hover{background:var(--bg4);border-color:var(--br2)}
+.qpbtn.active{background:rgba(59,130,246,.2);border-color:var(--blue)}
+.qpbtn span{font-size:8px;color:var(--dim);text-align:center;line-height:1.2;max-width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qpbtn.compact span{display:none}
+
+/* DB LIST */
+#dbsrch{padding:5px 8px;background:var(--bg3);border:none;border-bottom:1px solid var(--br);color:var(--text);font-size:11px;outline:none;width:100%;flex-shrink:0}
+#dbsrch::placeholder{color:var(--dim2)}
+#dbzone{padding:4px 8px;background:var(--bg3);border:none;border-bottom:1px solid var(--br);color:var(--text);font-size:10px;outline:none;width:100%;cursor:pointer;flex-shrink:0}
+#dbl{flex:1;overflow-y:auto;padding:2px}
+.dbi{display:flex;align-items:center;gap:5px;padding:4px 5px;border-radius:4px;cursor:pointer;border:1px solid transparent;margin-bottom:1px;transition:background .1s}
+.dbi:hover{background:var(--bg3);border-color:var(--br)}
+.dbi.placed{opacity:.45}
+.dico{width:22px;height:22px;border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.dinf{flex:1;min-width:0}
+.dtag{font-size:11px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dsub{font-size:9px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dkst{font-size:9px;color:var(--dim2);flex-shrink:0;max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#dbfoot{padding:3px 8px;font-size:9px;color:var(--dim2);border-top:1px solid var(--br);text-align:center;flex-shrink:0}
+
+/* ── CANVAS ── */
+#cw{flex:1;position:relative;overflow:hidden;background:#060c18;min-width:200px}
+#cv{position:absolute;inset:0;overflow:hidden}
+#vp{position:absolute;transform-origin:0 0;will-change:transform}
+#planC{display:block}
+#svg{position:absolute;top:0;left:0;overflow:visible;pointer-events:all}
+
+/* MODE BUTTONS */
+#mb{position:absolute;left:8px;top:8px;display:flex;flex-direction:column;gap:3px;z-index:50}
+.mbtn{width:32px;height:32px;border-radius:6px;border:1px solid var(--br2);background:rgba(17,24,39,.92);color:var(--text);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.4);transition:all .1s;position:relative}
+.mbtn:hover,.mbtn.on{background:#1d4ed8;border-color:var(--blue)}
+.tip{position:absolute;left:40px;top:50%;transform:translateY(-50%);background:var(--bg2);border:1px solid var(--br2);padding:3px 7px;border-radius:4px;font-size:10px;white-space:nowrap;color:var(--text);opacity:0;pointer-events:none;transition:opacity .15s;z-index:100}
+.mbtn:hover .tip{opacity:1}
+
+/* HUDs */
+.hud{position:absolute;top:8px;left:50%;transform:translateX(-50%);border-radius:6px;padding:5px 12px;font-size:11px;z-index:200;display:none;pointer-events:none;white-space:nowrap}
+#chud{background:rgba(17,24,39,.95);border:1px solid var(--amber);color:var(--amber)}
+#lhud{background:rgba(17,24,39,.95);border:1px solid var(--teal);color:var(--teal)}
+#zhud{background:rgba(17,24,39,.95);border:1px solid var(--purple);color:var(--purple)}
+#calhud{background:rgba(17,24,39,.95);border:1px solid var(--green);color:var(--green)}
+
+/* BOTTOM BAR */
+#bbar{position:absolute;bottom:6px;left:8px;right:8px;display:flex;gap:5px;z-index:50;align-items:center;flex-wrap:wrap}
+.pill{background:rgba(11,17,32,.92);border:1px solid var(--br2);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--dim);display:flex;align-items:center;gap:4px}
+.pill input[type=number]{background:transparent;border:none;color:var(--text);font-size:10px;outline:none;width:48px}
+.pill input[type=text]{background:transparent;border:none;color:var(--text);font-size:10px;outline:none;width:70px}
+.pill select{background:var(--bg3);border:none;color:var(--text);font-size:10px;outline:none;cursor:pointer;border-radius:2px;padding:1px 2px}
+.pill button{background:var(--bg4);border:1px solid var(--br2);border-radius:2px;color:var(--text);padding:1px 5px;cursor:pointer;font-size:9px}
+.pill button:hover{background:var(--bg5)}
+/* detail filter toggles */
+#dfilts{display:flex;gap:3px;align-items:center}
+.dft{padding:2px 6px;border-radius:3px;border:1px solid var(--br);background:transparent;color:var(--dim);font-size:9px;cursor:pointer}
+.dft.on{background:rgba(59,130,246,.2);border-color:var(--blue);color:#93c5fd}
+/* cable color swatches */
+#cclrs{display:flex;gap:3px;align-items:center}
+.cclr{width:14px;height:14px;border-radius:3px;cursor:pointer;border:2px solid transparent;transition:border-color .1s}
+.cclr.sel{border-color:#fff}
+
+/* ── RIGHT PANEL (dynamic) ── */
+#rp{width:var(--rp-w);background:var(--bg2);border-left:1px solid var(--br);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;transform:translateX(100%);transition:transform .18s ease;position:relative}
+#rp.open{transform:translateX(0)}
+#rp-topbar{padding:6px 10px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:5px;flex-shrink:0}
+#rp-topbar .rtit{flex:1;font-size:11px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rpico{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rptb{width:24px;height:24px;border-radius:4px;border:1px solid var(--br);background:var(--bg3);color:var(--dim);cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rptb:hover{background:var(--bg4);color:var(--text)}
+.rptb.on{background:#1d4ed8;border-color:var(--blue);color:#fff}
+/* rp inner tabs */
+#rp-tabs{display:flex;border-bottom:1px solid var(--br);flex-shrink:0}
+.rptabt{flex:1;padding:5px 4px;font-size:10px;font-weight:600;color:var(--dim);border:none;background:transparent;cursor:pointer;border-bottom:2px solid transparent;transition:all .1s}
+.rptabt:hover{color:var(--text)}
+.rptabt.on{color:var(--blue);border-bottom-color:var(--blue)}
+#rp-body{flex:1;overflow-y:auto;padding:8px}
+/* rp sections */
+.rpsec{font-size:8px;font-weight:700;color:var(--dim2);text-transform:uppercase;letter-spacing:.1em;margin:8px 0 4px;padding-bottom:3px;border-bottom:1px solid var(--br)}
+.rpi{background:var(--bg3);border-radius:4px;padding:4px 7px;margin-bottom:2px;font-size:10px;display:flex;gap:6px}
+.rpi .k{color:var(--dim);min-width:90px;flex-shrink:0;font-size:9px;padding-top:1px}
+.rpi .v{color:var(--text);font-weight:500;flex:1;word-break:break-all}
+.rpi .v.hl{color:#60a5fa;font-weight:800}
+.rpi .v.am{color:var(--amber)}
+.rpi .v.gr{color:var(--green)}
+.rpr{margin-bottom:5px}
+.rpr label{display:block;font-size:8px;color:var(--dim);margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em}
+.rpr input,.rpr textarea,.rpr select{width:100%;padding:3px 5px;background:var(--bg3);border:1px solid var(--br);border-radius:3px;color:var(--text);font-size:10px;outline:none}
+.rpr input:focus,.rpr textarea:focus{border-color:var(--blue)}
+.rpr textarea{resize:vertical;min-height:36px;font-family:inherit}
+.rpbtn{width:100%;padding:4px;border-radius:4px;border:1px solid var(--br);background:var(--bg3);color:var(--text);font-size:10px;cursor:pointer;margin-top:2px;transition:background .1s}
+.rpbtn:hover{background:var(--bg4)}
+.rpbtn.del{color:#fca5a5;border-color:#7f1d1d;background:#2d0808}
+.rpbtn.del:hover{background:#7f1d1d}
+.rpbtn.pri{background:#1d4ed8;border-color:var(--blue);color:#fff}
+.rpbtn.pri:hover{background:#2563eb}
+
+/* LOGBOOK */
+.logentry{background:var(--bg3);border-radius:4px;padding:5px 7px;margin-bottom:4px;border-left:2px solid var(--br2)}
+.logentry .lmeta{font-size:9px;color:var(--dim2);margin-bottom:2px}
+.logentry .lmeta b{color:var(--teal)}
+.logentry .ltxt{font-size:10px;color:var(--text)}
+.logform{background:var(--bg3);border-radius:6px;padding:8px;margin-top:6px}
+.logform textarea{width:100%;background:var(--bg4);border:1px solid var(--br);border-radius:3px;color:var(--text);font-size:10px;padding:4px 6px;outline:none;resize:vertical;min-height:40px;font-family:inherit;margin-bottom:4px}
+.logform input{width:100%;background:var(--bg4);border:1px solid var(--br);border-radius:3px;color:var(--text);font-size:10px;padding:4px 6px;outline:none;margin-bottom:4px}
+
+/* FICHE */
+.fichecard{background:var(--bg3);border-radius:5px;padding:6px 8px;margin-bottom:4px;display:flex;gap:8px;align-items:center}
+.fichecard .fname{flex:1;font-size:10px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fichecard .fdate{font-size:9px;color:var(--dim2)}
+.fichecard button{font-size:9px;padding:2px 6px;border-radius:3px;border:1px solid var(--br);background:var(--bg4);color:var(--text);cursor:pointer}
+
+/* ── WELCOME SCREEN ── */
+#welcome{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10;background:#0b1120}
+#welcome.gone{display:none}
+.wcard{background:var(--bg2);border:1px solid var(--br2);border-radius:12px;padding:28px 32px;max-width:540px;width:92%;text-align:center}
+.wcard h1{font-size:24px;font-weight:900;color:#60a5fa;margin-bottom:4px}
+.wcard h1 em{color:var(--amber);font-style:normal}
+.wcard p{font-size:11px;color:var(--dim);margin-bottom:18px;line-height:1.7}
+.wgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.wfbox{border:2px dashed var(--br2);border-radius:8px;padding:12px 6px;cursor:pointer;transition:all .15s;text-align:center}
+.wfbox:hover,.wfbox.has{border-color:var(--blue);background:rgba(59,130,246,.07)}
+.wfbox.has{border-color:var(--green);border-style:solid}
+.wfbox .wfic{font-size:22px;margin-bottom:4px}
+.wfbox .wftit{font-size:10px;font-weight:700;color:var(--text);margin-bottom:2px}
+.wfbox .wfsub{font-size:8px;color:var(--dim)}
+.wfbox .wfok{font-size:9px;color:var(--green);margin-top:3px;font-weight:600;display:none}
+.wbtnrow{display:flex;gap:8px;margin-top:8px}
+.wbtn{flex:1;padding:9px;border-radius:7px;border:1px solid var(--br2);background:var(--bg3);color:var(--text);font-size:12px;font-weight:700;cursor:pointer;transition:background .15s}
+.wbtn:hover{background:var(--bg4)}
+.wbtn.pri{background:#1d4ed8;border-color:var(--blue);color:#fff}
+.wbtn.pri:hover{background:#2563eb}
+.wbtn:disabled{background:var(--bg4);color:var(--dim2);cursor:not-allowed;border-color:var(--br)}
+.wnote{font-size:9px;color:var(--dim2);margin-top:8px;line-height:1.6}
+
+/* ── MODALS ── */
+.modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(2px)}
+.modal.on{display:flex}
+.mbox{background:var(--bg2);border:1px solid var(--br2);border-radius:10px;width:480px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.8);overflow:hidden}
+.mbox.sm{width:340px}
+.mbox.lg{width:620px}
+.mhdr{padding:12px 14px 10px;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.mhdr h2{flex:1;font-size:15px;font-weight:800;color:var(--text)}
+.mhdr button{width:24px;height:24px;border-radius:4px;background:var(--bg3);border:1px solid var(--br);color:var(--dim);cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center}
+.mbdy{padding:14px;overflow-y:auto;flex:1}
+.mftr{padding:8px 14px;border-top:1px solid var(--br);display:flex;gap:6px;justify-content:flex-end;flex-shrink:0}
+.mfb{padding:5px 12px;border-radius:5px;border:1px solid var(--br);background:var(--bg3);color:var(--text);font-size:11px;cursor:pointer;transition:background .1s}
+.mfb:hover{background:var(--bg4)}
+.mfb.pri{background:#1d4ed8;border-color:var(--blue);color:#fff}
+.mfb.pri:hover{background:#2563eb}
+.mfb.danger{background:#7f1d1d;border-color:var(--red);color:#fca5a5}
+
+/* Info modal rows */
+.imsec{margin-bottom:12px}
+.imsec h3{font-size:8px;font-weight:700;color:var(--dim2);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;padding-bottom:3px;border-bottom:1px solid var(--br)}
+.imrow{display:flex;gap:6px;margin-bottom:3px;font-size:10px}
+.imrow .ik{color:var(--dim);min-width:130px;flex-shrink:0}
+.imrow .iv{color:var(--text);font-weight:500;flex:1;word-break:break-word}
+.imrow .iv.hl{color:#60a5fa;font-weight:800}
+.imrow .iv.am{color:var(--amber);font-weight:700}
+.imrow .iv.gr{color:var(--green)}
+
+/* LAYER / ZONE MANAGER */
+.listitem{display:flex;align-items:center;gap:6px;padding:5px 8px;background:var(--bg3);border-radius:5px;margin-bottom:3px}
+.listitem .lname{flex:1;font-size:11px;color:var(--text)}
+.listitem .ldel{width:20px;height:20px;border-radius:3px;border:1px solid var(--br);background:transparent;color:var(--dim);cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center}
+.listitem .ldel:hover{background:#7f1d1d;color:#fca5a5}
+.clrswatch{width:16px;height:16px;border-radius:3px;flex-shrink:0;border:1px solid rgba(255,255,255,.2)}
+.addinp{width:100%;padding:5px 8px;background:var(--bg3);border:1px solid var(--br);border-radius:5px;color:var(--text);font-size:11px;outline:none;margin-top:6px}
+.addinp:focus{border-color:var(--blue)}
+
+/* LOADING */
+#lov{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center}
+#lov.on{display:flex}
+#lovb{background:var(--bg2);border:1px solid var(--br2);border-radius:8px;padding:20px 30px;text-align:center;min-width:220px}
+#lovt{font-size:13px;color:var(--text);font-weight:600;margin-bottom:6px}
+.lbar{height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;margin-top:6px}
+.lbar .lf{height:100%;background:var(--blue);border-radius:2px;transition:width .3s;width:0}
+
+/* SVG classes */
+.elg{cursor:pointer}
+.elg.sel .ering{display:block}
+.ering{display:none;stroke:var(--amber);stroke-width:2;fill:none;stroke-dasharray:5 2;animation:ds .8s linear infinite}
+@keyframes ds{to{stroke-dashoffset:-14}}
+.elg.faded{opacity:.18;pointer-events:none}
+.lineg{cursor:pointer}
+.kbg:hover path{opacity:.6}
+.zoneg{cursor:default}
+.mccg{cursor:pointer}
+.mccg.sel rect{stroke:var(--amber)!important}
+
+/* name dialog */
+#ndlg{position:fixed;inset:0;z-index:1100;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.6)}
+#ndlg.on{display:flex}
+#ndbox{background:var(--bg2);border:1px solid var(--br2);border-radius:8px;padding:18px 22px;width:300px;box-shadow:0 16px 48px rgba(0,0,0,.8)}
+#ndbox h3{font-size:13px;font-weight:700;margin-bottom:10px}
+#ndbox input{width:100%;padding:6px 9px;background:var(--bg3);border:1px solid var(--br);border-radius:5px;color:var(--text);font-size:12px;outline:none;margin-bottom:8px}
+#ndbox input:focus{border-color:var(--blue)}
+.ndbr{display:flex;gap:6px}
+.ndbr button{flex:1;padding:6px;border-radius:5px;border:1px solid var(--br);background:var(--bg3);color:var(--text);font-size:11px;cursor:pointer}
+.ndbr button.pri{background:#1d4ed8;border-color:var(--blue);color:#fff}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- TOP BAR -->
+<div id="topbar">
+  <div class="logo">⚡ Elek<em>Map</em> <span style="font-size:9px;color:var(--dim2);font-weight:400">v2</span></div>
+  <div class="tbdiv"></div>
+  <div id="tabs">
+    <button class="tabt on" data-tab="alles" onclick="setTab('alles')">Alles</button>
+    <button class="tabt" data-tab="elektrisch" onclick="setTab('elektrisch')">⚡ Elektrisch</button>
+    <button class="tabt" data-tab="pompen" onclick="setTab('pompen')">⚙ Pompen</button>
+    <button class="tabt" data-tab="instrumentatie" onclick="setTab('instrumentatie')">📡 Instrumentatie</button>
+    <button class="tabt" data-tab="verlichting" onclick="setTab('verlichting')">💡 Verlichting</button>
+  </div>
+  <div class="tbdiv"></div>
+  <div id="laagwrap">
+    <label>Laag:</label>
+    <select id="laagsel" onchange="setActiefLaag(this.value)"><option value="">— Alle lagen —</option></select>
+    <button class="ib" onclick="openLagenMgr()" title="Lagen beheren">⊞</button>
+  </div>
+  <button class="ib" onclick="openZonesMgr()" title="Zones beheren">🗺</button>
+  <div class="tbdiv"></div>
+  <div id="qs">
+    <span class="sico">🔍</span>
+    <input id="qsi" type="text" placeholder="Zoek ID, tag, beschrijving..." oninput="doQS(this.value)" autocomplete="off">
+    <div id="qsdrop"></div>
+  </div>
+  <div class="tbdiv"></div>
+  <button class="ib" onclick="saveProj()">💾</button>
+  <button class="ib" onclick="fi('projfi')">📂</button>
+  <input type="file" id="projfi" accept=".emp" style="display:none" onchange="loadProj(this)">
+  <button class="ib" onclick="exportCSV()">📊</button>
+  <div class="tbdiv"></div>
+  <button class="ib" onclick="showWelcome()">📁 Bestanden</button>
+  <div id="tbstatus">0 elementen</div>
+</div>
+
+<div id="main">
+
+<!-- LEFT PANEL -->
+<div id="lp">
+  <div class="ph">Snel plaatsen <button onclick="toggleCompact()">◫</button></div>
+  <div id="qp"><div id="qpgrid"></div></div>
+
+  <div class="ph" style="margin-top:1px">Database <span id="dbtot" style="color:var(--text);font-size:10px">0</span></div>
+  <input id="dbsrch" type="text" placeholder="🔍 Zoek ID / omschrijving / kast..." oninput="renderDB()" autocomplete="off">
+  <select id="dbzone" onchange="renderDB()"><option value="">— Alle zones —</option></select>
+  <div id="dbl"></div>
+  <div id="dbfoot"></div>
+  <div id="lp-handle"></div>
+</div>
+
+<!-- CANVAS -->
+<div id="cw">
+  <div id="cv"
+    onmousedown="cvMD(event)" onmousemove="cvMM(event)" onmouseup="cvMU(event)"
+    onwheel="cvW(event,this)" ondragover="event.preventDefault()" ondrop="cvDrop(event)">
+    <div id="vp">
+      <canvas id="planC" style="display:none"></canvas>
+      <svg id="svg" xmlns="http://www.w3.org/2000/svg" width="2000" height="1400"></svg>
+    </div>
+  </div>
+
+  <!-- WELCOME -->
+  <div id="welcome">
+    <div class="wcard">
+      <h1>⚡ Elek<em>Map</em> v2</h1>
+      <p>Industrieel installatieplan — alles lokaal op jouw computer.<br><span style="color:var(--green);font-size:10px">🔒 Geen server, geen upload, volledige privacy.</span></p>
+      <div class="wgrid">
+        <div class="wfbox" id="wb_plan" onclick="fi('fi_plan')">
+          <div class="wfic">🗺</div><div class="wftit">Grondplan</div>
+          <div class="wfsub">PDF of afbeelding</div>
+          <div class="wfok" id="wok_plan">✓ Geladen</div>
+        </div>
+        <div class="wfbox" id="wb_pompen" onclick="fi('fi_pompen')">
+          <div class="wfic">⚙️</div><div class="wftit">Pompen &amp; Mixers</div>
+          <div class="wfsub">.xls / .xlsx</div>
+          <div class="wfok" id="wok_pompen">✓ Geladen</div>
+        </div>
+        <div class="wfbox" id="wb_kasten" onclick="fi('fi_kasten')">
+          <div class="wfic">🗄</div><div class="wftit">Elektrische Kasten</div>
+          <div class="wfsub">.xls / .xlsx</div>
+          <div class="wfok" id="wok_kasten">✓ Geladen</div>
+        </div>
+        <div class="wfbox" id="wb_instr" onclick="fi('fi_instr')">
+          <div class="wfic">📡</div><div class="wftit">Instrumentatie</div>
+          <div class="wfsub">CSV of .xlsx (uit Access)</div>
+          <div class="wfok" id="wok_instr">✓ Geladen</div>
+        </div>
+        <div class="wfbox" id="wb_licht" onclick="fi('fi_licht')">
+          <div class="wfic">💡</div><div class="wftit">Verlichting</div>
+          <div class="wfsub">.xls / .xlsx</div>
+          <div class="wfok" id="wok_licht">✓ Geladen</div>
+        </div>
+        <div class="wfbox" onclick="fi('projfi')">
+          <div class="wfic">📁</div><div class="wftit">Project laden</div>
+          <div class="wfsub">.emp bestand</div>
+        </div>
+      </div>
+      <input type="file" id="fi_plan"   accept=".pdf,.png,.jpg,.jpeg" style="display:none" onchange="loadPlan(this)">
+      <input type="file" id="fi_pompen" accept=".xls,.xlsx"           style="display:none" onchange="loadXLS(this,'pompen')">
+      <input type="file" id="fi_kasten" accept=".xls,.xlsx"           style="display:none" onchange="loadXLS(this,'kasten')">
+      <input type="file" id="fi_instr"  accept=".xls,.xlsx,.csv"      style="display:none" onchange="loadXLS(this,'instrumentatie')">
+      <input type="file" id="fi_licht"  accept=".xls,.xlsx"           style="display:none" onchange="loadXLS(this,'verlichting')">
+      <div class="wbtnrow">
+        <button class="wbtn" onclick="startBlank()">📐 Leeg canvas</button>
+        <button class="wbtn pri" id="wstartbtn" disabled onclick="startApp()">▶ Start</button>
+      </div>
+      <div class="wnote">Alle bestanden zijn optioneel. Je kunt alles ook handmatig tekenen.<br>Zones en lagen stel je in na het starten.</div>
+    </div>
+  </div>
+
+  <!-- MODE BUTTONS -->
+  <div id="mb" style="display:none">
+    <button class="mbtn on" id="mb_s" onclick="setMode('s')">↖<span class="tip">Selecteer (S)</span></button>
+    <button class="mbtn" id="mb_c" onclick="setMode('c')">〰<span class="tip">Kabel (C)</span></button>
+    <button class="mbtn" id="mb_l" onclick="setMode('l')">╱<span class="tip">Lijn/Wand (L)</span></button>
+    <button class="mbtn" id="mb_z" onclick="setMode('z')">⬜<span class="tip">Zone tekenen (Z)</span></button>
+    <button class="mbtn" id="mb_cal" onclick="setMode('cal')">📏<span class="tip">Kalibreren (K)</span></button>
+    <button class="mbtn" id="mb_d" onclick="setMode('d')">✕<span class="tip">Verwijder (Del)</span></button>
+    <button class="mbtn" id="mb_f" onclick="fitPlan()">⊡<span class="tip">Scherm vullen (0)</span></button>
+  </div>
+
+  <div class="hud" id="chud">🔌 Kabelmodus — klik startelement...</div>
+  <div class="hud" id="lhud">╱ Lijnmodus — klik startpunt → eindpunt (Esc=stop)</div>
+  <div class="hud" id="zhud">⬜ Zonetekenen — sleep een rechthoek</div>
+  <div class="hud" id="calhud">📏 Kalibreer — teken een lijn van bekende lengte</div>
+
+  <!-- BOTTOM BAR -->
+  <div id="bbar" style="display:none">
+    <div class="pill">
+      📐 <input type="number" id="scInp" value="0.1" min="0.001" max="50" step="0.001" onchange="mpp=+this.value" title="Meter per pixel"> m/px
+      <button onclick="setMode('cal')" title="Kalibreer schaal">Cal</button>
+    </div>
+    <div class="pill" id="pdfbar" style="display:none">
+      <button onclick="chPg(-1)">◀</button>
+      <span id="pdfpg">1/1</span>
+      <button onclick="chPg(1)">▶</button>
+      <select id="pdfsc" onchange="rerenderPDF()">
+        <option value="1">1×</option><option value="1.5">1.5×</option>
+        <option value="2" selected>2×</option><option value="3">3×</option>
+      </select>
+    </div>
+    <div class="pill" id="cclrpill" style="display:none">
+      Kabel: <span id="cclrs"></span>
+    </div>
+    <div class="pill" id="lstylpill" style="display:none">
+      Lijn: <select id="lstyle" onchange="curLineStyle=this.value">
+        <option value="wand">Wand</option>
+        <option value="leiding">Leiding</option>
+        <option value="stippel">Stippel</option>
+      </select>
+    </div>
+    <div class="pill">
+      <span id="dfilts"></span>
+    </div>
+    <div class="pill" id="zonepill" style="display:none">
+      🗺 Zones: <button onclick="toggleZoneVis()">👁</button>
+    </div>
+  </div>
+</div><!-- /cw -->
+
+<!-- RIGHT PANEL -->
+<div id="rp">
+  <div id="rp-topbar">
+    <div class="rpico" id="rp-ico"></div>
+    <div class="rtit" id="rp-tit">Eigenschappen</div>
+    <button class="rptb" id="rp-pin" onclick="toggleRPPin()" title="Vastzetten">📌</button>
+    <button class="rptb" onclick="closeRP()" title="Sluiten">✕</button>
+  </div>
+  <div id="rp-tabs">
+    <button class="rptabt on" data-rt="info" onclick="setRPTab('info')">📋 Info</button>
+    <button class="rptabt" data-rt="log"  onclick="setRPTab('log')">📝 Log</button>
+    <button class="rptabt" data-rt="fiche" onclick="setRPTab('fiche')">📎 Fiches</button>
+  </div>
+  <div id="rp-body"></div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- INFO MODAL -->
+<div id="im" class="modal" onclick="if(event.target===this)closeModal('im')">
+  <div class="mbox lg">
+    <div class="mhdr"><h2 id="im-tit">Info</h2><button onclick="closeModal('im')">✕</button></div>
+    <div class="mbdy" id="im-bdy"></div>
+    <div class="mftr">
+      <button class="mfb" onclick="closeModal('im')">Sluiten</button>
+      <button class="mfb pri" id="im-place" onclick="imPlace()">📌 Plaatsen</button>
+    </div>
+  </div>
+</div>
+
+<!-- LAGEN MANAGER -->
+<div id="lagenmgr" class="modal" onclick="if(event.target===this)closeModal('lagenmgr')">
+  <div class="mbox sm">
+    <div class="mhdr"><h2>Lagen beheren</h2><button onclick="closeModal('lagenmgr')">✕</button></div>
+    <div class="mbdy">
+      <div id="lagen-list"></div>
+      <div style="display:flex;gap:5px;margin-top:8px">
+        <input class="addinp" id="laag-inp" type="text" placeholder="Naam nieuwe laag (bv. GL, V1, Passerelle)">
+        <button class="mfb pri" onclick="addLaag()" style="flex-shrink:0">+ Toevoegen</button>
+      </div>
+    </div>
+    <div class="mftr"><button class="mfb" onclick="closeModal('lagenmgr')">Sluiten</button></div>
+  </div>
+</div>
+
+<!-- ZONES MANAGER -->
+<div id="zonesmgr" class="modal" onclick="if(event.target===this)closeModal('zonesmgr')">
+  <div class="mbox sm">
+    <div class="mhdr"><h2>Zones beheren</h2><button onclick="closeModal('zonesmgr')">✕</button></div>
+    <div class="mbdy">
+      <p style="font-size:10px;color:var(--dim);margin-bottom:8px">Teken een zone: kies modus <b>⬜</b> (Z) en sleep een rechthoek op het plan. Of voeg hier handmatig toe.</p>
+      <div id="zones-list"></div>
+      <div style="display:flex;gap:5px;margin-top:8px;align-items:center">
+        <input class="addinp" id="zone-inp" type="text" placeholder="Naam zone (bv. Zone 1 - Tankpark)" style="margin:0">
+        <input type="color" id="zone-clr" value="#3b82f6" style="width:32px;height:28px;border:none;background:none;cursor:pointer">
+        <button class="mfb pri" onclick="addZoneManual()" style="flex-shrink:0">+</button>
+      </div>
+    </div>
+    <div class="mftr"><button class="mfb" onclick="closeModal('zonesmgr')">Sluiten</button></div>
+  </div>
+</div>
+
+<!-- NAME DIALOG -->
+<div id="ndlg">
+  <div id="ndbox">
+    <h3 id="nd-tit">Label</h3>
+    <input id="nd-inp" type="text" placeholder="bv. L1, 101P001, EV-01...">
+    <div class="ndbr">
+      <button onclick="ndCancel()">Annuleren</button>
+      <button class="pri" onclick="ndOK()">Plaatsen</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALIBRATION DIALOG -->
+<div id="caldlg" class="modal">
+  <div class="mbox sm">
+    <div class="mhdr"><h2>Schaal kalibreren</h2></div>
+    <div class="mbdy">
+      <p style="font-size:11px;color:var(--dim);margin-bottom:10px">Je hebt een lijn getekend van <b id="cal-px">—</b> pixels.<br>Wat is de werkelijke lengte in meter?</p>
+      <input type="number" id="cal-inp" value="10" min="0.1" step="0.1" style="width:100%;padding:6px;background:var(--bg3);border:1px solid var(--br);border-radius:5px;color:var(--text);font-size:13px;outline:none">
+      <p style="font-size:10px;color:var(--dim2);margin-top:6px" id="cal-result"></p>
+    </div>
+    <div class="mftr">
+      <button class="mfb" onclick="closeModal('caldlg');setMode('s')">Annuleren</button>
+      <button class="mfb pri" onclick="applyCalibration()">Toepassen</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div id="lov"><div id="lovb">
+  <div id="lovt">Laden...</div>
+  <div class="lbar"><div class="lf" id="lvf"></div></div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+'use strict';
+
+// ════════════════════════════════════════════════════════
+// TYPES
+// ════════════════════════════════════════════════════════
+const TYPES={
+  // Elektrisch
+  mcc:    {l:'MCC',              c:'#ef4444',bg:'rgba(239,68,68,.15)',   tab:'elektrisch',mcc:true},
+  hs:     {l:'HS Kabine',        c:'#ef4444',bg:'rgba(239,68,68,.18)',   tab:'elektrisch'},
+  transfo:{l:'Transformator',    c:'#f97316',bg:'rgba(249,115,22,.18)',  tab:'elektrisch'},
+  lcr:    {l:'LCR Kabine',       c:'#22c55e',bg:'rgba(34,197,94,.18)',   tab:'elektrisch'},
+  kabine: {l:'Kabine/Cabine',    c:'#f59e0b',bg:'rgba(245,158,11,.18)',  tab:'elektrisch'},
+  kast:   {l:'Verdeelkast',      c:'#94a3b8',bg:'rgba(148,163,184,.18)', tab:'elektrisch'},
+  doos:   {l:'Aansluitdoos',     c:'#06b6d4',bg:'rgba(6,182,212,.18)',   tab:'elektrisch'},
+  stop230:{l:'Stopcontact 230V', c:'#fb923c',bg:'rgba(251,146,60,.18)',  tab:'elektrisch'},
+  stop3f: {l:'Kracht 3-fase',    c:'#f87171',bg:'rgba(248,113,113,.18)', tab:'elektrisch'},
+  ev:     {l:'EV Laadpunt',      c:'#4ade80',bg:'rgba(74,222,128,.18)',  tab:'elektrisch'},
+  pv:     {l:'PV Paneel',        c:'#fbbf24',bg:'rgba(251,191,36,.18)',  tab:'elektrisch'},
+  bat:    {l:'Batterij',         c:'#34d399',bg:'rgba(52,211,153,.18)',  tab:'elektrisch'},
+  data:   {l:'Data/UTP',         c:'#67e8f9',bg:'rgba(103,232,249,.18)', tab:'elektrisch'},
+  // Pompen & Mixers
+  pomp:   {l:'Pomp',             c:'#34d399',bg:'rgba(52,211,153,.18)',  tab:'pompen'},
+  mixer:  {l:'Mixer',            c:'#60a5fa',bg:'rgba(96,165,250,.18)',  tab:'pompen'},
+  motor:  {l:'Motor',            c:'#fcd34d',bg:'rgba(252,211,77,.18)',  tab:'pompen'},
+  ahu:    {l:'Ventilatie/AHU',   c:'#93c5fd',bg:'rgba(147,197,253,.18)', tab:'pompen'},
+  // Instrumentatie
+  pt:     {l:'Druk transmitter', c:'#818cf8',bg:'rgba(129,140,248,.18)', tab:'instrumentatie'},
+  ft:     {l:'Flow transmitter', c:'#34d399',bg:'rgba(52,211,153,.18)',  tab:'instrumentatie'},
+  tt:     {l:'Temp. transmitter',c:'#f87171',bg:'rgba(248,113,113,.18)', tab:'instrumentatie'},
+  lt:     {l:'Niveau transmitter',c:'#60a5fa',bg:'rgba(96,165,250,.18)', tab:'instrumentatie'},
+  at:     {l:'Analyser',         c:'#a78bfa',bg:'rgba(167,139,250,.18)', tab:'instrumentatie'},
+  fv:     {l:'Regelklep Flow',   c:'#fb923c',bg:'rgba(251,146,60,.18)',  tab:'instrumentatie'},
+  sv:     {l:'Solenoideklep',    c:'#fbbf24',bg:'rgba(251,191,36,.18)',  tab:'instrumentatie'},
+  instr:  {l:'Instrument',       c:'#c4b5fd',bg:'rgba(196,181,253,.18)', tab:'instrumentatie'},
+  // Verlichting
+  lamp:   {l:'Verlichtingspunt', c:'#facc15',bg:'rgba(250,204,21,.18)',  tab:'verlichting'},
+  nood:   {l:'Noodverlichting',  c:'#86efac',bg:'rgba(134,239,172,.18)', tab:'verlichting'},
+  spot:   {l:'Spot/Inbouw',      c:'#fde68a',bg:'rgba(253,230,138,.18)', tab:'verlichting'},
+  tl:     {l:'TL/LED balk',      c:'#bfdbfe',bg:'rgba(191,219,254,.18)', tab:'verlichting'},
+  schakel:{l:'Schakelaar',       c:'#c4b5fd',bg:'rgba(196,181,253,.18)', tab:'verlichting'},
+  dimmers:{l:'Dimmer',           c:'#ddd6fe',bg:'rgba(221,214,254,.18)', tab:'verlichting'},
+  aftakdoos:{l:'Aftakdoos',      c:'#a5f3fc',bg:'rgba(165,243,252,.18)', tab:'verlichting'},
+};
+// Dynamic instrument types (from CSV import)
+let DYNTYPES={};
+
+const TC=t=>TYPES[t]?.c||DYNTYPES[t]?.c||'#94a3b8';
+const TL=t=>TYPES[t]?.l||DYNTYPES[t]?.l||t;
+const TB=t=>TYPES[t]?.bg||DYNTYPES[t]?.bg||'rgba(148,163,184,.18)';
+const TTAB=t=>TYPES[t]?.tab||DYNTYPES[t]?.tab||'alles';
+const isMCC=t=>TYPES[t]?.mcc||false;
+
+const QPAL_ORDER=[
+  'lamp','nood','spot','tl','schakel','dimmers','aftakdoos',
+  'stop230','stop3f','ev','pv','bat','data',
+  'kast','doos','kabine','mcc','hs','transfo','lcr',
+  'pomp','mixer','motor','ahu',
+  'pt','ft','tt','lt','at','fv','sv','instr'
+];
+
+const CABLE_COLORS=['#3b82f6','#ef4444','#22c55e','#f59e0b','#a855f7','#06b6d4','#f97316','#ffffff','#94a3b8'];
+
+// ════════════════════════════════════════════════════════
+// SVG SYMBOLS
+// ════════════════════════════════════════════════════════
+function SYM(type,c,s=1){
+  const f='none',sw=2*s,S=s;
+  // ISA instrument: circle with code
+  if(['pt','ft','tt','lt','at','instr'].includes(type)||DYNTYPES[type]){
+    const code=(type==='instr'?'I':type.toUpperCase());
+    return`<circle r="${10*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><text y="${4*S}" text-anchor="middle" font-size="${7*S}" fill="${c}" font-weight="900" font-family="sans-serif">${code}</text>`;
+  }
+  switch(type){
+    case 'hs':      return`<polygon points="0,${-11*S} ${10*S},${9*S} ${-10*S},${9*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><text y="${5*S}" text-anchor="middle" font-size="${6*S}" fill="${c}" font-weight="900" font-family="sans-serif">HS</text>`;
+    case 'transfo': return`<circle cx="${-5*S}" cy="0" r="${6.5*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><circle cx="${5*S}" cy="0" r="${6.5*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/>`;
+    case 'mcc':     return`<rect x="${-11*S}" y="${-11*S}" width="${10*S}" height="${10*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${1.8*S}"/><rect x="${1*S}" y="${-11*S}" width="${10*S}" height="${10*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${1.8*S}"/><rect x="${-11*S}" y="${1*S}" width="${10*S}" height="${10*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${1.8*S}"/><rect x="${1*S}" y="${1*S}" width="${10*S}" height="${10*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${1.8*S}"/>`;
+    case 'lcr':     return`<rect x="${-11*S}" y="${-11*S}" width="${22*S}" height="${22*S}" rx="${3*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><line x1="${-7*S}" y1="${-4*S}" x2="${7*S}" y2="${-4*S}" stroke="${c}" stroke-width="${1.5*S}"/><line x1="${-7*S}" y1="0" x2="${5*S}" y2="0" stroke="${c}" stroke-width="${1.5*S}"/><line x1="${-7*S}" y1="${4*S}" x2="${7*S}" y2="${4*S}" stroke="${c}" stroke-width="${1.5*S}"/>`;
+    case 'kabine':  return`<rect x="${-8*S}" y="${-12*S}" width="${16*S}" height="${24*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><line x1="${-5*S}" y1="${-7*S}" x2="${5*S}" y2="${-7*S}" stroke="${c}" stroke-width="${1.5*S}"/><line x1="${-5*S}" y1="${-2*S}" x2="${5*S}" y2="${-2*S}" stroke="${c}" stroke-width="${1.5*S}"/><line x1="${-5*S}" y1="${3*S}" x2="${5*S}" y2="${3*S}" stroke="${c}" stroke-width="${1.5*S}"/>`;
+    case 'kast':    return`<rect x="${-11*S}" y="${-9*S}" width="${22*S}" height="${18*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><line x1="${-11*S}" y1="${-2*S}" x2="${11*S}" y2="${-2*S}" stroke="${c}" stroke-width="${1.2*S}"/><circle cx="${-5*S}" cy="${4*S}" r="${2.5*S}" fill="${f}" stroke="${c}" stroke-width="${1.5*S}"/><circle cx="${3*S}" cy="${4*S}" r="${2.5*S}" fill="${f}" stroke="${c}" stroke-width="${1.5*S}"/>`;
+    case 'doos':    return`<circle r="${11*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><line x1="${-7*S}" y1="0" x2="${7*S}" y2="0" stroke="${c}" stroke-width="${sw}"/><line x1="0" y1="${-7*S}" x2="0" y2="${7*S}" stroke="${c}" stroke-width="${sw}"/>`;
+    case 'pomp':    return`<circle r="${10*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><polygon points="0,${-6*S} ${5*S},${3*S} ${-5*S},${3*S}" fill="${c}" opacity=".7"/><line x1="0" y1="${10*S}" x2="0" y2="${13*S}" stroke="${c}" stroke-width="${sw}"/>`;
+    case 'mixer':   return`<circle r="${10*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><line x1="${-7*S}" y1="${-7*S}" x2="${7*S}" y2="${7*S}" stroke="${c}" stroke-width="${2.5*S}"/><line x1="${7*S}" y1="${-7*S}" x2="${-7*S}" y2="${7*S}" stroke="${c}" stroke-width="${2.5*S}"/>`;
+    case 'motor':   return`<circle r="${11*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><text y="${4*S}" text-anchor="middle" font-size="${9*S}" fill="${c}" font-weight="900" font-family="sans-serif">M</text>`;
+    case 'ahu':     return`<rect x="${-11*S}" y="${-10*S}" width="${22*S}" height="${20*S}" rx="${3*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><path d="M${-7*S},${-5*S} Q0,${5*S} ${7*S},${-5*S}" fill="${f}" stroke="${c}" stroke-width="${1.5*S}"/>`;
+    case 'lamp':    return`<circle r="${10*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><line x1="${-7*S}" y1="${-7*S}" x2="${7*S}" y2="${7*S}" stroke="${c}" stroke-width="${sw}"/><line x1="${7*S}" y1="${-7*S}" x2="${-7*S}" y2="${7*S}" stroke="${c}" stroke-width="${sw}"/>`;
+    case 'nood':    return`<circle r="${10*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><line x1="${-7*S}" y1="${-7*S}" x2="${7*S}" y2="${7*S}" stroke="${c}" stroke-width="${sw}"/><line x1="${7*S}" y1="${-7*S}" x2="${-7*S}" y2="${7*S}" stroke="${c}" stroke-width="${sw}"/><rect x="${-4*S}" y="${10*S}" width="${8*S}" height="${3*S}" fill="${c}"/>`;
+    case 'spot':    return`<circle r="${8*S}" fill="${c}" opacity=".3" stroke="${c}" stroke-width="${sw}"/><circle r="${3*S}" fill="${c}"/>`;
+    case 'tl':      return`<rect x="${-13*S}" y="${-3*S}" width="${26*S}" height="${6*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/>`;
+    case 'schakel': return`<circle r="${3*S}" fill="${c}"/><line x1="${3*S}" y1="${-3*S}" x2="${11*S}" y2="${-9*S}" stroke="${c}" stroke-width="${sw}"/><circle cx="${11*S}" cy="${-9*S}" r="${2*S}" fill="${c}"/>`;
+    case 'dimmers': return`<circle r="${3*S}" fill="${c}"/><line x1="${3*S}" y1="${-3*S}" x2="${11*S}" y2="${-9*S}" stroke="${c}" stroke-width="${sw}"/><circle cx="${11*S}" cy="${-9*S}" r="${2*S}" fill="${c}"/><line x1="${7*S}" y1="${-3*S}" x2="${11*S}" y2="${-3*S}" stroke="${c}" stroke-width="${1.5*S}"/>`;
+    case 'aftakdoos':return`<rect x="${-8*S}" y="${-8*S}" width="${16*S}" height="${16*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><circle r="${3*S}" fill="${c}"/>`;
+    case 'stop230': return`<circle r="${10*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><circle cx="${-3*S}" cy="${-2*S}" r="${2*S}" fill="${c}"/><circle cx="${3*S}" cy="${-2*S}" r="${2*S}" fill="${c}"/><line x1="0" y1="${3*S}" x2="0" y2="${7*S}" stroke="${c}" stroke-width="${1.5*S}"/>`;
+    case 'stop3f':  return`<rect x="${-11*S}" y="${-8*S}" width="${22*S}" height="${16*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><text y="${4*S}" text-anchor="middle" font-size="${7*S}" fill="${c}" font-weight="700" font-family="sans-serif">3F</text>`;
+    case 'ev':      return`<rect x="${-9*S}" y="${-12*S}" width="${18*S}" height="${24*S}" rx="${3*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><polygon points="0,${-7*S} ${5*S},0 ${1*S},0 ${1*S},${7*S} ${-5*S},0 ${-1*S},0 ${-1*S},${-7*S}" fill="${c}"/>`;
+    case 'pv':      return`<rect x="${-11*S}" y="${-8*S}" width="${22*S}" height="${16*S}" rx="${1*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><line x1="${-4*S}" y1="${-8*S}" x2="${-4*S}" y2="${8*S}" stroke="${c}" stroke-width="${1*S}"/><line x1="${4*S}" y1="${-8*S}" x2="${4*S}" y2="${8*S}" stroke="${c}" stroke-width="${1*S}"/><line x1="${-11*S}" y1="${-1*S}" x2="${11*S}" y2="${-1*S}" stroke="${c}" stroke-width="${1*S}"/>`;
+    case 'bat':     return`<rect x="${-8*S}" y="${-12*S}" width="${16*S}" height="${20*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><rect x="${-4*S}" y="${-14*S}" width="${8*S}" height="${3*S}" rx="1" fill="${c}"/><line x1="${-4*S}" y1="${-5*S}" x2="${4*S}" y2="${-5*S}" stroke="${c}" stroke-width="${1.8*S}"/><line x1="0" y1="${-8*S}" x2="0" y2="${-2*S}" stroke="${c}" stroke-width="${1.8*S}"/><line x1="${-4*S}" y1="${3*S}" x2="${4*S}" y2="${3*S}" stroke="${c}" stroke-width="${1.8*S}"/>`;
+    case 'data':    return`<rect x="${-9*S}" y="${-8*S}" width="${18*S}" height="${16*S}" rx="${2*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/><text y="${4*S}" text-anchor="middle" font-size="${6*S}" fill="${c}" font-weight="700" font-family="sans-serif">RJ</text>`;
+    case 'fv':      return`<polygon points="${-8*S},${-8*S} ${8*S},0 ${-8*S},${8*S}" fill="${c}" opacity=".6"/><polygon points="${8*S},${8*S} ${-8*S},0 ${8*S},${-8*S}" fill="${c}" opacity=".6"/><line x1="0" y1="${-12*S}" x2="0" y2="${12*S}" stroke="${c}" stroke-width="${1.5*S}"/>`;
+    case 'sv':      return`<polygon points="${-8*S},${-8*S} ${8*S},0 ${-8*S},${8*S}" fill="${c}" opacity=".6"/><polygon points="${8*S},${8*S} ${-8*S},0 ${8*S},${-8*S}" fill="${c}" opacity=".6"/><rect x="${-3*S}" y="${-14*S}" width="${6*S}" height="${5*S}" fill="${c}"/>`;
+    default:        return`<rect x="${-10*S}" y="${-10*S}" width="${20*S}" height="${20*S}" rx="${3*S}" fill="${f}" stroke="${c}" stroke-width="${sw}"/>`;
+  }
+}
+
+// ════════════════════════════════════════════════════════
+// INDEXEDDB
+// ════════════════════════════════════════════════════════
+let idb=null;
+function initIDB(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open('ElekMapDB',1);
+    r.onupgradeneeded=e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains('fiches')) db.createObjectStore('fiches',{keyPath:'id'});
+    };
+    r.onsuccess=e=>{idb=e.target.result;res();};
+    r.onerror=rej;
+  });
+}
+function idbPut(store,data){
+  return new Promise((res,rej)=>{
+    if(!idb){rej('IDB not ready');return;}
+    const tx=idb.transaction(store,'readwrite');
+    tx.objectStore(store).put(data);
+    tx.oncomplete=res; tx.onerror=rej;
+  });
+}
+function idbGet(store,key){
+  return new Promise((res,rej)=>{
+    if(!idb){res(null);return;}
+    const tx=idb.transaction(store,'readonly');
+    const r=tx.objectStore(store).get(key);
+    r.onsuccess=e=>res(e.target.result);
+    r.onerror=rej;
+  });
+}
+function idbDel(store,key){
+  return new Promise((res,rej)=>{
+    if(!idb){res();return;}
+    const tx=idb.transaction(store,'readwrite');
+    tx.objectStore(store).delete(key);
+    tx.oncomplete=res; tx.onerror=rej;
+  });
+}
+
+async function saveFiche(elId,slot,file){
+  const buf=await file.arrayBuffer();
+  await idbPut('fiches',{id:`${elId}_${slot}`,naam:file.name,mime:file.type,data:buf,datum:new Date().toISOString()});
+  addLog(elId,`Fiche geüpload: ${file.name} (${slot})`);
+  renderRPFiche();
+}
+async function getFiche(elId,slot){return idbGet('fiches',`${elId}_${slot}`);}
+async function openFiche(elId,slot){
+  const f=await getFiche(elId,slot);
+  if(!f)return;
+  const blob=new Blob([f.data],{type:f.mime});
+  window.open(URL.createObjectURL(blob),'_blank');
+}
+async function delFiche(elId,slot){
+  await idbDel('fiches',`${elId}_${slot}`);
+  addLog(elId,`Fiche verwijderd (${slot})`);
+  renderRPFiche();
+}
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let EL=[], KB=[], LN=[], ZONES=[], LAGEN=[];
+let DB={pompen:[],kasten:[],instrumentatie:[],verlichting:[]};
+let selId=null, selLineId=null, selZoneId=null;
+let mode='s', cableStart=null, cablePts=[];
+let lineStart=null, curLineStyle='wand';
+let zoneDrawing=false, zoneSt=null, zoneRect=null;
+let calStart=null, calPxLen=0;
+let pdfDoc=null, pdfPage=1, pdfTotal=1;
+let planW=2000, planH=1400, vx=0,vy=0,vz=1, mpp=0.1;
+let dragging=null,dragOff={x:0,y:0},panning=false,panSt={x:0,y:0};
+let placePending=null, nextId=1, undoStack=[];
+let activeTab='alles', activeLaag='';
+let rpPinned=false, rpTab='info';
+let showZones=true;
+let compactPalette=false;
+let curCableColor=localStorage.getItem('em_ccolor')||'#3b82f6';
+let curUser=localStorage.getItem('em_user')||'';
+let planLoaded=false;
+let imTagOrId=null;
+
+// Detail filters per tab
+const DFILTS={
+  alles:         {naam:true, kabel:false, type:false, zone:false, laag:false},
+  elektrisch:    {naam:true, kabel:false, type:false, zone:true,  laag:false},
+  pompen:        {naam:true, kabel:true,  type:false, zone:true,  laag:false},
+  instrumentatie:{naam:true, kabel:true,  type:true,  zone:false, laag:false},
+  verlichting:   {naam:true, kabel:true,  type:false, zone:false, laag:false},
+};
+
+const gid=()=>'e'+(nextId++);
+const allDB=()=>[...DB.kasten,...DB.pompen,...DB.instrumentatie,...DB.verlichting];
+
+// ════════════════════════════════════════════════════════
+// LOADING OVERLAY
+// ════════════════════════════════════════════════════════
+function showLov(t,p=0){
+  const o=document.getElementById('lov');o.classList.add('on');
+  document.getElementById('lovt').textContent=t;
+  document.getElementById('lvf').style.width=p+'%';
+}
+function setP(n){document.getElementById('lvf').style.width=n+'%';}
+function hideLov(){document.getElementById('lov').classList.remove('on');}
+
+// ════════════════════════════════════════════════════════
+// WELCOME / START
+// ════════════════════════════════════════════════════════
+function fi(id){document.getElementById(id).click();}
+function showWelcome(){document.getElementById('welcome').classList.remove('gone');}
+function updateStartBtn(){document.getElementById('wstartbtn').disabled=!planLoaded;}
+
+function startApp(){
+  document.getElementById('welcome').classList.add('gone');
+  showUI(); renderDB(); updateStatus();
+}
+
+function startBlank(){
+  const c=document.getElementById('planC');
+  c.width=planW; c.height=planH;
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#f0f4f8'; ctx.fillRect(0,0,c.width,c.height);
+  ctx.strokeStyle='#dde3ea'; ctx.lineWidth=1;
+  for(let x=0;x<=planW;x+=50){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,planH);ctx.stroke();}
+  for(let y=0;y<=planH;y+=50){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(planW,y);ctx.stroke();}
+  c.style.display='block';
+  document.getElementById('svg').setAttribute('width',planW);
+  document.getElementById('svg').setAttribute('height',planH);
+  planLoaded=true;
+  document.getElementById('welcome').classList.add('gone');
+  showUI(); fitPlan(); renderDB(); updateStatus();
+}
+
+function showUI(){
+  document.getElementById('mb').style.display='flex';
+  document.getElementById('bbar').style.display='flex';
+}
+
+// ════════════════════════════════════════════════════════
+// PLAN LOADING
+// ════════════════════════════════════════════════════════
+async function loadPlan(inp){
+  const f=inp.files[0];if(!f)return;inp.value='';
+  showLov('Grondplan laden...',10);
+  try{
+    if(f.name.toLowerCase().endsWith('.pdf')){
+      const buf=await f.arrayBuffer(); setP(30);
+      const task=pdfjsLib.getDocument({data:buf});
+      task.onProgress=p=>{if(p.total>0)setP(30+Math.round(p.loaded/p.total*50));};
+      pdfDoc=await task.promise;
+      pdfTotal=pdfDoc.numPages; pdfPage=1;
+      document.getElementById('pdfbar').style.display='flex';
+      updPDFUI(); await renderPDF(pdfPage);
+    } else {
+      const url=URL.createObjectURL(f);
+      await new Promise((res,rej)=>{
+        const img=new Image();
+        img.onload=()=>{
+          const c=document.getElementById('planC');
+          c.width=img.naturalWidth; c.height=img.naturalHeight;
+          c.getContext('2d').drawImage(img,0,0);
+          planW=c.width; planH=c.height;
+          c.style.display='block';
+          document.getElementById('svg').setAttribute('width',planW);
+          document.getElementById('svg').setAttribute('height',planH);
+          URL.revokeObjectURL(url); res();
+        };
+        img.onerror=rej; img.src=url;
+      });
+      showPlan();
+    }
+    planLoaded=true; markWOK('plan'); updateStartBtn();
+  }catch(e){hideLov();alert('Fout grondplan: '+e.message);}
+}
+
+async function renderPDF(n){
+  if(!pdfDoc)return;
+  showLov(`Pagina ${n} renderen...`);
+  const pg=await pdfDoc.getPage(n);
+  const sc=parseFloat(document.getElementById('pdfsc').value)||2;
+  const vp=pg.getViewport({scale:sc});
+  const c=document.getElementById('planC');
+  c.width=Math.floor(vp.width); c.height=Math.floor(vp.height);
+  const ctx=c.getContext('2d');
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height);
+  await pg.render({canvasContext:ctx,viewport:vp}).promise;
+  planW=c.width; planH=c.height;
+  c.style.display='block';
+  document.getElementById('svg').setAttribute('width',planW);
+  document.getElementById('svg').setAttribute('height',planH);
+  showPlan();
+}
+async function rerenderPDF(){if(pdfDoc)await renderPDF(pdfPage);}
+async function chPg(d){const n=pdfPage+d;if(n<1||n>pdfTotal)return;pdfPage=n;updPDFUI();await renderPDF(pdfPage);}
+function updPDFUI(){document.getElementById('pdfpg').textContent=pdfPage+'/'+pdfTotal;}
+function showPlan(){fitPlan();hideLov();renderSVG();}
+
+// ════════════════════════════════════════════════════════
+// EXCEL PARSING — SLIM MET BOLD-DETECTIE
+// ════════════════════════════════════════════════════════
+function loadXLS(inp,cat){
+  const f=inp.files[0];if(!f)return;inp.value='';
+  showLov(`${cat} inlezen...`,10);
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      setP(20);
+      // Try with cellStyles for bold detection
+      let wb;
+      try{wb=XLSX.read(ev.target.result,{type:'array',cellStyles:true});}
+      catch{wb=XLSX.read(ev.target.result,{type:'array'});}
+      setP(50);
+      let items=[];
+      if(cat==='kasten') items=parseKastenWB(wb);
+      else items=parsePompenStyleWB(wb,cat);
+      setP(80);
+      DB[cat]=items;
+      // Cross-link pompen with kasten
+      if(cat==='pompen'&&DB.kasten.length) crossLink(DB.pompen);
+      if(cat==='kasten'&&DB.pompen.length) crossLink(DB.pompen);
+      setP(100);
+      markWOK(cat);
+      rebuildZoneSelect(); renderDB(); updateStatus(); hideLov();
+    }catch(e){hideLov();alert('Fout '+cat+': '+e.message);console.error(e);}
+  };
+  r.readAsArrayBuffer(f);
+}
+
+// Detect if a cell/row is a "zone header" (bold, single value, not an equipment ID)
+function isZoneHeader(row, ws, rowIdx){
+  const vals=row.filter(v=>String(v||'').trim());
+  if(vals.length>3) return false; // too many values
+  const v=String(row[0]||'').trim();
+  if(!v) return false;
+  // Check bold via cell style
+  const cellAddr=XLSX.utils.encode_cell({r:rowIdx,c:0});
+  const cell=ws[cellAddr];
+  const bold=cell&&cell.s&&cell.s.font&&cell.s.font.bold;
+  // Fallback: all caps single word or contains "Zone"/"ZONE"/"AFDELING"
+  const looksBold=bold||/^[A-Z\s\-0-9À-Ö]+$/.test(v)||
+    /zone|afdeling|sectie|area|building|gebouw|hal|unit/i.test(v);
+  // Must NOT look like an equipment ID
+  const isEquipID=/^\d{2,}[A-Z]/i.test(v)||/^[A-Z]{1,3}\d{3}/i.test(v);
+  return looksBold&&!isEquipID&&v.length>2;
+}
+
+function parsePompenStyleWB(wb,cat){
+  const results=[];const seen=new Set();
+  wb.SheetNames.forEach(sname=>{
+    const ws=wb.Sheets[sname];
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
+    let curZone=`Zone ${sname.trim()}`;
+    let headerRow=-1, cols={};
+
+    // Find header row
+    for(let i=0;i<Math.min(rows.length,20);i++){
+      const row=rows[i];
+      const rStr=row.map(v=>String(v||'').toUpperCase().trim());
+      // Tag/ID column detection
+      const tagIdx=rStr.findIndex(v=>
+        v==='TAG'||v==='TAG-NR'||v==='TAGNR'||v==='TAG NR'||
+        v.includes('NIEUW TAG')||v==='ID'||v==='ITEMNR'||v==='ITEM NR'||
+        (v.includes('TAG')&&v.includes('NR'))
+      );
+      if(tagIdx>=0){
+        headerRow=i; cols.tag=tagIdx;
+        rStr.forEach((v,j)=>{
+          if(j===tagIdx) return;
+          if(v.includes('BESCHRIJ')||v.includes('OMSCHRIJ')||v==='DESCRIPTION') cols.desc=j;
+          else if((v.includes('EL')&&v.includes('KAST'))||v==='KAST') cols.kast=j;
+          else if(v.includes('ZEK')||v.includes('FUSE')||v.includes('AUTOMAAT')) cols.zek=j;
+          else if(v.includes('KABINE')||v.includes('CABIN')) cols.kab=j;
+          else if(v.includes('LOCAT')) cols.lok=j;
+          else if(v==='ZONE'||v==='AFDELING') cols.zone=j;
+          else if(v.includes('KABEL')&&!v.includes('KABINE')) cols.kabel=j;
+          else if(v.includes('TYPE')) cols.kabeltype=j;
+          else if(v.includes('VERMOGEN')||v.includes('KW')) cols.kw=j;
+          else if(v.includes('SPANNING')||v.includes('VOLT')||v==='V') cols.volt=j;
+          else if(v.includes('STROOM')||v==='A'||v==='AMP') cols.amp=j;
+        });
+        break;
+      }
+    }
+    if(headerRow<0||cols.tag===undefined) return;
+
+    for(let i=headerRow+1;i<rows.length;i++){
+      const row=rows[i];
+      // Zone header detection
+      if(isZoneHeader(row,ws,i)){
+        curZone=String(row[0]||'').trim();
+        continue;
+      }
+      const tag=String(row[cols.tag]||'').trim();
+      if(!tag||tag.length<2) continue;
+      if(seen.has(tag.toUpperCase())) continue;
+      seen.add(tag.toUpperCase());
+
+      // Build specs from all non-empty columns
+      const specs={};
+      const hdrs=rows[headerRow];
+      row.forEach((v,j)=>{
+        const k=String(hdrs[j]||'').trim();
+        if(k&&j!==cols.tag&&String(v||'').trim()) specs[k]=String(v).trim();
+      });
+
+      // Auto-detect type
+      const TU=tag.toUpperCase();
+      let type='pomp';
+      if(cat==='verlichting') type='lamp';
+      else if(cat==='instrumentatie') type=detectInstrType(tag,String(row[cols.desc||1]||''));
+      else{
+        if(/MIX|M\d{3}/.test(TU)||TU.includes('MIXER')) type='mixer';
+        else if(TU.includes('LIFT')||TU.includes('MOTOR')||/\d{3}M\d/.test(TU)) type='motor';
+        else if(TU.includes('AHU')||TU.includes('VENT')) type='ahu';
+      }
+
+      const zoneFromCol=cols.zone!==undefined?String(row[cols.zone]||'').trim():'';
+      results.push({
+        id:tag, tag, type, tab:cat,
+        desc:String(row[cols.desc||1]||'').trim(),
+        kast:String(row[cols.kast!==undefined?cols.kast:3]||'').trim(),
+        zekering:String(row[cols.zek!==undefined?cols.zek:4]||'').trim(),
+        kabine:String(row[cols.kab!==undefined?cols.kab:5]||'').trim(),
+        lokatie:String(row[cols.lok!==undefined?cols.lok:6]||'').trim(),
+        kabelnr:cols.kabel!==undefined?String(row[cols.kabel]||'').trim():'',
+        kabeltype:cols.kabeltype!==undefined?String(row[cols.kabeltype]||'').trim():'',
+        kw:cols.kw!==undefined?String(row[cols.kw]||'').trim():'',
+        volt:cols.volt!==undefined?String(row[cols.volt]||'').trim():'',
+        amp:cols.amp!==undefined?String(row[cols.amp]||'').trim():'',
+        zone:zoneFromCol||curZone,
+        kast_desc:'', kabine_desc:'',
+        specs
+      });
+    }
+  });
+  return results;
+}
+
+function detectInstrType(tag,desc){
+  const T=tag.toUpperCase(), D=desc.toUpperCase();
+  if(T.startsWith('PT')||D.includes('DRUK')||D.includes('PRESS')) return 'pt';
+  if(T.startsWith('FT')||D.includes('FLOW')||D.includes('DEBIET')) return 'ft';
+  if(T.startsWith('TT')||T.startsWith('TE')||D.includes('TEMP')) return 'tt';
+  if(T.startsWith('LT')||T.startsWith('LE')||D.includes('NIVEAU')||D.includes('LEVEL')) return 'lt';
+  if(T.startsWith('AT')||D.includes('ANALY')) return 'at';
+  if(T.startsWith('FV')||T.startsWith('CV')||D.includes('REGELK')||D.includes('CONTROL VALVE')) return 'fv';
+  if(T.startsWith('SV')||T.startsWith('XV')||D.includes('SOLENOID')) return 'sv';
+  return 'instr';
+}
+
+function parseKastenWB(wb){
+  const KPAT=/^(\d{2,3}E\d{1,4}[A-Z+\/]*)$/;
+  const results=[];const seen=new Set();
+  wb.SheetNames.forEach(sname=>{
+    const ws=wb.Sheets[sname];
+    const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
+    let curZone=`Zone ${sname.trim()}`;
+    const kastCols=[];const zoneMap={};
+
+    rows.forEach((row,ri)=>{
+      if(isZoneHeader(row,ws,ri)){
+        const v=String(row[0]||'').trim();
+        zoneMap[ri]=v; curZone=v; return;
+      }
+      row.forEach((cell,ci)=>{
+        const v=String(cell||'').toUpperCase().trim();
+        if(v==='KASTNR'||v==='KAST NR'||v==='KAST-NR'||v==='KASTNUMMER'){
+          let zone=curZone;
+          for(let k=ri;k>=0;k--){if(zoneMap[k]){zone=zoneMap[k];break;}}
+          kastCols.push({kc:ci,dc:ci+1,zone,hi:ri});
+        }
+      });
+    });
+
+    if(!kastCols.length){
+      rows.forEach((row,ri)=>{
+        const v0=String(row[0]||'').trim(), v1=String(row[1]||'').trim();
+        if(KPAT.test(v0)&&v1&&v1.length>2){
+          if(seen.has(v0)) return; seen.add(v0);
+          results.push({id:v0,tag:v0,type:detectKastType(v1),tab:'elektrisch',
+            desc:v1,zone:curZone,kast:'',kabine:'',kast_desc:'',kabine_desc:'',specs:{}});
+        }
+      });
+      return;
+    }
+
+    kastCols.forEach(({kc,dc,zone,hi})=>{
+      for(let ri=hi+1;ri<rows.length;ri++){
+        const tag=String(rows[ri][kc]||'').trim();
+        if(!tag) continue;
+        if(isZoneHeader(rows[ri],ws,ri)){curZone=String(rows[ri][0]||'').trim();continue;}
+        if(seen.has(tag)) continue;
+        const desc=String(rows[ri][dc]||'').trim();
+        if(!desc||desc.toLowerCase().startsWith('weg')) continue;
+        seen.add(tag);
+        results.push({id:tag,tag,type:detectKastType(desc),tab:'elektrisch',
+          desc,zone:zone||curZone,kast:'',kabine:'',kast_desc:'',kabine_desc:'',
+          specs:{}});
+      }
+    });
+  });
+  return results;
+}
+
+function detectKastType(desc){
+  const d=desc.toLowerCase();
+  if(d.includes('transfo')) return 'transfo';
+  if(d.includes(' hs ')||d.includes('hs-')||d.includes('hoogspan')) return 'hs';
+  if(d.includes('mcc')) return 'mcc';
+  if(d.includes('lcr')) return 'lcr';
+  if(d.includes('kabine')||d.includes('cabine')) return 'kabine';
+  return 'kast';
+}
+
+function crossLink(pompen){
+  const exact={},base={};
+  DB.kasten.forEach(k=>{
+    exact[k.tag]=k;
+    const b=k.tag.replace(/[A-Z+]+$/,'');
+    if(!base[b]) base[b]=k;
+  });
+  const findK=tag=>{
+    if(!tag) return null;
+    if(exact[tag]) return exact[tag];
+    const b=tag.replace(/[A-Z/]+$/,'');
+    return base[b]||null;
+  };
+  pompen.forEach(p=>{
+    const ke=findK(p.kast);
+    p.kast_desc=ke?.desc||'';
+    const kabe=findK(p.kabine);
+    p.kabine_desc=kabe?.desc||'';
+  });
+}
+
+function markWOK(cat){
+  const b=document.getElementById('wb_'+cat);
+  if(b) b.classList.add('has');
+  const ok=document.getElementById('wok_'+cat);
+  if(ok) ok.style.display='block';
+  if(cat==='plan'){planLoaded=true;updateStartBtn();}
+}
+
+// ════════════════════════════════════════════════════════
+// ZONE & LAYER MANAGEMENT
+// ════════════════════════════════════════════════════════
+const ZONE_COLORS=['#3b82f6','#22c55e','#f59e0b','#ef4444','#a855f7','#06b6d4','#f97316','#84cc16','#ec4899','#14b8a6','#8b5cf6'];
+let _zoneCounter=0;
+
+function addZoneManual(){
+  const n=document.getElementById('zone-inp').value.trim();
+  const c=document.getElementById('zone-clr').value;
+  if(!n) return;
+  ZONES.push({id:gid(),naam:n,kleur:c,rect:null});
+  document.getElementById('zone-inp').value='';
+  renderZonesList(); renderSVG(); rebuildZoneSelect();
+}
+
+function addZoneFromDraw(x,y,w,h){
+  const idx=ZONES.length;
+  const naam=`Zone ${idx+1}`;
+  const kleur=ZONE_COLORS[idx%ZONE_COLORS.length];
+  ZONES.push({id:gid(),naam,kleur,rect:{x,y,w,h}});
+  renderZonesList(); renderSVG(); rebuildZoneSelect();
+  return ZONES[ZONES.length-1];
+}
+
+function renderZonesList(){
+  const el=document.getElementById('zones-list');
+  if(!el) return;
+  el.innerHTML=ZONES.map((z,i)=>`
+    <div class="listitem">
+      <div class="clrswatch" style="background:${z.kleur}"></div>
+      <input type="color" value="${z.kleur}" style="width:20px;height:20px;border:none;background:none;cursor:pointer;padding:0"
+        onchange="ZONES[${i}].kleur=this.value;renderSVG()">
+      <span class="lname" contenteditable="true" onblur="ZONES[${i}].naam=this.textContent.trim();rebuildZoneSelect()">${z.naam}</span>
+      <button class="ldel" onclick="ZONES.splice(${i},1);renderZonesList();renderSVG();rebuildZoneSelect()">✕</button>
+    </div>`).join('');
+}
+
+function toggleZoneVis(){showZones=!showZones;renderSVG();}
+function openZonesMgr(){renderZonesList();document.getElementById('zonesmgr').classList.add('on');}
+
+function addLaag(){
+  const n=document.getElementById('laag-inp').value.trim();
+  if(!n) return;
+  LAGEN.push({id:gid(),naam:n});
+  document.getElementById('laag-inp').value='';
+  renderLagenList(); rebuildLaagSel();
+}
+
+function renderLagenList(){
+  const el=document.getElementById('lagen-list');
+  if(!el) return;
+  el.innerHTML=LAGEN.map((l,i)=>`
+    <div class="listitem">
+      <span class="lname" contenteditable="true" onblur="LAGEN[${i}].naam=this.textContent.trim();rebuildLaagSel()">${l.naam}</span>
+      <button class="ldel" onclick="LAGEN.splice(${i},1);renderLagenList();rebuildLaagSel()">✕</button>
+    </div>`).join('');
+}
+
+function openLagenMgr(){renderLagenList();document.getElementById('lagenmgr').classList.add('on');}
+
+function rebuildLaagSel(){
+  const sel=document.getElementById('laagsel');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— Alle lagen —</option>'+
+    LAGEN.map(l=>`<option value="${l.id}">${l.naam}</option>`).join('');
+  if(LAGEN.find(l=>l.id===cur)) sel.value=cur;
+}
+
+function setActiefLaag(id){activeLaag=id;renderSVG();}
+
+function rebuildZoneSelect(){
+  const dbZones=[...new Set(allDB().map(x=>x.zone).filter(Boolean))].sort();
+  const drawZones=ZONES.map(z=>z.naam);
+  const all=[...new Set([...drawZones,...dbZones])];
+  const sel=document.getElementById('dbzone');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">— Alle zones —</option>'+
+    all.map(z=>`<option value="${z}">${z}</option>`).join('');
+  if(all.includes(cur)) sel.value=cur;
+}
+
+// Get zone for a point
+function zoneForPoint(x,y){
+  for(const z of ZONES){
+    if(!z.rect) continue;
+    const {x:rx,y:ry,w:rw,h:rh}=z.rect;
+    if(x>=rx&&x<=rx+rw&&y>=ry&&y<=ry+rh) return z.naam;
+  }
+  return '';
+}
+
+// ════════════════════════════════════════════════════════
+// TABS & FILTERS
+// ════════════════════════════════════════════════════════
+function setTab(t){
+  activeTab=t;
+  document.querySelectorAll('.tabt').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  renderSVG(); renderDB(); renderDFilts();
+}
+
+function isVisibleInTab(el){
+  if(activeTab==='alles') return true;
+  const t=el.type||'kast';
+  const etab=el.tab||TTAB(t);
+  return etab===activeTab;
+}
+
+function isVisibleInLayer(el){
+  if(!activeLaag) return true;
+  return (el.laag_id||'')===(activeLaag);
+}
+
+function renderDFilts(){
+  const f=DFILTS[activeTab]||DFILTS.alles;
+  const labels={naam:'Naam/ID',kabel:'Kabel-nr',type:'Type',zone:'Zone',laag:'Laag'};
+  document.getElementById('dfilts').innerHTML=
+    Object.entries(labels).map(([k,l])=>
+      `<button class="dft${f[k]?' on':''}" onclick="toggleDFilt('${k}')">${l}</button>`
+    ).join('');
+}
+
+function toggleDFilt(k){
+  const f=DFILTS[activeTab]||DFILTS.alles;
+  f[k]=!f[k];
+  renderDFilts(); renderSVG();
+}
+
+// ════════════════════════════════════════════════════════
+// DB UI
+// ════════════════════════════════════════════════════════
+function renderDB(){
+  const q=(document.getElementById('dbsrch').value||'').toLowerCase().trim();
+  const zone=document.getElementById('dbzone').value;
+  const placed=new Set(EL.map(e=>e.tag).filter(Boolean));
+  let items=allDB();
+  if(activeTab!=='alles') items=items.filter(x=>(x.tab||'alles')===activeTab||(TTAB(x.type||'kast'))===activeTab);
+  if(zone) items=items.filter(x=>x.zone===zone);
+  if(q) items=items.filter(x=>(x.tag||'').toLowerCase().includes(q)||(x.desc||'').toLowerCase().includes(q)||(x.kast||'').toLowerCase().includes(q));
+  items.sort((a,b)=>(placed.has(a.tag)?1:0)-(placed.has(b.tag)?1:0));
+  const MAX=300, show=items.slice(0,MAX);
+  let h='';
+  show.forEach(item=>{
+    const t=item.type||'kast', c=TC(t), bg=TB(t);
+    const isp=placed.has(item.tag);
+    const enc=encodeURIComponent(JSON.stringify(item));
+    h+=`<div class="dbi${isp?' placed':''}" draggable="true"
+      ondragstart="event.dataTransfer.setData('asset','${enc.replace(/'/g,'%27')}')"
+      ondblclick="startPlace(${enc.replace(/"/g,'&quot;')})"
+      onclick="openIM('${item.tag.replace(/'/g,"\\'")}',null)" title="${(item.desc||'').replace(/"/g,"'")}">
+      <div class="dico" style="background:${bg}">
+        <svg viewBox="-14 -14 28 28" width="16" height="16">${SYM(t,c,.65)}</svg>
+      </div>
+      <div class="dinf">
+        <div class="dtag" style="color:${c}">${item.tag}</div>
+        <div class="dsub">${item.kast_desc||item.desc||item.zone||''}</div>
+      </div>
+      <div class="dkst">${item.kast||item.zone||''}</div>
+    </div>`;
+  });
+  if(!items.length) h=`<div style="text-align:center;padding:20px 10px;color:var(--dim2);font-size:10px;line-height:2">
+    Geen data geladen.<br>Gebruik 📁 Bestanden of het palet.
+  </div>`;
+  document.getElementById('dbl').innerHTML=h;
+  document.getElementById('dbtot').textContent=items.length;
+  document.getElementById('dbfoot').textContent=items.length>MAX?`Toon ${MAX}/${items.length}`:`${items.length} items`;
+}
+
+// ════════════════════════════════════════════════════════
+// QUICK PALETTE
+// ════════════════════════════════════════════════════════
+function buildQPal(){
+  const g=document.getElementById('qpgrid');
+  const filter=activeTab==='alles'?null:activeTab;
+  const toShow=QPAL_ORDER.filter(t=>{
+    if(!TYPES[t]) return false;
+    if(!filter) return true;
+    return TYPES[t].tab===filter;
+  });
+  g.innerHTML=toShow.map(t=>{
+    const tp=TYPES[t],c=tp.c;
+    return `<button class="qpbtn${compactPalette?' compact':''}" id="qpb_${t}" title="${tp.l}" onclick="qpClick('${t}')">
+      <svg viewBox="-14 -14 28 28" width="18" height="18">${SYM(t,c,.75)}</svg>
+      <span style="color:${c}">${tp.l.replace(' ','&nbsp;')}</span>
+    </button>`;
+  }).join('');
+}
+
+function toggleCompact(){
+  compactPalette=!compactPalette;
+  buildQPal();
+}
+
+function qpClick(type){
+  if(!planLoaded) startBlank();
+  document.querySelectorAll('.qpbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('qpb_'+type)?.classList.add('active');
+  placePending={type,tag:'',_qp:true};
+  document.body.style.cursor='crosshair';
+  setMode('s');
+  document.getElementById('welcome').classList.add('gone');
+  showUI();
+}
+
+// Name dialog
+let _ndResolve=null, _ndType='';
+function askName(type){
+  return new Promise(res=>{
+    _ndResolve=res; _ndType=type;
+    document.getElementById('nd-tit').textContent=`Label — ${TL(type)}`;
+    document.getElementById('nd-inp').value='';
+    document.getElementById('ndlg').classList.add('on');
+    setTimeout(()=>document.getElementById('nd-inp').focus(),40);
+  });
+}
+function ndOK(){
+  const v=document.getElementById('nd-inp').value.trim();
+  document.getElementById('ndlg').classList.remove('on');
+  if(_ndResolve){_ndResolve(v||TL(TYPES[_ndType]||{})||'?');_ndResolve=null;}
+}
+function ndCancel(){
+  document.getElementById('ndlg').classList.remove('on');
+  placePending=null; document.body.style.cursor='default';
+  document.querySelectorAll('.qpbtn').forEach(b=>b.classList.remove('active'));
+  if(_ndResolve){_ndResolve(null);_ndResolve=null;}
+}
+
+// ════════════════════════════════════════════════════════
+// CABLE COLOR PICKER
+// ════════════════════════════════════════════════════════
+function buildCCLR(){
+  document.getElementById('cclrs').innerHTML=CABLE_COLORS.map(c=>
+    `<span class="cclr${c===curCableColor?' sel':''}" style="background:${c}"
+      onclick="setCableColor('${c}')"></span>`
+  ).join('');
+}
+function setCableColor(c){
+  curCableColor=c;
+  localStorage.setItem('em_ccolor',c);
+  buildCCLR();
+}
+
+// ════════════════════════════════════════════════════════
+// VIEWPORT
+// ════════════════════════════════════════════════════════
+function applyVP(){document.getElementById('vp').style.transform=`translate(${vx}px,${vy}px) scale(${vz})`;}
+function toW(cx,cy){return{x:(cx-vx)/vz,y:(cy-vy)/vz};}
+function cvW(e,el){
+  e.preventDefault();
+  const r=el.getBoundingClientRect();
+  const mx=e.clientX-r.left, my=e.clientY-r.top;
+  const f=e.deltaY<0?1.15:1/1.15, nz=Math.max(.04,Math.min(20,vz*f));
+  vx=mx-(mx-vx)*nz/vz; vy=my-(my-vy)*nz/vz; vz=nz; applyVP();
+}
+function fitPlan(){
+  if(!planW||!planH) return;
+  const r=document.getElementById('cw').getBoundingClientRect();
+  const sc=Math.min((r.width-40)/planW,(r.height-40)/planH,1);
+  vz=sc; vx=(r.width-planW*sc)/2; vy=(r.height-planH*sc)/2; applyVP();
+}
+
+// ════════════════════════════════════════════════════════
+// CANVAS EVENTS
+// ════════════════════════════════════════════════════════
+function cvMD(e){
+  if(e.button!==0) return;
+  const elg=e.target.closest('.elg');
+  const lg=e.target.closest('.lineg');
+  const r=document.getElementById('cv').getBoundingClientRect();
+  const w=toW(e.clientX-r.left, e.clientY-r.top);
+
+  // PENDING PLACE
+  if(placePending){
+    handlePendingPlace(w.x,w.y); return;
+  }
+
+  // ZONE DRAW
+  if(mode==='z'){
+    zoneDrawing=true; zoneSt={x:w.x,y:w.y};
+    zoneRect={x:w.x,y:w.y,w:0,h:0};
+    return;
+  }
+
+  // CALIBRATION
+  if(mode==='cal'){
+    if(!calStart){calStart={x:w.x,y:w.y};document.getElementById('calhud').textContent='📏 Klik eindpunt...';}
+    else{
+      const dx=w.x-calStart.x, dy=w.y-calStart.y;
+      calPxLen=Math.sqrt(dx*dx+dy*dy);
+      document.getElementById('cal-px').textContent=Math.round(calPxLen);
+      openModal('caldlg'); calStart=null;
+    }
+    return;
+  }
+
+  // CABLE MODE
+  if(mode==='c'){
+    if(elg){
+      const id=elg.dataset.id;
+      if(!cableStart){
+        cableStart=id; cablePts=[];
+        const el=EL.find(x=>x.id===id);
+        document.getElementById('chud').textContent=`🔌 Van: ${el?.tag||id} — klik volgend element of waypoint...`;
+      } else if(id!==cableStart){
+        snapshot();
+        const fr=EL.find(x=>x.id===cableStart), to=EL.find(x=>x.id===id);
+        KB.push({id:gid(),from:cableStart,to:id,pts:[...cablePts],
+          color:curCableColor,kabelnr:'',kabeltype:'',circuit:'normaal'});
+        cableStart=null; cablePts=[];
+        document.getElementById('chud').textContent='🔌 Klik op startelement...';
+        renderSVG(); updateStatus();
+      }
+    } else if(cableStart){
+      cablePts.push({x:w.x,y:w.y}); renderSVG();
+    }
+    return;
+  }
+
+  // LINE MODE
+  if(mode==='l'){
+    if(!lineStart){lineStart={x:w.x,y:w.y};document.getElementById('lhud').textContent='╱ Klik eindpunt...';}
+    else{
+      snapshot();
+      LN.push({id:gid(),x1:lineStart.x,y1:lineStart.y,x2:w.x,y2:w.y,style:curLineStyle});
+      lineStart={x:w.x,y:w.y}; renderSVG(); updateStatus();
+    }
+    return;
+  }
+
+  // DELETE MODE
+  if(mode==='d'){
+    if(elg){snapshot();const id=elg.dataset.id;EL=EL.filter(x=>x.id!==id);KB=KB.filter(x=>x.from!==id&&x.to!==id);if(selId===id)selId=null;renderSVG();renderRP();renderDB();}
+    if(e.target.closest('.kbg')){snapshot();const id=e.target.closest('.kbg').dataset.id;KB=KB.filter(x=>x.id!==id);renderSVG();}
+    if(lg){snapshot();const id=lg.dataset.id;LN=LN.filter(x=>x.id!==id);selLineId=null;renderSVG();}
+    if(e.target.closest('.zoneg')){
+      const id=e.target.closest('.zoneg').dataset.id;
+      ZONES=ZONES.filter(z=>z.id!==id);
+      renderSVG(); renderZonesList(); rebuildZoneSelect();
+    }
+    updateStatus(); return;
+  }
+
+  // SELECT
+  if(elg){
+    const id=elg.dataset.id; selId=id; selLineId=null;
+    const el=EL.find(x=>x.id===id);
+    if(el){dragOff={x:w.x-el.x,y:w.y-el.y};dragging=id;}
+    renderSVG(); openRP(id); return;
+  }
+  if(lg){selLineId=lg.dataset.id;selId=null;renderSVG();renderRP();return;}
+  if(e.target.closest('.kbg')){
+    const id=e.target.closest('.kbg').dataset.id;
+    selId='_kabel_'+id; renderRP(); return;
+  }
+
+  selId=null; selLineId=null; dragging=null;
+  if(!rpPinned) closeRP();
+  panning=true; panSt={x:e.clientX-vx,y:e.clientY-vy};
+  renderSVG();
+}
+
+function cvMM(e){
+  if(zoneDrawing&&zoneSt){
+    const r=document.getElementById('cv').getBoundingClientRect();
+    const w=toW(e.clientX-r.left,e.clientY-r.top);
+    zoneRect={x:Math.min(zoneSt.x,w.x),y:Math.min(zoneSt.y,w.y),
+      w:Math.abs(w.x-zoneSt.x),h:Math.abs(w.y-zoneSt.y)};
+    renderSVG(); return;
+  }
+  if(dragging){
+    const r=document.getElementById('cv').getBoundingClientRect();
+    const w=toW(e.clientX-r.left,e.clientY-r.top);
+    const el=EL.find(x=>x.id===dragging);
+    if(el){el.x=w.x-dragOff.x;el.y=w.y-dragOff.y;renderSVG();}
+    return;
+  }
+  if(panning){vx=e.clientX-panSt.x;vy=e.clientY-panSt.y;applyVP();}
+}
+
+function cvMU(e){
+  if(zoneDrawing){
+    zoneDrawing=false;
+    if(zoneRect&&zoneRect.w>20&&zoneRect.h>20){
+      const z=addZoneFromDraw(zoneRect.x,zoneRect.y,zoneRect.w,zoneRect.h);
+      // Prompt rename
+      const n=prompt('Naam voor deze zone:',z.naam);
+      if(n) z.naam=n;
+      renderSVG(); rebuildZoneSelect();
+    }
+    zoneRect=null; return;
+  }
+  if(dragging){snapshot();dragging=null;}
+  panning=false;
+}
+
+function cvDrop(e){
+  e.preventDefault();
+  const d=e.dataTransfer.getData('asset');
+  if(!d) return;
+  try{
+    const a=JSON.parse(decodeURIComponent(d));
+    const r=document.getElementById('cv').getBoundingClientRect();
+    const w=toW(e.clientX-r.left,e.clientY-r.top);
+    placeAsset(w.x,w.y,a);
+  }catch(err){}
+}
+
+// ════════════════════════════════════════════════════════
+// ELEMENT PLACEMENT
+// ════════════════════════════════════════════════════════
+async function handlePendingPlace(wx,wy){
+  const asset=placePending;
+  if(asset._qp){
+    _ndType=asset.type;
+    const name=await askName(asset.type);
+    if(name===null){
+      placePending=null; document.body.style.cursor='default';
+      document.querySelectorAll('.qpbtn').forEach(b=>b.classList.remove('active'));
+      return;
+    }
+    placeAsset(wx,wy,{type:asset.type,tag:name,desc:TL(asset.type),tab:TTAB(asset.type)});
+    placePending=null; document.body.style.cursor='default';
+    document.querySelectorAll('.qpbtn').forEach(b=>b.classList.remove('active'));
+  } else {
+    placeAsset(wx,wy,asset);
+    placePending=null; document.body.style.cursor='default';
+  }
+}
+
+function placeAsset(wx,wy,asset){
+  if(!planLoaded) startBlank();
+  snapshot();
+  const autoZone=zoneForPoint(wx,wy);
+  const el={
+    id:gid(), type:asset.type||'kast',
+    tag:asset.tag||'', desc:asset.desc||'',
+    tab:asset.tab||TTAB(asset.type||'kast'),
+    kast:asset.kast||'', zekering:asset.zekering||'',
+    kabine:asset.kabine||'', kabelnr:asset.kabelnr||'',
+    kabeltype:asset.kabeltype||'',
+    kast_desc:asset.kast_desc||'', kabine_desc:asset.kabine_desc||'',
+    lokatie:asset.lokatie||'', zone:autoZone||asset.zone||'',
+    laag_id:'', x:wx, y:wy, size:1, rotation:0, notes:'',
+    specs:asset.specs||{}, logboek:[]
+  };
+  EL.push(el); selId=el.id;
+  renderSVG(); openRP(el.id); renderDB(); updateStatus();
+}
+
+function startPlace(asset){
+  placePending=asset; document.body.style.cursor='crosshair';
+  document.getElementById('welcome').classList.add('gone');
+  showUI();
+}
+
+// ════════════════════════════════════════════════════════
+// SVG RENDERING
+// ════════════════════════════════════════════════════════
+function renderSVG(){
+  const svg=document.getElementById('svg');
+  const f=DFILTS[activeTab]||DFILTS.alles;
+  let h='';
+
+  // 1. ZONES
+  if(showZones){
+    ZONES.forEach(z=>{
+      if(!z.rect) return;
+      const {x,y,w,ht}={...z.rect, ht:z.rect.h};
+      const c=z.kleur;
+      h+=`<g class="zoneg" data-id="${z.id}">
+        <rect x="${z.rect.x}" y="${z.rect.y}" width="${z.rect.w}" height="${z.rect.h}"
+          fill="${c}" fill-opacity=".07" stroke="${c}" stroke-width="1.5" stroke-dasharray="8 4" rx="4"/>
+        <text x="${z.rect.x+8}" y="${z.rect.y+16}" font-size="11" fill="${c}" font-weight="700"
+          paint-order="stroke" stroke="#060c18" stroke-width="2" opacity=".8">${z.naam}</text>
+      </g>`;
+    });
+    // Zone being drawn
+    if(zoneRect&&zoneRect.w>5){
+      h+=`<rect x="${zoneRect.x}" y="${zoneRect.y}" width="${zoneRect.w}" height="${zoneRect.h}"
+        fill="#a855f7" fill-opacity=".1" stroke="#a855f7" stroke-width="1.5" stroke-dasharray="6 3" rx="3"/>`;
+    }
+  }
+
+  // 2. LINES/WALLS
+  LN.forEach(ln=>{
+    const sel=selLineId===ln.id;
+    let sw=2,dash='',sc='#64748b';
+    if(ln.style==='wand'){sw=4;sc='#475569';}
+    else if(ln.style==='leiding'){sw=2;sc='#06b6d4';dash='stroke-dasharray="8 3"';}
+    else if(ln.style==='stippel'){sw=1.5;sc='#94a3b8';dash='stroke-dasharray="4 4"';}
+    if(sel) sc=curCableColor;
+    h+=`<g class="lineg" data-id="${ln.id}">
+      <line x1="${ln.x1}" y1="${ln.y1}" x2="${ln.x2}" y2="${ln.y2}" stroke="transparent" stroke-width="10"/>
+      <line x1="${ln.x1}" y1="${ln.y1}" x2="${ln.x2}" y2="${ln.y2}" stroke="${sc}" stroke-width="${sw}" ${dash} stroke-linecap="round"/>
+    </g>`;
+  });
+
+  // 3. CABLES
+  KB.forEach(kb=>{
+    const fr=EL.find(x=>x.id===kb.from), to=EL.find(x=>x.id===kb.to);
+    if(!fr||!to) return;
+    // Tab visibility check
+    const frVis=isVisibleInTab(fr)&&isVisibleInLayer(fr);
+    const toVis=isVisibleInTab(to)&&isVisibleInLayer(to);
+    const vis=frVis||toVis;
+    const faded=!vis;
+    const pts=[{x:fr.x,y:fr.y},...(kb.pts||[]),{x:to.x,y:to.y}];
+    let d=`M ${pts[0].x} ${pts[0].y}`;
+    for(let i=1;i<pts.length;i++) d+=` L ${pts[i].x} ${pts[i].y}`;
+    const len=kLen(kb), col=kb.color||'#3b82f6';
+    const mx=(fr.x+to.x)/2, my=(fr.y+to.y)/2;
+    const circuit=kb.circuit||'normaal';
+    const dashAttr=circuit==='nood'?'stroke-dasharray="6 4"':'';
+    h+=`<g class="kbg" data-id="${kb.id}" opacity="${faded?.15:1}">
+      <path d="${d}" stroke="transparent" stroke-width="14" fill="none"/>
+      <path d="${d}" stroke="${col}" stroke-width="2" fill="none" stroke-linecap="round" ${dashAttr} opacity=".85"/>
+      ${f.kabel&&kb.kabelnr?`<text x="${mx}" y="${my-10}" text-anchor="middle" font-size="8" fill="${col}" paint-order="stroke" stroke="#060c18" stroke-width="2">${kb.kabelnr}</text>`:''}
+      <text x="${mx}" y="${my-2}" text-anchor="middle" font-size="8" fill="${col}" opacity=".8">${len.toFixed(1)}m</text>
+    </g>`;
+  });
+
+  // Cable in progress
+  if(cableStart&&cablePts.length){
+    const fr=EL.find(x=>x.id===cableStart);
+    if(fr){
+      let d=`M ${fr.x} ${fr.y}`;
+      cablePts.forEach(p=>d+=` L ${p.x} ${p.y}`);
+      h+=`<path d="${d}" stroke="${curCableColor}" stroke-width="1.5" fill="none" stroke-dasharray="6 3" opacity=".7"/>`;
+    }
+  }
+
+  // Calibration line in progress
+  // (shown via cursor, no SVG needed)
+
+  // 4. ELEMENTS (MCC last so they appear on top conceptually)
+  // Sort: MCC first (rendered as background), then others
+  const sorted=[...EL].sort((a,b)=>isMCC(a.type)?-1:isMCC(b.type)?1:0);
+
+  sorted.forEach(el=>{
+    const vis=isVisibleInTab(el);
+    const layerVis=isVisibleInLayer(el);
+    const faded=!vis||!layerVis;
+    const t=el.type||'kast', c=TC(t), s=el.size||1;
+    const sel=selId===el.id;
+    const R=Math.ceil(14*s)+2;
+
+    if(isMCC(t)){
+      // MCC: large labeled rectangle
+      const mw=Math.max(60,(el.mcc_w||80))*s;
+      const mh=Math.max(40,(el.mcc_h||60))*s;
+      const lbl=el.tag||'MCC';
+      // Find connected kasten
+      const kasten=EL.filter(k=>k.kabine===el.tag||k.kast===el.tag);
+      h+=`<g class="mccg elg${sel?' sel':''}" data-id="${el.id}"
+        transform="translate(${el.x},${el.y})" opacity="${faded?.15:1}">
+        <rect x="${-mw/2}" y="${-mh/2}" width="${mw}" height="${mh}" rx="4"
+          fill="${TB(t)}" stroke="${c}" stroke-width="${sel?2.5:1.5}"/>
+        <rect x="${-mw/2}" y="${-mh/2}" width="${mw}" height="14" rx="4" style="rx:4 4 0 0"
+          fill="${c}" opacity=".25"/>
+        <text x="0" y="${-mh/2+10}" text-anchor="middle" font-size="9" fill="${c}" font-weight="900"
+          paint-order="stroke" stroke="#060c18" stroke-width="2">${lbl}</text>
+        ${kasten.length?`<text x="0" y="${-mh/2+22}" text-anchor="middle" font-size="7" fill="${c}" opacity=".6">${kasten.length} kasten</text>`:''}
+        ${sel?`<rect class="ering" x="${-mw/2-4}" y="${-mh/2-4}" width="${mw+8}" height="${mh+8}" rx="6" fill="none"/>`:''}
+      </g>`;
+    } else {
+      h+=`<g class="elg${sel?' sel':''}" data-id="${el.id}"
+        transform="translate(${el.x},${el.y}) rotate(${el.rotation||0})"
+        opacity="${faded?.15:(layerVis?1:.25)}">
+        <circle r="${R}" fill="${TB(t)}" opacity="${sel?.4:.12}"/>
+        ${sel?`<circle class="ering" r="${R+4}"/>`:''}
+        ${SYM(t,c,s)}
+        ${f.naam?`<text y="${R+9}" text-anchor="middle" font-size="${Math.max(7,8*s)}" fill="${c}" font-weight="700"
+          paint-order="stroke" stroke="#060c18" stroke-width="2.5">${el.tag}</text>`:''}
+        ${f.type?`<text y="${R+18}" text-anchor="middle" font-size="${Math.max(6,7*s)}" fill="${c}" opacity=".6">${TL(t)}</text>`:''}
+        ${f.zone&&el.zone?`<text y="${-(R+5)}" text-anchor="middle" font-size="7" fill="${c}" opacity=".5">${el.zone}</text>`:''}
+      </g>`;
+    }
+  });
+
+  svg.innerHTML=h;
+}
+
+function kLen(kb){
+  const fr=EL.find(x=>x.id===kb.from), to=EL.find(x=>x.id===kb.to);
+  if(!fr||!to) return 0;
+  const pts=[{x:fr.x,y:fr.y},...(kb.pts||[]),{x:to.x,y:to.y}];
+  let len=0;
+  for(let i=1;i<pts.length;i++){
+    const dx=pts[i].x-pts[i-1].x, dy=pts[i].y-pts[i-1].y;
+    len+=Math.sqrt(dx*dx+dy*dy);
+  }
+  return len*mpp;
+}
+
+// ════════════════════════════════════════════════════════
+// MODE & HUD
+// ════════════════════════════════════════════════════════
+function setMode(m){
+  mode=m;
+  ['s','c','l','z','cal','d','f'].forEach(x=>{
+    const b=document.getElementById('mb_'+x);
+    if(b) b.classList.toggle('on',x===m);
+  });
+  if(m!=='c'){cableStart=null;cablePts=[];document.getElementById('chud').style.display='none';}
+  else{document.getElementById('chud').style.display='block';}
+  if(m!=='l'){lineStart=null;document.getElementById('lhud').style.display='none';}
+  else{document.getElementById('lhud').style.display='block';}
+  document.getElementById('zhud').style.display=m==='z'?'block':'none';
+  document.getElementById('calhud').style.display=m==='cal'?'block':'none';
+  document.getElementById('cclrpill').style.display=m==='c'?'flex':'none';
+  document.getElementById('lstylpill').style.display=m==='l'?'flex':'none';
+  document.getElementById('zonepill').style.display='flex';
+  document.body.style.cursor=(m==='c'||m==='l'||m==='z'||m==='cal')?'cell':'default';
+  if(m==='c') buildCCLR();
+}
+
+// ════════════════════════════════════════════════════════
+// CALIBRATION
+// ════════════════════════════════════════════════════════
+function applyCalibration(){
+  const len=parseFloat(document.getElementById('cal-inp').value)||0;
+  if(len>0&&calPxLen>0){
+    mpp=len/calPxLen;
+    document.getElementById('scInp').value=mpp.toFixed(4);
+    document.getElementById('cal-result').textContent=`Schaal: 1px = ${mpp.toFixed(4)} m`;
+  }
+  closeModal('caldlg'); setMode('s');
+}
+
+// ════════════════════════════════════════════════════════
+// RIGHT PANEL
+// ════════════════════════════════════════════════════════
+function openRP(id){
+  selId=id;
+  document.getElementById('rp').classList.add('open');
+  renderRP();
+}
+function closeRP(){
+  if(!rpPinned) document.getElementById('rp').classList.remove('open');
+}
+function toggleRPPin(){
+  rpPinned=!rpPinned;
+  document.getElementById('rp-pin').classList.toggle('on',rpPinned);
+  if(rpPinned) document.getElementById('rp').classList.add('open');
+}
+function setRPTab(t){
+  rpTab=t;
+  document.querySelectorAll('.rptabt').forEach(b=>b.classList.toggle('on',b.dataset.rt===t));
+  renderRP();
+}
+
+function renderRP(){
+  if(!selId&&!rpPinned){closeRP();return;}
+  // Cable selected?
+  if(selId&&selId.startsWith('_kabel_')){
+    const kid=selId.replace('_kabel_','');
+    renderRPKabel(kid); return;
+  }
+  // Line selected?
+  if(selLineId){renderRPLine();return;}
+  const el=EL.find(x=>x.id===selId);
+  if(!el){
+    document.getElementById('rp-body').innerHTML='<div style="text-align:center;color:var(--dim2);padding:20px 10px;font-size:10px">Niets geselecteerd</div>';
+    document.getElementById('rp-tit').textContent='Eigenschappen';
+    document.getElementById('rp-ico').innerHTML='';
+    return;
+  }
+  const t=el.type||'kast', c=TC(t);
+  document.getElementById('rp-tit').textContent=el.tag||TL(t);
+  document.getElementById('rp-ico').innerHTML=`<div style="background:${TB(t)};width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center"><svg viewBox="-14 -14 28 28" width="16" height="16">${SYM(t,c,.65)}</svg></div>`;
+
+  if(rpTab==='info') renderRPInfo(el);
+  else if(rpTab==='log') renderRPLog(el);
+  else if(rpTab==='fiche') renderRPFiche(el);
+}
+
+function renderRPInfo(el){
+  const t=el.type||'kast', c=TC(t);
+  let h='';
+  h+=`<div class="rpsec">Identificatie</div>`;
+  h+=`<div class="rpr"><label>Tag / Label</label>
+    <input type="text" value="${el.tag||''}" onchange="EL.find(e=>e.id==='${el.id}').tag=this.value;renderSVG();addLog('${el.id}','Tag gewijzigd: '+this.value)"></div>`;
+  h+=`<div class="rpr"><label>Type</label>
+    <select onchange="EL.find(e=>e.id==='${el.id}').type=this.value;renderSVG();renderRP()">
+      ${Object.keys({...TYPES,...DYNTYPES}).map(k=>`<option value="${k}"${k===t?' selected':''}>${TL(k)}</option>`).join('')}
+    </select></div>`;
+  h+=`<div class="rpr"><label>Laag</label>
+    <select onchange="EL.find(e=>e.id==='${el.id}').laag_id=this.value">
+      <option value="">— Geen —</option>
+      ${LAGEN.map(l=>`<option value="${l.id}"${el.laag_id===l.id?' selected':''}>${l.naam}</option>`).join('')}
+    </select></div>`;
+
+  if(el.desc) h+=`<div class="rpsec">Beschrijving</div>`+ri('',el.desc);
+  if(el.zone||el.lokatie){
+    h+=`<div class="rpsec">Locatie</div>`;
+    if(el.zone) h+=ri('Zone',el.zone);
+    if(el.lokatie) h+=ri('Locatie',el.lokatie);
+  }
+  if(el.kast||el.zekering||el.kabine||el.kabelnr){
+    h+=`<div class="rpsec">Elektrische voeding</div>`;
+    if(el.kast) h+=ri('El. kast',el.kast,'am');
+    if(el.kast_desc) h+=ri('Kast omschr.',el.kast_desc);
+    if(el.zekering) h+=ri('Automaat/Zek.',el.zekering,'hl');
+    if(el.kabine) h+=ri('Kabine/MCC',el.kabine);
+    if(el.kabine_desc) h+=ri('Kabine omschr.',el.kabine_desc);
+    if(el.kabelnr) h+=ri('Kabelnr.',el.kabelnr);
+    if(el.kabeltype) h+=ri('Kabeltype',el.kabeltype);
+  }
+  if(el.specs&&Object.keys(el.specs).length){
+    h+=`<div class="rpsec">Specificaties</div>`;
+    Object.entries(el.specs).slice(0,12).forEach(([k,v])=>{h+=ri(k,v);});
+  }
+  if(isMCC(t)){
+    h+=`<div class="rpsec">MCC Afmetingen</div>`;
+    h+=`<div class="rpr"><label>Breedte (px)</label><input type="number" value="${el.mcc_w||80}" onchange="EL.find(e=>e.id==='${el.id}').mcc_w=+this.value;renderSVG()"></div>`;
+    h+=`<div class="rpr"><label>Hoogte (px)</label><input type="number" value="${el.mcc_h||60}" onchange="EL.find(e=>e.id==='${el.id}').mcc_h=+this.value;renderSVG()"></div>`;
+    const kasten=EL.filter(k=>k.kabine===el.tag||k.kast===el.tag);
+    if(kasten.length){h+=`<div class="rpsec">Gekoppelde kasten (${kasten.length})</div>`;
+      kasten.slice(0,6).forEach(k=>h+=ri(k.tag,k.desc||TL(k.type)));}
+  }
+  h+=`<div class="rpsec">Plan</div>`;
+  h+=`<div class="rpr"><label>Grootte</label><input type="range" min=".4" max="4" step=".1" value="${el.size||1}" oninput="EL.find(e=>e.id==='${el.id}').size=+this.value;renderSVG()"></div>`;
+  h+=`<div class="rpr"><label>Rotatie °</label><input type="number" value="${el.rotation||0}" min="-180" max="360" step="15" onchange="EL.find(e=>e.id==='${el.id}').rotation=+this.value;renderSVG()"></div>`;
+  h+=`<div class="rpr"><label>Notities</label><textarea onchange="EL.find(e=>e.id==='${el.id}').notes=this.value">${el.notes||''}</textarea></div>`;
+
+  const cables=KB.filter(k=>k.from===el.id||k.to===el.id);
+  if(cables.length){
+    h+=`<div class="rpsec">Kabels (${cables.length})</div>`;
+    cables.forEach(k=>{
+      const o=EL.find(x=>x.id===(k.from===el.id?k.to:k.from));
+      h+=ri((o?.tag||'?')+' →', kLen(k).toFixed(2)+'m','gr');
+    });
+  }
+  h+=`<button class="rpbtn" onclick="openIM('${el.tag}','${el.id}')">🔍 Volledige info</button>`;
+  h+=`<button class="rpbtn del" onclick="delEl('${el.id}')">🗑 Verwijderen</button>`;
+  document.getElementById('rp-body').innerHTML=h;
+}
+
+function renderRPLog(el){
+  if(!el) return;
+  const logs=(el.logboek||[]).slice().reverse();
+  let h=`<div class="rpsec">Logboek (${logs.length})</div>`;
+  logs.forEach(entry=>{
+    h+=`<div class="logentry">
+      <div class="lmeta">${entry.datum} <b>${entry.naam||'?'}</b></div>
+      <div class="ltxt">${entry.tekst}</div>
+    </div>`;
+  });
+  h+=`<div class="logform">
+    <div style="font-size:9px;color:var(--dim);margin-bottom:4px">Nieuwe log-entry</div>
+    <input id="log-naam" type="text" placeholder="Naam uitvoerder" value="${curUser}">
+    <textarea id="log-txt" placeholder="Opmerking..."></textarea>
+    <button class="rpbtn pri" onclick="submitLog('${el.id}')">➕ Toevoegen</button>
+  </div>`;
+  document.getElementById('rp-body').innerHTML=h;
+}
+
+function renderRPFiche(el){
+  if(!el) el=EL.find(x=>x.id===selId);
+  if(!el) return;
+  const isInstr=['pt','ft','tt','lt','at','fv','sv','instr'].includes(el.type);
+  let h=`<div class="rpsec">Technische fiche</div>`;
+  h+=`<div id="fiche-slot-tf" class="fichecard" style="flex-direction:column;align-items:stretch">
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px">
+      <div id="fiche-tf-lbl" style="flex:1;font-size:10px;color:var(--dim)">Geen fiche geladen</div>
+      <input type="file" id="fi_tf" accept=".pdf,.jpg,.png" style="display:none" onchange="saveFiche('${el.id}','tf',this.files[0]);this.value=''">
+      <button onclick="fi('fi_tf')" style="font-size:9px;padding:2px 6px;border-radius:3px;border:1px solid var(--br);background:var(--bg4);color:var(--text);cursor:pointer">📎 Upload</button>
+    </div>
+  </div>`;
+  if(isInstr){
+    h+=`<div class="rpsec">Kalibratieverslag</div>`;
+    h+=`<div class="fichecard" style="flex-direction:column;align-items:stretch">
+      <div style="display:flex;gap:6px;align-items:center;margin-bottom:4px">
+        <div id="fiche-kv-lbl" style="flex:1;font-size:10px;color:var(--dim)">Geen verslag geladen</div>
+        <input type="file" id="fi_kv" accept=".pdf,.jpg,.png" style="display:none" onchange="saveFiche('${el.id}','kv',this.files[0]);this.value=''">
+        <button onclick="fi('fi_kv')" style="font-size:9px;padding:2px 6px;border-radius:3px;border:1px solid var(--br);background:var(--bg4);color:var(--text);cursor:pointer">📎 Upload</button>
+      </div>
+    </div>`;
+  }
+  document.getElementById('rp-body').innerHTML=h;
+  // Load fiche info async
+  getFiche(el.id,'tf').then(f=>{
+    const lbl=document.getElementById('fiche-tf-lbl');
+    if(f&&lbl){
+      lbl.innerHTML=`<span style="color:var(--text)">${f.naam}</span>
+        <span style="font-size:9px;color:var(--dim2)">${new Date(f.datum).toLocaleDateString('nl-BE')}</span>
+        <button onclick="openFiche('${el.id}','tf')" style="margin-left:4px;font-size:9px;padding:1px 5px;border-radius:2px;border:1px solid var(--br);background:var(--bg4);color:var(--text);cursor:pointer">👁</button>
+        <button onclick="delFiche('${el.id}','tf')" style="font-size:9px;padding:1px 5px;border-radius:2px;border:1px solid #7f1d1d;background:#2d0808;color:#fca5a5;cursor:pointer">✕</button>`;
+    }
+  }).catch(()=>{});
+  if(isInstr) getFiche(el.id,'kv').then(f=>{
+    const lbl=document.getElementById('fiche-kv-lbl');
+    if(f&&lbl){
+      lbl.innerHTML=`<span style="color:var(--text)">${f.naam}</span>
+        <span style="font-size:9px;color:var(--dim2)">${new Date(f.datum).toLocaleDateString('nl-BE')}</span>
+        <button onclick="openFiche('${el.id}','kv')" style="margin-left:4px;font-size:9px;padding:1px 5px;border-radius:2px;border:1px solid var(--br);background:var(--bg4);color:var(--text);cursor:pointer">👁</button>
+        <button onclick="delFiche('${el.id}','kv')" style="font-size:9px;padding:1px 5px;border-radius:2px;border:1px solid #7f1d1d;background:#2d0808;color:#fca5a5;cursor:pointer">✕</button>`;
+    }
+  }).catch(()=>{});
+}
+
+function renderRPKabel(kid){
+  const kb=KB.find(x=>x.id===kid);
+  if(!kb) return;
+  const fr=EL.find(x=>x.id===kb.from), to=EL.find(x=>x.id===kb.to);
+  document.getElementById('rp-tit').textContent='Kabel';
+  let h=`<div class="rpsec">Kabel info</div>`;
+  h+=ri('Van', fr?.tag||'?');
+  h+=ri('Naar', to?.tag||'?');
+  h+=ri('Lengte', kLen(kb).toFixed(2)+' m','gr');
+  h+=`<div class="rpr"><label>Kabelnummer</label><input type="text" value="${kb.kabelnr||''}" onchange="KB.find(k=>k.id==='${kb.id}').kabelnr=this.value;renderSVG()"></div>`;
+  h+=`<div class="rpr"><label>Kabeltype</label><input type="text" value="${kb.kabeltype||''}" onchange="KB.find(k=>k.id==='${kb.id}').kabeltype=this.value;renderSVG()"></div>`;
+  h+=`<div class="rpr"><label>Circuit</label>
+    <select onchange="KB.find(k=>k.id==='${kb.id}').circuit=this.value;renderSVG()">
+      <option value="normaal"${(kb.circuit||'normaal')==='normaal'?' selected':''}>Normaal</option>
+      <option value="nood"${kb.circuit==='nood'?' selected':''}>Noodverlichting</option>
+      <option value="kracht"${kb.circuit==='kracht'?' selected':''}>Kracht</option>
+      <option value="data"${kb.circuit==='data'?' selected':''}>Data/Signaal</option>
+    </select></div>`;
+  h+=`<div class="rpr"><label>Kleur</label>
+    <div style="display:flex;gap:3px;flex-wrap:wrap;margin-top:3px">
+      ${CABLE_COLORS.map(c=>`<span style="width:18px;height:18px;border-radius:3px;background:${c};cursor:pointer;border:2px solid ${c===kb.color?'#fff':'transparent'}"
+        onclick="KB.find(k=>k.id==='${kb.id}').color='${c}';renderSVG();renderRPKabel('${kb.id}')"></span>`).join('')}
+    </div></div>`;
+  h+=`<button class="rpbtn del" onclick="KB=KB.filter(x=>x.id!=='${kb.id}');selId=null;renderSVG();closeRP()">🗑 Verwijderen</button>`;
+  document.getElementById('rp-body').innerHTML=h;
+  document.getElementById('rp').classList.add('open');
+}
+
+function renderRPLine(){
+  const ln=LN.find(x=>x.id===selLineId);
+  if(!ln) return;
+  const dx=ln.x2-ln.x1, dy=ln.y2-ln.y1;
+  const len=(Math.sqrt(dx*dx+dy*dy)*mpp).toFixed(2);
+  document.getElementById('rp-tit').textContent='Lijn / Wand';
+  let h=`<div class="rpsec">Lijn</div>`;
+  h+=ri('Lengte',len+' m','gr');
+  h+=`<div class="rpr"><label>Stijl</label>
+    <select onchange="LN.find(x=>x.id==='${ln.id}').style=this.value;renderSVG()">
+      <option value="wand"${ln.style==='wand'?' selected':''}>Wand</option>
+      <option value="leiding"${ln.style==='leiding'?' selected':''}>Leiding/Buis</option>
+      <option value="stippel"${ln.style==='stippel'?' selected':''}>Stippel</option>
+    </select></div>`;
+  h+=`<button class="rpbtn del" onclick="LN=LN.filter(x=>x.id!=='${ln.id}');selLineId=null;renderSVG();closeRP()">🗑 Verwijderen</button>`;
+  document.getElementById('rp-body').innerHTML=h;
+}
+
+function ri(k,v,cls=''){
+  return `<div class="rpi"><div class="k">${k}</div><div class="v${cls?' '+cls:''}">${v||'—'}</div></div>`;
+}
+
+// ════════════════════════════════════════════════════════
+// LOGBOOK
+// ════════════════════════════════════════════════════════
+function addLog(elId,tekst){
+  const el=EL.find(x=>x.id===elId);
+  if(!el) return;
+  if(!el.logboek) el.logboek=[];
+  el.logboek.push({
+    datum:new Date().toLocaleString('nl-BE'),
+    naam:curUser||'—',
+    tekst
+  });
+}
+
+function submitLog(elId){
+  const el=EL.find(x=>x.id===elId);
+  if(!el) return;
+  const naam=document.getElementById('log-naam')?.value.trim()||'';
+  const tekst=document.getElementById('log-txt')?.value.trim()||'';
+  if(!tekst) return;
+  if(naam){curUser=naam;localStorage.setItem('em_user',naam);}
+  if(!el.logboek) el.logboek=[];
+  el.logboek.push({datum:new Date().toLocaleString('nl-BE'),naam:naam||'—',tekst});
+  renderRPLog(el);
+}
+
+function delEl(id){
+  snapshot();
+  EL=EL.filter(x=>x.id!==id);
+  KB=KB.filter(x=>x.from!==id&&x.to!==id);
+  if(selId===id){selId=null;closeRP();}
+  renderSVG();renderDB();updateStatus();
+}
+
+// ════════════════════════════════════════════════════════
+// INFO MODAL
+// ════════════════════════════════════════════════════════
+function openIM(tagOrId, elId){
+  const el=EL.find(x=>x.id===elId)||EL.find(x=>x.tag===tagOrId);
+  const db=allDB().find(x=>x.tag===(el?.tag||tagOrId));
+  const data=db||el||{};
+  const t=el?.type||data.type||'kast', c=TC(t);
+  const tag=data.tag||el?.tag||tagOrId;
+  imTagOrId=tagOrId;
+  document.getElementById('im-tit').textContent=tag+' — '+TL(t);
+  document.getElementById('im-place').style.display=(el||!planLoaded)?'none':'block';
+  let h='';
+  h+=ims('Identificatie',[
+    ['Tag/ID',tag,'hl'],
+    ['Type',TL(t)],
+    data.desc?['Omschrijving',data.desc]:'',
+    data.zone?['Zone',data.zone]:'',
+    data.lokatie?['Locatie',data.lokatie]:'',
+  ].filter(Boolean));
+  if(data.kast||data.zekering||data.kabine){
+    h+=ims('Elektrische voeding',[
+      data.kast?['El. kast',data.kast,'am']:'',
+      data.kast_desc?['Kast beschrijving',data.kast_desc]:'',
+      data.zekering?['Automaat/Zekering',data.zekering,'hl']:'',
+      data.kabine?['Kabine',data.kabine]:'',
+      data.kabine_desc?['Kabine beschrijving',data.kabine_desc]:'',
+      data.kabelnr?['Kabelnr.',data.kabelnr]:'',
+      data.kabeltype?['Kabeltype',data.kabeltype]:'',
+    ].filter(Boolean));
+  }
+  if(data.specs&&Object.keys(data.specs).length){
+    h+=ims('Alle specificaties',Object.entries(data.specs).map(([k,v])=>[k,v]));
+  }
+  if(el){
+    const cables=KB.filter(k=>k.from===el.id||k.to===el.id);
+    if(cables.length) h+=ims(`Kabels (${cables.length})`,
+      cables.map(k=>{const o=EL.find(x=>x.id===(k.from===el.id?k.to:k.from));
+        return ['↔ '+(o?.tag||'?'),kLen(k).toFixed(2)+'m','gr'];}));
+  }
+  document.getElementById('im-bdy').innerHTML=h;
+  openModal('im');
+}
+
+function ims(title,rows){
+  const rh=rows.map(([k,v,c=''])=>
+    `<div class="imrow"><div class="ik">${k}</div><div class="iv ${c}">${v||'—'}</div></div>`).join('');
+  return `<div class="imsec"><h3>${title}</h3>${rh}</div>`;
+}
+
+function imPlace(){
+  const a=allDB().find(x=>x.tag===imTagOrId);
+  if(!a) return; closeModal('im'); startPlace(a);
+}
+
+// ════════════════════════════════════════════════════════
+// QUICK SEARCH
+// ════════════════════════════════════════════════════════
+function doQS(q){
+  const drop=document.getElementById('qsdrop');
+  if(!q.trim()){drop.classList.remove('on');return;}
+  const ql=q.toLowerCase();
+  const res=allDB().filter(x=>
+    (x.tag||'').toLowerCase().includes(ql)||
+    (x.desc||'').toLowerCase().includes(ql)||
+    (x.kast||'').toLowerCase().includes(ql)
+  ).slice(0,12);
+  if(!res.length){drop.classList.remove('on');return;}
+  drop.innerHTML=res.map(x=>{
+    const c=TC(x.type||'kast');
+    return `<div class="qri" onclick="openIM('${x.tag.replace(/'/g,"\\'")}',null)"
+      onmousedown="document.getElementById('qsdrop').classList.remove('on');document.getElementById('qsi').value=''">
+      <span class="qt" style="color:${c}">${x.tag}</span>
+      <span class="qd">${x.kast_desc||x.desc||''}</span>
+      <span class="qtp">${TL(x.type||'kast')}</span>
+    </div>`;
+  }).join('');
+  drop.classList.add('on');
+}
+
+// ════════════════════════════════════════════════════════
+// MODALS
+// ════════════════════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('on');}
+function closeModal(id){document.getElementById(id).classList.remove('on');}
+
+// ════════════════════════════════════════════════════════
+// SAVE / LOAD / EXPORT
+// ════════════════════════════════════════════════════════
+function snapshot(){
+  undoStack.push(JSON.stringify({EL,KB,LN,ZONES,LAGEN,nextId}));
+  if(undoStack.length>60) undoStack.shift();
+}
+function undo(){
+  if(!undoStack.length) return;
+  const s=JSON.parse(undoStack.pop());
+  EL=s.EL;KB=s.KB;LN=s.LN||[];
+  ZONES=s.ZONES||[];LAGEN=s.LAGEN||[];nextId=s.nextId;
+  selId=null;selLineId=null;
+  renderSVG();renderRP();renderDB();rebuildZoneSelect();rebuildLaagSel();updateStatus();
+}
+
+function saveProj(){
+  const d=JSON.stringify({v:5,EL,KB,LN,ZONES,LAGEN,mpp,nextId,DYNTYPES});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([d],{type:'application/json'}));
+  a.download='ElekMap_project.emp'; a.click();
+}
+
+function loadProj(inp){
+  const f=inp.files[0];if(!f)return;inp.value='';
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.EL) EL=d.EL; if(d.KB) KB=d.KB;
+      if(d.LN) LN=d.LN; if(d.ZONES) ZONES=d.ZONES;
+      if(d.LAGEN) LAGEN=d.LAGEN; if(d.mpp) mpp=d.mpp;
+      if(d.nextId) nextId=d.nextId;
+      if(d.DYNTYPES) DYNTYPES=d.DYNTYPES;
+      selId=null;selLineId=null;
+      if(!planLoaded) startBlank();
+      rebuildZoneSelect();rebuildLaagSel();
+      renderSVG();renderRP();renderDB();updateStatus();
+    }catch(e){alert('Laden mislukt: '+e.message);}
+  };
+  r.readAsText(f);
+}
+
+function exportCSV(){
+  let csv='Tag;Type;Omschrijving;El.Kast;Zekering;Kabine;Kabelnr;Kabeltype;Zone;Laag;Lokatie;Notities\n';
+  EL.forEach(e=>{
+    const laagnaam=LAGEN.find(l=>l.id===e.laag_id)?.naam||'';
+    csv+=`"${e.tag}";"${e.type}";"${e.desc||''}";"${e.kast||''}";"${e.zekering||''}";"${e.kabine||''}";"${e.kabelnr||''}";"${e.kabeltype||''}";"${e.zone||''}";"${laagnaam}";"${e.lokatie||''}";"${(e.notes||'').replace(/"/g,"'")}"\n`;
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download='ElekMap_export.csv'; a.click();
+}
+
+function updateStatus(){
+  document.getElementById('tbstatus').textContent=
+    `${allDB().length} assets · ${EL.length} elem. · ${KB.length} kabels · ${LN.length} lijnen`;
+}
+
+// ════════════════════════════════════════════════════════
+// RESIZABLE LEFT PANEL
+// ════════════════════════════════════════════════════════
+(()=>{
+  let lpDrag=false;
+  const handle=document.getElementById('lp-handle');
+  handle.addEventListener('mousedown',e=>{lpDrag=true;e.preventDefault();});
+  document.addEventListener('mousemove',e=>{
+    if(!lpDrag) return;
+    const w=Math.max(160,Math.min(520,e.clientX));
+    document.getElementById('lp').style.width=w+'px';
+    document.documentElement.style.setProperty('--lp-w',w+'px');
+  });
+  document.addEventListener('mouseup',()=>{lpDrag=false;});
+})();
+
+// ════════════════════════════════════════════════════════
+// KEYBOARD
+// ════════════════════════════════════════════════════════
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('ndlg').classList.contains('on')){
+    if(e.key==='Enter') ndOK();
+    if(e.key==='Escape') ndCancel();
+    return;
+  }
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT') return;
+  if(e.key==='s'||e.key==='S') setMode('s');
+  if(e.key==='c'||e.key==='C') setMode('c');
+  if(e.key==='l'||e.key==='L') setMode('l');
+  if(e.key==='z'||e.key==='Z') setMode('z');
+  if(e.key==='k'||e.key==='K') setMode('cal');
+  if(e.key==='0') fitPlan();
+  if(e.key==='Escape'){
+    placePending=null; document.body.style.cursor='default';
+    document.querySelectorAll('.qpbtn').forEach(b=>b.classList.remove('active'));
+    cableStart=null; cablePts=[]; lineStart=null; zoneDrawing=false; zoneRect=null; calStart=null;
+    setMode('s'); selId=null; selLineId=null;
+    if(!rpPinned) closeRP();
+    renderSVG();
+  }
+  if(e.key==='Delete'){
+    if(selId&&!selId.startsWith('_')){delEl(selId);}
+    if(selLineId){snapshot();LN=LN.filter(x=>x.id!==selLineId);selLineId=null;renderSVG();closeRP();}
+  }
+  if((e.ctrlKey||e.metaKey)&&e.key==='z'){e.preventDefault();undo();}
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveProj();}
+  const r=document.getElementById('cw').getBoundingClientRect();
+  const cx=r.width/2, cy=r.height/2;
+  if(e.key==='+'||e.key==='='){const nz=Math.min(20,vz*1.2);vx=cx-(cx-vx)*nz/vz;vy=cy-(cy-vy)*nz/vz;vz=nz;applyVP();}
+  if(e.key==='-'){const nz=Math.max(.04,vz/1.2);vx=cx-(cx-vx)*nz/vz;vy=cy-(cy-vy)*nz/vz;vz=nz;applyVP();}
+});
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#qs')) document.getElementById('qsdrop').classList.remove('on');
+});
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',async()=>{
+  await initIDB().catch(()=>{});
+  buildQPal();
+  renderDB();
+  renderDFilts();
+  buildCCLR();
+  updateStatus();
+  // Rebuild palette on tab change
+  const origSetTab=setTab;
+  window.setTab=function(t){origSetTab(t);buildQPal();};
+});
+</script>
+</body>
+</html>
